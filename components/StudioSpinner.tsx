@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Animated, Easing, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 
 const DEFAULT_TYPE = 'CircularProgress';
-const DEFAULT_COLOR = '#2F4DE0';
+const DEFAULT_COLOR = '#0077E6';
 const DEFAULT_SIZE = 50;
 
 const isWeb = Platform.OS === 'web';

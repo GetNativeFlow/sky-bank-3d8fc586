@@ -5,42 +5,7 @@
 export const themes = {
   "light": {
     colors: {
-    primaryText: '#0F1E4D',
-    success: '#16A34A',
-    primary: '#2F4DE0',
-    chart1: '#2F4DE0',
-    error: '#E5484D',
-    chart2: '#12B886',
-    background: '#F3F5F9',
-    secondary: '#3DDC97',
-    tertiary: '#EE8B60',
-    chart3: '#F59F00',
-    surface: '#FFFFFF',
-    warning: '#F9CF58',
-    alternate: '#E0E3E7',
-    chart4: '#E64980',
-    info: '#2541B2',
-    chart5: '#15AABF',
-    },
-  },
-  "dark": {
-    colors: {
-    primary: '#8B7FFF',
-    success: '#34D982',
-    primaryText: '#F1F4F8',
-    chart1: '#8B7FFF',
-    background: '#14181B',
-    chart2: '#38D9A9',
-    error: '#FF6B5B',
-    secondary: '#4FE3D1',
-    tertiary: '#F5A57E',
-    warning: '#FBD24A',
-    surface: '#1E2429',
-    chart3: '#FFC078',
-    chart4: '#FF8FAB',
-    info: '#8B7FFF',
-    alternate: '#2D3436',
-    chart5: '#66D9E8',
+
     },
   },
 };

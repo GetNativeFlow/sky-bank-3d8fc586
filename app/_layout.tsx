@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
-import { NativeFlowThemeProvider } from '../lib/theme/NativeFlowThemeProvider';
 import { AuthGate } from '../lib/auth/AuthGate';
 
 export default function RootLayout() {
@@ -32,35 +31,61 @@ export default function RootLayout() {
 
   return (
     <AuthGate>
-    <NativeFlowThemeProvider>
     <Stack screenOptions={{ headerShown: true }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="login"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="loans"
         options={{
-          headerShown: false,
+          headerShown: true,
+            title: 'Loans & Credit',
+            headerBackVisible: true,
+            headerTransparent: false,
+            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
+            headerTintColor: '#4F46E5',
+            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
+            headerTitleAlign: 'left',
         }}
       />
       <Stack.Screen
         name="transactions"
         options={{
-          headerShown: false,
+          headerShown: true,
+            title: 'Transactions',
+            headerBackVisible: true,
+            headerTransparent: false,
+            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
+            headerTintColor: '#4F46E5',
+            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
+            headerTitleAlign: 'left',
+        }}
+      />
+      <Stack.Screen
+        name="login"
+        options={{
+          headerShown: true,
+            title: 'Login',
+            headerBackVisible: true,
+            headerTransparent: false,
+            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
+            headerTintColor: '#4F46E5',
+            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
+            headerTitleAlign: 'left',
         }}
       />
       <Stack.Screen
         name="welcome"
         options={{
-          headerShown: false,
+          headerShown: true,
+            title: 'Welcome',
+            headerBackVisible: true,
+            headerTransparent: false,
+            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
+            headerTintColor: '#4F46E5',
+            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
+            headerTitleAlign: 'left',
         }}
       />
     </Stack>
-    </NativeFlowThemeProvider>
     </AuthGate>
   );
 }
