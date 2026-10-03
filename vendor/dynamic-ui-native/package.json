@@ -1,0 +1,11 @@
+{
+  "name": "@nativeflow/dynamic-ui-native",
+  "version": "0.1.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@json-render/core": "0.21.0",
+    "@json-render/react-native": "0.21.0",
+    "zod": "4.6.5"
+  }
+}
