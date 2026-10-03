@@ -12,7 +12,8 @@
       "supabase/migrations/20261003070725_auth_rls.sql",
       "supabase/migrations/20261003071141_auth_rls.sql",
       "supabase/migrations/20261003071357_auth_rls.sql",
-      "supabase/migrations/20261003081930_auth_rls.sql"
+      "supabase/migrations/20261003081930_auth_rls.sql",
+      "supabase/migrations/20261003083748_auth_rls.sql"
     ],
     "accessPolicyJson": null,
     "policies": []
@@ -32,7 +33,7 @@
     "lib/auth/BiometricGate.tsx": "dea00f29d66bafff",
     "lib/auth/BiometricEnrolmentSheet.tsx": "a18c8ec156149e4f",
     "lib/auth/BiometricSettingsRow.tsx": "4695fad2768a0d8c",
-    "supabase/migrations/20261003081930_auth_rls.sql": "c24514ddda97310b"
+    "supabase/migrations/20261003083748_auth_rls.sql": "c24514ddda97310b"
   },
   "enforcementAnnotations": {}
 }

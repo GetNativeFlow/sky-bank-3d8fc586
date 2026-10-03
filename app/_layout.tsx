@@ -66,6 +66,12 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="signup"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="forgotpassword"
         options={{
           headerShown: false,

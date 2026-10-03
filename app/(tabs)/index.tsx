@@ -463,7 +463,6 @@ function Home() {
                                     </View>
                         </View>
                         <View style={styles.node_21287377_44c7_4753_b7ef_cd9daa203882}>
-                                    <View style={styles.node_edacb374_8d60_4c26_affa_c7c80826c447} />
                                     <View style={styles.node_5049f1ff_0a68_41a0_aa6e_0a575ccb57aa} />
                         </View>
               </View>
@@ -755,21 +754,6 @@ function createStyles() {
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
-  },
-  node_edacb374_8d60_4c26_affa_c7c80826c447: {
-    top: -50,
-    right: -40,
-    width: 170,
-    height: 170,
-    padding: 0,
-    position: 'absolute',
-    borderRadius: 85,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flexWrap: 'nowrap',
-    overflow: 'visible',
   },
   node_5049f1ff_0a68_41a0_aa6e_0a575ccb57aa: {
     top: 40,
