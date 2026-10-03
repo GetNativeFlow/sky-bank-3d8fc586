@@ -12,22 +12,16 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: Platform.select({ ios: '#007AFF', default: '#2196F3' }),
-        tabBarStyle: {"width":"100%","alignSelf":"stretch","marginHorizontal":0,"paddingHorizontal":0},
+        tabBarActiveTintColor: '#2563EB',
+        tabBarInactiveTintColor: '#6B7280',
+        tabBarStyle: {"width":"100%","alignSelf":"stretch","marginHorizontal":0,"paddingHorizontal":0,"backgroundColor":"#FFFFFF"},
         tabBarItemStyle: {"flex":1,"maxWidth":"100%","marginHorizontal":0},
       }}>
         <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
-            headerShown: true,
-            title: 'Home',
-            headerBackVisible: false,
-            headerTransparent: false,
-            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
-            headerTintColor: '#4F46E5',
-            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
-            headerTitleAlign: 'left',
+            headerShown: false,
             tabBarIcon: ({ color }) => <LucideDynamic size={20} name="house" color={color} />,
           }}
         />
@@ -35,14 +29,7 @@ export default function TabLayout() {
           name="accounts"
           options={{
             title: 'Accounts',
-            headerShown: true,
-            title: 'Accounts',
-            headerBackVisible: true,
-            headerTransparent: false,
-            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
-            headerTintColor: '#4F46E5',
-            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
-            headerTitleAlign: 'left',
+            headerShown: false,
             tabBarIcon: ({ color }) => <LucideDynamic size={20} name="credit-card" color={color} />,
           }}
         />
@@ -50,14 +37,7 @@ export default function TabLayout() {
           name="investments"
           options={{
             title: 'Investments',
-            headerShown: true,
-            title: 'Investments',
-            headerBackVisible: true,
-            headerTransparent: false,
-            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
-            headerTintColor: '#4F46E5',
-            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
-            headerTitleAlign: 'left',
+            headerShown: false,
             tabBarIcon: ({ color }) => <LucideDynamic size={20} name="layout-grid" color={color} />,
           }}
         />
@@ -65,14 +45,7 @@ export default function TabLayout() {
           name="payments"
           options={{
             title: 'Payments',
-            headerShown: true,
-            title: 'Payments',
-            headerBackVisible: true,
-            headerTransparent: false,
-            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
-            headerTintColor: '#4F46E5',
-            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
-            headerTitleAlign: 'left',
+            headerShown: false,
             tabBarIcon: ({ color }) => <LucideDynamic size={20} name="arrow-left-right" color={color} />,
           }}
         />
@@ -80,14 +53,7 @@ export default function TabLayout() {
           name="aimintly"
           options={{
             title: 'AI Mintly',
-            headerShown: true,
-            title: 'AI Mintly',
-            headerBackVisible: true,
-            headerTransparent: false,
-            headerStyle: { backgroundColor: '#FFFFFF', elevation: 0, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.08)' },
-            headerTintColor: '#4F46E5',
-            headerTitleStyle: { color: '#111827', fontSize: 18, fontWeight: '600' },
-            headerTitleAlign: 'left',
+            headerShown: false,
             tabBarIcon: ({ color }) => <LucideDynamic size={20} name="sparkles" color={color} />,
           }}
         />

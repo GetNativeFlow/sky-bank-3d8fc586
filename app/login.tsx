@@ -32,21 +32,21 @@ export default function Login() {
               <View style={styles.node_cdfdadfb_4782_4eec_96bf_fce9c2cebfe7}>
                         <View style={styles.node_3cabfc49_f277_4273_b37a_c09674c93cdd}>
                                     <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#6B7280" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></Path></G></Svg></View>
-                                    <TextInput style={[styles.node_2b49034b_4b85_4cd5_85eb_6e73de00d9d4, { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 10, fontSize: 16, backgroundColor: '#fff' }]} placeholder="Mobile number or username" value={typeof state_2b49034b_4b85_4cd5_85eb_6e73de00d9d4 !== 'undefined' ? (state_2b49034b_4b85_4cd5_85eb_6e73de00d9d4.text ?? '') : ''} onChangeText={(v) => { if (typeof setState_2b49034b_4b85_4cd5_85eb_6e73de00d9d4 === 'function') setState_2b49034b_4b85_4cd5_85eb_6e73de00d9d4(prev => ({...prev, text: v})); }} />
+                                    <TextInput style={[styles.node_2b49034b_4b85_4cd5_85eb_6e73de00d9d4, { borderWidth: 1, borderColor: 'rgba(209, 213, 219, 0.00)', borderRadius: 6, padding: 10, fontSize: 16, backgroundColor: '#fff' }]} placeholder="Mobile number or username" value={typeof state_2b49034b_4b85_4cd5_85eb_6e73de00d9d4 !== 'undefined' ? (state_2b49034b_4b85_4cd5_85eb_6e73de00d9d4.text ?? '') : ''} onChangeText={(v) => { if (typeof setState_2b49034b_4b85_4cd5_85eb_6e73de00d9d4 === 'function') setState_2b49034b_4b85_4cd5_85eb_6e73de00d9d4(prev => ({...prev, text: v})); }} />
                         </View>
               </View>
               <View style={styles.node_d0b320c2_42cb_4a85_b384_ebe349c5159e}>
                         <View style={styles.node_0683ecaa_f45b_4379_925e_05305f60a886}>
                                     <View style={styles.node_af683456_d7f9_4eaf_9847_cc01b006cd60}>
                                                   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#6B7280" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="18" height="11" x="3" y="11" rx="2" ry="2"></Rect><Path d="M7 11V7a5 5 0 0 1 10 0v4"></Path></G></Svg></View>
-                                                  <TextInput style={[styles.node_6fb1352c_4505_465a_b2bd_4ecfd94a50a1, { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 10, fontSize: 16, backgroundColor: '#fff' }]} placeholder="Password" secureTextEntry value={typeof state_6fb1352c_4505_465a_b2bd_4ecfd94a50a1 !== 'undefined' ? (state_6fb1352c_4505_465a_b2bd_4ecfd94a50a1.text ?? '') : ''} onChangeText={(v) => { if (typeof setState_6fb1352c_4505_465a_b2bd_4ecfd94a50a1 === 'function') setState_6fb1352c_4505_465a_b2bd_4ecfd94a50a1(prev => ({...prev, text: v})); }} />
+                                                  <TextInput style={[styles.node_6fb1352c_4505_465a_b2bd_4ecfd94a50a1, { borderWidth: 1, borderColor: 'rgba(209, 213, 219, 0.00)', borderRadius: 6, padding: 10, fontSize: 16, backgroundColor: '#fff' }]} placeholder="Password" secureTextEntry value={typeof state_6fb1352c_4505_465a_b2bd_4ecfd94a50a1 !== 'undefined' ? (state_6fb1352c_4505_465a_b2bd_4ecfd94a50a1.text ?? '') : ''} onChangeText={(v) => { if (typeof setState_6fb1352c_4505_465a_b2bd_4ecfd94a50a1 === 'function') setState_6fb1352c_4505_465a_b2bd_4ecfd94a50a1(prev => ({...prev, text: v})); }} />
                                                   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#6B7280" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></Path><Circle cx="12" cy="12" r="3"></Circle></G></Svg></View>
                                     </View>
                         </View>
               </View>
               <View style={styles.node_00165f70_0953_4eba_aa25_27152fc09fb0}>
                         <View style={styles.node_70ed48f4_d48f_4801_9344_e61f86960306}>
-                                    <TouchableOpacity onPress={() => { if (typeof setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d === 'function') setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d(prev => ({...prev, isChecked: !prev.isChecked})); }} style={[styles.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d, { flexDirection: 'row', alignItems: 'center', gap: 8 }]}><View style={{ width: 20, height: 20, borderWidth: 2, borderColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#0077E6' : '#666', borderRadius: 3, backgroundColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#0077E6' : 'transparent', justifyContent: 'center', alignItems: 'center' }}>{(typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) && <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>✓</Text>}</View><Text>Remember Me</Text></TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { if (typeof setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d === 'function') setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d(prev => ({...prev, isChecked: !prev.isChecked})); }} style={[styles.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d, { flexDirection: 'row', alignItems: 'center', gap: 8 }]}><View style={{ width: 20, height: 20, borderWidth: 2, borderColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#ffffff' : '#666', borderRadius: 3, backgroundColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#ffffff' : 'transparent', justifyContent: 'center', alignItems: 'center' }}>{(typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) && <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>✓</Text>}</View><Text>Remember Me</Text></TouchableOpacity>
                         </View>
                         <Text style={[styles.node_bc225577_d6ff_4e85_b014_9a6c42b5e1ec, { color: '#0077E6', textDecorationLine: 'underline' }]}>Forgot password?</Text>
               </View>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F3F5F9',
     height: '100%',
     width: '100%',
     minWidth: 0,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   node_661e98f1_3a50_4afe_bb3c_9750424aa13a: {
     gap: 0,
-    paddingTop: 24,
+    paddingTop: 45,
     paddingLeft: 24,
     paddingRight: 24,
     paddingBottom: 24,
@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
   node_2b49034b_4b85_4cd5_85eb_6e73de00d9d4: {
     color: '#111827',
     fontSize: 16,
+    borderColor: 'rgba(209, 213, 219, 0.00)',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
@@ -246,6 +247,7 @@ const styles = StyleSheet.create({
   node_6fb1352c_4505_465a_b2bd_4ecfd94a50a1: {
     color: '#111827',
     fontSize: 16,
+    borderColor: 'rgba(209, 213, 219, 0.00)',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
@@ -277,6 +279,7 @@ const styles = StyleSheet.create({
   },
   node_cdefa296_7a29_45c4_a32d_a4e00e1c142d: {
     color: '#4B39EF',
+    backgroundColor: '#FFFFFF',
   },
   node_bc225577_d6ff_4e85_b014_9a6c42b5e1ec: {
     color: '#2447B5',
@@ -410,7 +413,6 @@ const styles = StyleSheet.create({
   },
   node_74ca7292_7eef_455b_883c_7de2255a5d33: {
     gap: 4,
-    marginTop: 'auto',
     paddingTop: 20,
     justifyContent: 'center',
     alignItems: 'center',

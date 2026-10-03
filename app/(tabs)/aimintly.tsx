@@ -18,7 +18,7 @@ function AIMintly() {
   const [state_400551d6_073b_49ef_9023_97e45ce65507, setState_400551d6_073b_49ef_9023_97e45ce65507] = useState({ text: "", isFocused: false, errorMessage: "", isValid: true });
   const [_uiOv, _setUiOv] = useState({});
   const ui = bindUi(_uiOv, _setUiOv, { "Column 1": "node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53", "Row 1": "node_197618e6_6a58_4ff5_86b2_ec4abf21a149", "Center 1": "node_7cf473f0_9fb3_46c9_b6ea_e1d2adc97516", "Center 2": "node_60b603f5_bc9d_4110_acff_2279c9cb9aab", "Row 2": "node_f03922b6_b9f8_4981_848e_50e17b7a1538", "Box 2": "node_91cb14db_ad0c_47a1_b4a9_3a921a1960fe", "Box 3": "node_1fb014ad_bc4b_46fb_bd13_2e2c1b9ff2c0", "Column 2": "node_dc9e4259_a235_4772_81c9_fcb47ccf56e7", "Text 1": "node_407f530f_19be_46f2_9d7b_92c1fcd94f11", "Text 2": "node_5c4f9d0f_7313_40ef_bc75_1a412cc0fc87", "Column 3": "node_fed856f6_d758_4f41_a0c8_c7ac50b2f8c3", "Center 3": "node_034e1270_f38f_4206_b461_0e16d7e4e62c", "Center 4": "node_01612518_844b_4c2e_8b84_8603fba727eb", "Center 5": "node_d5dc431e_a232_4268_a578_517897205629", "Row 3": "node_7212e92a_8f2d_4270_b88b_9c2f16c7e898", "Box 4": "node_1d848026_6fda_4902_ae90_2853c53d7d5b", "Box 5": "node_f38b9a4c_32be_4e33_887e_7318a11b5c03", "Box 6": "node_495b5e6f_5e31_4e3c_ad39_44cd6dfafc14", "Text 3": "node_faadea75_6825_4237_ad62_4393e1b62883", "Text 4": "node_ead86d71_556a_453d_b04b_bd401f2e9c22", "Column 4": "node_1e6a29ee_b2fc_4769_9d82_c3b35bf7fb05", "Row 4": "node_5e9453b1_412b_406f_8bc2_eeffb3554791", "Pressable 1": "node_53ed257d_9186_489b_b18e_89d3b6825dd2", "Text 5": "node_334ff4cc_398e_4744_b9e6_8919a476c60a", "Pressable 2": "node_ec37f844_1ef8_4a2f_a0f8_43dce9bfefed", "Text 6": "node_601ce714_2405_4fa5_a9b7_299fd0076aa8", "Row 5": "node_03b7e77e_434b_45c3_8f1d_c26a8c461847", "Pressable 3": "node_57cd631b_e1dc_45e1_8c85_91816e0819c7", "Text 7": "node_af306bfa_a0b8_46a9_8286_af021045b709", "Pressable 4": "node_b7630fd2_1d27_4a2f_bf3d_de755742b0ec", "Text 8": "node_58907809_e352_413c_95b9_1bd1bdbba21e", "Dynamic UI": "node_c58f0af1_09d2_4b97_8329_6a67b9fd0bfb", "Row 6": "node_d872f965_2885_414e_a83e_8f899d906701", "Input": "node_400551d6_073b_49ef_9023_97e45ce65507", "Pressable 5": "node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70", "Icon 1": "node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65", "Pressable 6": "node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6", "Icon 2": "node_fcef7438_a598_46a0_a976_aac5ea9ce19a", "Text 9": "node_ce1ce562_5a51_4f23_bca1_b668a565c6c7" }, { node_400551d6_073b_49ef_9023_97e45ce65507: setState_400551d6_073b_49ef_9023_97e45ce65507 }, { node_400551d6_073b_49ef_9023_97e45ce65507: ["text"] }, { node_400551d6_073b_49ef_9023_97e45ce65507: state_400551d6_073b_49ef_9023_97e45ce65507 });
-  const [question, setQuestion] = useState(null);
+  const [question, setQuestion] = useState("");
 
   return (
     <View style={styles.screenRoot}>
@@ -227,7 +227,7 @@ function createStyles() {
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F3F5F9',
     height: '100%',
     width: '100%',
     minWidth: 0,
@@ -244,6 +244,7 @@ function createStyles() {
   },
   node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53: {
     gap: 0,
+    paddingTop: 45,
     backgroundColor: colors.background,
     justifyContent: 'flex-start',
     alignItems: 'stretch',

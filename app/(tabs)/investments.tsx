@@ -110,7 +110,7 @@ function createStyles() {
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#',
     height: '100%',
     width: '100%',
     minWidth: 0,
@@ -125,6 +125,7 @@ function createStyles() {
   },
   node_f774876a_875d_467e_a39b_916d97147a52: {
     gap: 0,
+    paddingTop: 45,
     backgroundColor: colors.background,
     justifyContent: 'flex-start',
     alignItems: 'stretch',

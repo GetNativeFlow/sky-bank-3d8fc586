@@ -5,6 +5,7 @@ import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 're
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { appRuntime as app } from '../lib/app';
 
 function Loans() {
   const router = useRouter();
@@ -48,7 +49,7 @@ function Loans() {
                                     <Text style={[styles.node_d43ad0bc_d153_4e64_b616_24336b8c8644, { color: '#0077E6', textDecorationLine: 'underline' }]}>View details</Text>
                         </View>
               </View>
-              <View style={styles.node_84f25ef7_f1e0_4028_94af_be234ebcbabb}>
+              <TouchableOpacity style={styles.node_84f25ef7_f1e0_4028_94af_be234ebcbabb} activeOpacity={0.7} onPress={() => { try { app.navigate("Home"); } catch(e) { console.error('[Action Error]', e); } }}>
                         <View style={styles.node_f5b4bc1a_f220_473f_9598_4f88b70140b2}>
                                     <View style={styles.node_2cd51d3d_7c85_416b_b71d_958694e8e0fa}>
                                                   <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2952CC" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="16" height="20" x="4" y="2" rx="2"></Rect><Line x1="8" x2="16" y1="6" y2="6"></Line><Line x1="16" x2="16" y1="14" y2="18"></Line><Path d="M16 10h.01"></Path><Path d="M12 10h.01"></Path><Path d="M8 10h.01"></Path><Path d="M12 14h.01"></Path><Path d="M8 14h.01"></Path><Path d="M12 18h.01"></Path><Path d="M8 18h.01"></Path></G></Svg></View>
@@ -59,10 +60,8 @@ function Loans() {
                                     </View>
                         </View>
                         <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
-              </View>
-              <View style={styles.node_426684dd_b3f4_48c3_a2ed_6881fa88f118}>
-                        <Text style={styles.node_51c71de3_e143_4921_8541_c2efd59eecf0}>Active Loans</Text>
-              </View>
+              </TouchableOpacity>
+              <View style={styles.node_426684dd_b3f4_48c3_a2ed_6881fa88f118} />
       </View>
       </ScrollView>
     </View>
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   },
   node_d2243f86_4921_4884_888c_69869826cbdc: {
     gap: 20,
-    paddingTop: 20,
+    paddingTop: 45,
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 20,
@@ -320,13 +319,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 0,
     width: '100%',
-  },
-  node_51c71de3_e143_4921_8541_c2efd59eecf0: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '700',
-    alignSelf: 'flex-start',
-    flexShrink: 0,
   },
 });
 
