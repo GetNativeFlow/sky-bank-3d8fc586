@@ -1,15 +1,13 @@
 import { Can } from '@/components/Can';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
-import { getThemeColors } from '../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../lib/app';
 
 function Profile() {
-  const colors = getThemeColors();
   const router = useRouter();
   const routeParams = useLocalSearchParams();
   // ── Auto-generated fetch helpers ──
@@ -434,8 +432,16 @@ function Profile() {
         contentContainerStyle={styles.containerContent}
       >
       <StatusBar style="auto" />
+      <View style={styles.node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30}>
+      <View style={styles.node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30Content}>
+              <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }} onPress={() => { try { (() => { console.warn('[navigateTo] Target page not found for pageId:', undefined); })(); } catch(e) { console.error('[Action Error]', e); } }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#000000" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m12 19-7-7 7-7"></Path><Path d="M19 12H5"></Path></G></Svg></View>
+              <Text style={styles.node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7} onPress={() => { try { app.navigate("Home"); } catch(e) { console.error('[Action Error]', e); } }}>Profile</Text>
+      </View>
+      </View>
+      <TouchableOpacity style={[styles.node_23229f5b_b0f3_43dd_af2b_65fec6050d45, { backgroundColor: '#0077E6', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }]} activeOpacity={0.7}>
+        <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#fff', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>Button</Text>
+      </TouchableOpacity>
       <View style={styles.node_b8b1a1da_5bd9_4dd6_8d4d_0ed949964326}>
-              <Text style={styles.node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7}>Profile</Text>
               <View style={styles.node_3a763209_226c_4f3e_ad60_53b3fde780ec}>
                         <View style={styles.node_f5369c3d_86e9_4857_b9fc_450f66301419}>
                                     <View style={styles.node_db2f8d08_e0cf_47c7_a72e_b0d24e7db415}>
@@ -507,11 +513,7 @@ function Profile() {
   );
 }
 
-const styles = createStyles();
-
-function createStyles() {
-  const colors = getThemeColors();
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   screenRoot: {
     flex: 1,
     height: '100%',
@@ -523,6 +525,7 @@ function createStyles() {
   container: {
     flex: 1,
     backgroundColor: '#F3F5F9',
+    overflow: 'visible',
     height: '100%',
     width: '100%',
     minWidth: 0,
@@ -535,13 +538,38 @@ function createStyles() {
     width: '100%',
     alignSelf: 'stretch',
   },
+  node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30: {
+    width: '100%',
+  },
+  node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30Content: {
+    flexGrow: 1,
+    alignSelf: 'stretch',
+    paddingTop: 45,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 20,
+    flexWrap: 'nowrap',
+    flexDirection: 'row',
+  },
+  node_eb8748fd_c642_4d0f_9ab4_d4b24df67d09: {
+    color: '#000000',
+  },
+  node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7: {
+    color: '#0D1B4C',
+    fontWeight: '800',
+    fontSize: 28,
+    alignSelf: 'flex-start',
+    flexShrink: 0,
+  },
   node_b8b1a1da_5bd9_4dd6_8d4d_0ed949964326: {
     gap: 20,
     paddingTop: 45,
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 24,
-    backgroundColor: colors.background,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
@@ -549,11 +577,6 @@ function createStyles() {
     minHeight: 0,
     flexGrow: 1,
     flexShrink: 0,
-  },
-  node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7: {
-    color: '#0D1B4C',
-    fontWeight: '800',
-    fontSize: 28,
   },
   node_3a763209_226c_4f3e_ad60_53b3fde780ec: {
     padding: 20,
@@ -906,8 +929,8 @@ function createStyles() {
     alignSelf: 'flex-start',
     flexShrink: 0,
   },
-  });
-}
+});
+
 
 export default function ProfileGuarded(props: any) {
   return <Can permissions={[]} redirectTo={"Login"}><Profile {...props} /></Can>;

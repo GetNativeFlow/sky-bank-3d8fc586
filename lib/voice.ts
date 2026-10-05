@@ -31,27 +31,49 @@ export function useListening(): boolean {
   return on;
 }
 
+/** Ends listening and says why on screen. */
+function fail(message: string) {
+  done();
+  Alert.alert('Voice input', message);
+}
+
+const MESSAGES: Record<string, string> = {
+  'no-speech': "Didn't catch that. Tap the mic and try again.",
+  'speech-timeout': "Didn't catch that. Tap the mic and try again.",
+  'not-allowed': 'Allow the microphone and speech recognition in Settings to talk instead of type.',
+  'service-not-allowed': 'Speech recognition is turned off on this device.',
+  'language-not-supported': 'This language is not available for speech recognition on this device.',
+  network: 'Speech recognition needs an internet connection on this device.',
+};
+
 export async function start({ lang, onText }: Options) {
   if (listening) return;
   setListening(true);
-  const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
-  if (!perm.granted) {
-    setListening(false);
-    Alert.alert('Microphone is off', 'Allow the microphone and speech recognition in Settings to talk instead of type.');
-    return;
+  try {
+    if (!ExpoSpeechRecognitionModule.isRecognitionAvailable()) return fail('Speech recognition is not available on this device.');
+    const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!perm.granted) return fail(MESSAGES['not-allowed']);
+    subs = [
+      ExpoSpeechRecognitionModule.addListener('result', (e) => {
+        if (__DEV__) console.log('[voice] result', e.isFinal, e.results[0]?.transcript);
+        const text = e.results[0]?.transcript;
+        if (text != null) onText(text);
+      }),
+      ExpoSpeechRecognitionModule.addListener('error', (e) => {
+        if (__DEV__) console.log('[voice] error', e.error, e.message);
+        if (e.error === 'aborted') return done();
+        fail(MESSAGES[e.error] ?? `Voice input stopped (${e.error}). ${e.message}`);
+      }),
+      ExpoSpeechRecognitionModule.addListener('end', () => {
+        if (__DEV__) console.log('[voice] end');
+        done();
+      }),
+    ];
+    if (__DEV__) console.log('[voice] start', lang || 'en-US');
+    ExpoSpeechRecognitionModule.start({ lang: lang || 'en-US', interimResults: true, addsPunctuation: true });
+  } catch (e: any) {
+    fail(`Voice input could not start. ${e?.message ?? e}`);
   }
-  subs = [
-    ExpoSpeechRecognitionModule.addListener('result', (e) => {
-      const text = e.results[0]?.transcript;
-      if (text != null) onText(text);
-    }),
-    ExpoSpeechRecognitionModule.addListener('error', (e) => {
-      if (e.error !== 'aborted' && e.error !== 'no-speech') console.warn('[voice]', e.error, e.message);
-      done();
-    }),
-    ExpoSpeechRecognitionModule.addListener('end', done),
-  ];
-  ExpoSpeechRecognitionModule.start({ lang: lang || 'en-US', interimResults: true, addsPunctuation: true });
 }
 
 /** Stops listening; the last words still arrive as a final result. */

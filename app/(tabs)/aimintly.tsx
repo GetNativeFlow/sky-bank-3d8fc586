@@ -168,7 +168,7 @@ function AIMintly() {
               {(!(_uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.hidden)) && (
               <View style={[styles.node_d872f965_2885_414e_a83e_8f899d906701, _uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.style]}>
                         {(!(_uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.hidden)) && (
-                        <TextInput style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 18, backgroundColor: '#FFFFFF' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Type your question..." value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
+                        <TextInput style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 18, backgroundColor: '#FFFFFF', maxHeight: 133, textAlignVertical: 'top', fieldSizing: 'content' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Type your question..." multiline value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
                             try {
                               nfDynamicUi.ask("c58f0af1-09d2-4b97-8329-6a67b9fd0bfb", question);
                               ui.hide('fed856f6-d758-4f41-a0c8-c7ac50b2f8c3');
@@ -548,8 +548,8 @@ function createStyles() {
     width: '100%',
   },
   node_400551d6_073b_49ef_9023_97e45ce65507: {
-    height: 52,
     fontSize: 15,
+    minHeight: 52,
     borderColor: '#D1D5DB',
     borderWidth: 1,
     paddingLeft: 20,

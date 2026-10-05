@@ -462,9 +462,7 @@ function Home() {
                                                   <Text style={styles.node_bf8f22b8_aa91_416a_8f91_2422f0271216}>vs last month</Text>
                                     </View>
                         </View>
-                        <View style={styles.node_21287377_44c7_4753_b7ef_cd9daa203882}>
-                                    <View style={styles.node_5049f1ff_0a68_41a0_aa6e_0a575ccb57aa} />
-                        </View>
+                        <View style={styles.node_21287377_44c7_4753_b7ef_cd9daa203882} />
               </View>
               <View style={styles.node_260b42e9_49f9_46a6_a029_b685180e6101}>
                         <View style={styles.node_21d1ea39_7214_4ccc_b47a_ae8c4bb4fe65}>
@@ -754,21 +752,6 @@ function createStyles() {
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
-  },
-  node_5049f1ff_0a68_41a0_aa6e_0a575ccb57aa: {
-    top: 40,
-    right: 70,
-    width: 90,
-    height: 90,
-    padding: 0,
-    position: 'absolute',
-    borderRadius: 45,
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flexWrap: 'nowrap',
-    overflow: 'visible',
   },
   node_260b42e9_49f9_46a6_a029_b685180e6101: {
     gap: 0,

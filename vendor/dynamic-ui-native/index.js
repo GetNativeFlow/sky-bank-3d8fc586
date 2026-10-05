@@ -642,7 +642,9 @@ function TextField({
                 fontSize: 16,
                 color: theme.text,
                 // The frame above draws focus; the browser's own ring would be a second border.
-                ...import_react_native3.Platform.OS === "web" ? { outlineStyle: "none" } : null
+                ...import_react_native3.Platform.OS === "web" ? { outlineStyle: "none" } : null,
+                // A web textarea never grows by itself; this sizes it to its text.
+                ...import_react_native3.Platform.OS === "web" && multiline ? { fieldSizing: "content" } : null
               }
             }
           ),
@@ -910,7 +912,6 @@ function PinPad({ label, value, onChange, length, disabled, error }) {
     else if (key && value.length < max) onChange(value + key);
   };
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { gap: 12, alignItems: "center" }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { text: label, size: "sm", bold: true, tone: "muted" }),
     /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
       import_react_native5.View,
       {
@@ -986,6 +987,92 @@ function PasswordField({ label, value, onChange, disabled, error }) {
 function SecureInput(props) {
   const { input, ...rest } = props;
   return sensitiveKind(input) === "pin" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(PinPad, { ...rest, length: pinLength(input) }) : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(PasswordField, { ...rest });
+}
+function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
+  var _a;
+  const theme = useTheme();
+  const [step, setStep] = React5.useState(0);
+  const [typed, setTyped] = React5.useState({});
+  React5.useEffect(() => {
+    setStep(0);
+    setTyped({});
+  }, [attempt]);
+  const cancel = React5.useRef(onCancel);
+  cancel.current = onCancel;
+  const drag = React5.useRef(new import_react_native5.Animated.Value(0)).current;
+  const pan = React5.useMemo(
+    () => import_react_native5.PanResponder.create({
+      onMoveShouldSetPanResponder: (_, g) => g.dy > 4,
+      onPanResponderMove: (_, g) => drag.setValue(Math.max(0, g.dy)),
+      onPanResponderRelease: (_, g) => {
+        if (g.dy > 80) cancel.current();
+        else import_react_native5.Animated.spring(drag, { toValue: 0, useNativeDriver: false }).start();
+      }
+    }),
+    [drag]
+  );
+  const ask = asks[Math.min(step, asks.length - 1)];
+  if (!ask) return null;
+  const { input, label } = ask;
+  const value = (_a = typed[input.name]) != null ? _a : "";
+  const length = sensitiveKind(input) === "pin" ? pinLength(input) : void 0;
+  const ready = length ? value.length === length : !input.required || value.length > 0;
+  const last = step >= asks.length - 1;
+  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.Modal, { transparent: true, visible: true, animationType: "slide", onRequestClose: onCancel, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { flex: 1, justifyContent: "flex-end" }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+      import_react_native5.Pressable,
+      {
+        accessibilityLabel: "Close",
+        disabled: busy,
+        onPress: onCancel,
+        style: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)" }
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.KeyboardAvoidingView, { behavior: import_react_native5.Platform.OS === "ios" ? "padding" : void 0, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
+      import_react_native5.Animated.View,
+      {
+        testID: "secret-sheet",
+        style: {
+          transform: [{ translateY: drag }],
+          backgroundColor: theme.surface,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: 20,
+          paddingBottom: 32,
+          gap: 16
+        },
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { ...pan.panHandlers, style: { alignItems: "center", gap: 8 }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { style: { width: 40, height: 4, borderRadius: 2, backgroundColor: theme.border } }),
+            asks.length > 1 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { text: `Step ${step + 1} of ${asks.length}`, size: "xs", tone: "muted" }) : null,
+            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Heading, { text: `Enter ${label}`, size: "md", align: "center" })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+            SecureInput,
+            {
+              input,
+              label: sensitiveKind(input) === "pin" ? `Enter ${label}` : label,
+              value,
+              onChange: (next) => setTyped((all) => ({ ...all, [input.name]: next })),
+              disabled: busy,
+              error: step === 0 && !value ? error : void 0
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Button, { label: "Cancel", variant: "outline", disabled: busy, onPress: onCancel }),
+            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+              Button,
+              {
+                label: busy ? "Working\u2026" : "OK",
+                disabled: busy || !ready,
+                onPress: () => last ? onSubmit(typed) : setStep(step + 1)
+              }
+            )
+          ] })
+        ]
+      }
+    ) })
+  ] }) });
 }
 
 // packages/dynamic-ui-native/src/registry.tsx
@@ -1456,7 +1543,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
   const [entries, setEntries] = React8.useState([]);
   const [busy, setBusy] = React8.useState(false);
   const [pending, setPending] = React8.useState(null);
-  const [secrets, setSecrets] = React8.useState({});
+  const [sheet, setSheet] = React8.useState(null);
   const base = endpoint.replace(/\/$/, "");
   const notes = React8.useRef([]);
   const picks = React8.useRef({});
@@ -1549,7 +1636,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     }
     setPending({ stage: "review", operation: name, values });
   };
-  const run = async (name, values) => {
+  const run = async (name, values, secrets = {}) => {
     var _a2, _b2;
     const op = config(name);
     if (!op) return;
@@ -1557,6 +1644,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
       const passed = confirmBiometric ? await confirmBiometric().catch(() => false) : false;
       if (!passed) {
         note(`The user did not pass the biometric check for ${name}.`);
+        setSheet(null);
         setPending({ stage: "error", operation: name, values, error: confirmBiometric ? "Not confirmed." : "Biometric check is not available." });
         return;
       }
@@ -1564,7 +1652,6 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     const typed = Object.fromEntries(
       op.inputs.filter((i) => isSensitive(i) && secrets[i.name]).map((i) => [i.name, secretValue(i, secrets[i.name])])
     );
-    setSecrets({});
     setPending({ stage: "running", operation: name, values });
     try {
       const res = await sessionFetch(`${base}/operation`, {
@@ -1573,12 +1660,22 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
         body: JSON.stringify({ operation: name, values: { ...values, ...typed } })
       });
       const body = await res.json().catch(() => ({}));
+      if (!body.ok && (body.status === 401 || body.status === 403) && op.inputs.some(isSensitive)) {
+        setPending({ stage: "review", operation: name, values });
+        setSheet((s) => {
+          var _a3;
+          return s ? { ...s, error: (_a3 = body.error) != null ? _a3 : "That was not accepted. Try again.", attempt: s.attempt + 1 } : s;
+        });
+        return;
+      }
+      setSheet(null);
       if (!res.ok || !body.ok) {
         note(`The user confirmed ${name}. It did not go through.`);
         setPending({ stage: "error", operation: name, values, error: (_a2 = body.error) != null ? _a2 : "It didn\u2019t go through." });
         return;
       }
     } catch (e) {
+      setSheet(null);
       note(`The user confirmed ${name}. It did not go through.`);
       setPending({ stage: "error", operation: name, values, error: e.message });
       return;
@@ -1687,8 +1784,8 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
         Button,
         {
           label: busy2 ? "Working\u2026" : p.stage === "error" ? "Try again" : "Confirm",
-          disabled: busy2 || secure.some((i) => i.required && !secrets[i.name]),
-          onPress: () => void run(p.operation, p.values)
+          disabled: busy2,
+          onPress: () => secure.length ? setSheet({ operation: p.operation, attempt: 0 }) : void run(p.operation, p.values)
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
@@ -1698,7 +1795,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           variant: "outline",
           disabled: busy2,
           onPress: () => {
-            setSecrets({});
+            setSheet(null);
             setPending({ stage: "edit", operation: p.operation, values: p.values });
           }
         }
@@ -1711,7 +1808,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           disabled: busy2,
           onPress: () => {
             note(`The user cancelled ${p.operation}.`);
-            setSecrets({});
+            setSheet(null);
             setPending(null);
           }
         }
@@ -1726,27 +1823,20 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: labelOf(input2), size: "sm", tone: "muted" }),
           /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: display(shown[input2.name], input2, op, formatOptions), size: "sm", bold: true })
         ] }, input2.name)),
-        secure.length ? null : error,
-        secure.length ? null : actions
-      ] }),
-      secure.length ? /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: card, children: [
-        secure.map((input2) => {
-          var _a2;
-          return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-            SecureInput,
-            {
-              input: input2,
-              label: `Enter ${labelOf(input2)}`,
-              value: (_a2 = secrets[input2.name]) != null ? _a2 : "",
-              onChange: (next) => setSecrets((all) => ({ ...all, [input2.name]: next })),
-              disabled: busy2
-            },
-            input2.name
-          );
-        }),
         error,
         actions
-      ] }) : null
+      ] }),
+      (sheet == null ? void 0 : sheet.operation) === p.operation ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+        SecretSheet,
+        {
+          asks: secure.map((input2) => ({ input: input2, label: labelOf(input2) })),
+          error: sheet.error,
+          attempt: sheet.attempt,
+          busy: busy2,
+          onSubmit: (typed) => void run(p.operation, p.values, typed),
+          onCancel: () => setSheet(null)
+        }
+      ) : null
     ] });
   }
   return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(ViewSettingsContext.Provider, { value: settings, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { flex: 1, gap: 12 }, children: [
@@ -1768,16 +1858,19 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
       }),
       pending ? renderPending(pending) : null
     ] }),
-    showComposer ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-      TextField,
-      {
-        value: input,
-        onChangeText: setInput,
-        placeholder,
-        onSubmit: () => void ask(input),
-        disabled: busy,
-        right: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Button, { label: "Send", size: "sm", disabled: busy || !input.trim(), onPress: () => void ask(input) })
-      }
+    showComposer ? (
+      // Multi-line: return adds a new line, so only Send sends.
+      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+        TextField,
+        {
+          multiline: true,
+          value: input,
+          onChangeText: setInput,
+          placeholder,
+          disabled: busy,
+          right: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Button, { label: "Send", size: "sm", disabled: busy || !input.trim(), onPress: () => void ask(input) })
+        }
+      )
     ) : null
   ] }) });
 });
