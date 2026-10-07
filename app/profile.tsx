@@ -1,6 +1,6 @@
 import { Can } from '@/components/Can';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
@@ -432,80 +432,77 @@ function Profile() {
         contentContainerStyle={styles.containerContent}
       >
       <StatusBar style="auto" />
-      <View style={styles.node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30}>
+      <View testID="9f221306-48ce-4f2f-9ca3-fdf9769dfd30" style={styles.node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30}>
       <View style={styles.node_9f221306_48ce_4f2f_9ca3_fdf9769dfd30Content}>
-              <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }} onPress={() => { try { (() => { console.warn('[navigateTo] Target page not found for pageId:', undefined); })(); } catch(e) { console.error('[Action Error]', e); } }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#000000" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m12 19-7-7 7-7"></Path><Path d="M19 12H5"></Path></G></Svg></View>
-              <Text style={styles.node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7} onPress={() => { try { app.navigate("Home"); } catch(e) { console.error('[Action Error]', e); } }}>Profile</Text>
+              <View testID="eb8748fd-c642-4d0f-9ab4-d4b24df67d09" accessible={true} accessibilityRole="image" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }} onPress={() => { try { (() => { console.warn('[navigateTo] Target page not found for pageId:', undefined); })(); } catch(e) { console.error('[Action Error]', e); } }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#000000" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m12 19-7-7 7-7"></Path><Path d="M19 12H5"></Path></G></Svg></View>
+              <Text testID="1ac7516d-0325-4f3e-b7c0-69de8f4eb6f7" accessible={true} accessibilityRole="header" accessibilityLabel="Profile" style={styles.node_1ac7516d_0325_4f3e_b7c0_69de8f4eb6f7} onPress={() => { try { app.navigate("Home"); } catch(e) { console.error('[Action Error]', e); } }}>Profile</Text>
       </View>
       </View>
-      <TouchableOpacity style={[styles.node_23229f5b_b0f3_43dd_af2b_65fec6050d45, { backgroundColor: '#0077E6', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }]} activeOpacity={0.7}>
-        <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#fff', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>Button</Text>
-      </TouchableOpacity>
-      <View style={styles.node_b8b1a1da_5bd9_4dd6_8d4d_0ed949964326}>
-              <View style={styles.node_3a763209_226c_4f3e_ad60_53b3fde780ec}>
-                        <View style={styles.node_f5369c3d_86e9_4857_b9fc_450f66301419}>
-                                    <View style={styles.node_db2f8d08_e0cf_47c7_a72e_b0d24e7db415}>
-                                                  <Text style={styles.node_cc417b16_dbd7_45e7_a779_267af4e53e57}>AC</Text>
+      <View testID="b8b1a1da-5bd9-4dd6-8d4d-0ed949964326" style={styles.node_b8b1a1da_5bd9_4dd6_8d4d_0ed949964326}>
+              <View testID="3a763209-226c-4f3e-ad60-53b3fde780ec" style={styles.node_3a763209_226c_4f3e_ad60_53b3fde780ec}>
+                        <View testID="f5369c3d-86e9-4857-b9fc-450f66301419" style={styles.node_f5369c3d_86e9_4857_b9fc_450f66301419}>
+                                    <View testID="db2f8d08-e0cf-47c7-a72e-b0d24e7db415" style={styles.node_db2f8d08_e0cf_47c7_a72e_b0d24e7db415}>
+                                                  <Text testID="cc417b16-dbd7-45e7-a779-267af4e53e57" style={styles.node_cc417b16_dbd7_45e7_a779_267af4e53e57}>AC</Text>
                                     </View>
-                                    <View style={styles.node_35e4ecd4_69c5_48f8_9ae3_0f043b588f1f}>
-                                                  <Text style={styles.node_afa33fca_0fb6_4247_bf27_5ccc4345ae40}>{(() => { const __v = (listaccountsthedemohasonemainaccountData?.[0]?.owner_name || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                                  <Text style={styles.node_b8d7c215_6b50_409b_a46a_fa705762624a}>{(() => { const __v = (listaccountsthedemohasonemainaccountData?.[0]?.ifsc || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
+                                    <View testID="35e4ecd4-69c5-48f8-9ae3-0f043b588f1f" style={styles.node_35e4ecd4_69c5_48f8_9ae3_0f043b588f1f}>
+                                                  <Text testID="afa33fca-0fb6-4247-bf27-5ccc4345ae40" style={styles.node_afa33fca_0fb6_4247_bf27_5ccc4345ae40}>{(() => { const __v = (listaccountsthedemohasonemainaccountData?.[0]?.owner_name || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
+                                                  <Text testID="b8d7c215-6b50-409b-a46a-fa705762624a" style={styles.node_b8d7c215_6b50_409b_a46a_fa705762624a}>{(() => { const __v = (listaccountsthedemohasonemainaccountData?.[0]?.ifsc || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
                                     </View>
                         </View>
-                        <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                        <View testID="710d7761-9ee6-4e53-b2dd-5487abc11e9a" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
               </View>
-              <View style={styles.node_e969b75a_e4fd_4d66_a277_946791a63ec7}>
-                        <View style={styles.node_02a2a623_a1c4_4337_81d3_5de453c05704}>
-                                    <View style={styles.node_23740ae3_84c0_402b_8d73_e0a6f7150ee9}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></Path><Circle cx="12" cy="7" r="4"></Circle></G></Svg></View>
-                                                  <Text style={styles.node_c8a3a6d5_04e4_4598_be5f_eb76dfd51930}>Personal Details</Text>
+              <View testID="e969b75a-e4fd-4d66-a277-946791a63ec7" style={styles.node_e969b75a_e4fd_4d66_a277_946791a63ec7}>
+                        <View testID="02a2a623-a1c4-4337-81d3-5de453c05704" style={styles.node_02a2a623_a1c4_4337_81d3_5de453c05704}>
+                                    <View testID="23740ae3-84c0-402b-8d73-e0a6f7150ee9" style={styles.node_23740ae3_84c0_402b_8d73_e0a6f7150ee9}>
+                                                  <View testID="5a20323d-9f40-49ec-b7fd-278ca6c70a80" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></Path><Circle cx="12" cy="7" r="4"></Circle></G></Svg></View>
+                                                  <Text testID="c8a3a6d5-04e4-4598-be5f-eb76dfd51930" style={styles.node_c8a3a6d5_04e4_4598_be5f_eb76dfd51930}>Personal Details</Text>
                                     </View>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                    <View testID="b4746faf-de37-42f0-8861-af5235a7724a" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                         </View>
-                        <View style={styles.node_53796f62_1ab2_4a44_9639_3c80be24a79d}>
-                                    <View style={styles.node_a992412c_558e_4906_be22_793702958d52}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></Path><Circle cx="12" cy="12" r="3"></Circle></G></Svg></View>
-                                                  <Text style={styles.node_6901989e_70a4_4ae3_b8ec_1125ac9ea10f}>Account Settings</Text>
+                        <View testID="53796f62-1ab2-4a44-9639-3c80be24a79d" style={styles.node_53796f62_1ab2_4a44_9639_3c80be24a79d}>
+                                    <View testID="a992412c-558e-4906-be22-793702958d52" style={styles.node_a992412c_558e_4906_be22_793702958d52}>
+                                                  <View testID="6d07657c-23ad-449d-aedc-ccff8b7581e8" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></Path><Circle cx="12" cy="12" r="3"></Circle></G></Svg></View>
+                                                  <Text testID="6901989e-70a4-4ae3-b8ec-1125ac9ea10f" style={styles.node_6901989e_70a4_4ae3_b8ec_1125ac9ea10f}>Account Settings</Text>
                                     </View>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                    <View testID="687b5592-1e60-4807-b7d5-00835798614d" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                         </View>
-                        <View style={styles.node_e8f62aef_a4de_4549_9759_2408aa61f3ba}>
-                                    <View style={styles.node_92613fc1_61fb_41b8_be4e_b195896e0b23}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M10.268 21a2 2 0 0 0 3.464 0"></Path><Path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></Path></G></Svg></View>
-                                                  <Text style={styles.node_db9cf163_10b0_4e32_9e89_dadc27debd31}>Notifications</Text>
+                        <View testID="e8f62aef-a4de-4549-9759-2408aa61f3ba" style={styles.node_e8f62aef_a4de_4549_9759_2408aa61f3ba}>
+                                    <View testID="92613fc1-61fb-41b8-be4e-b195896e0b23" style={styles.node_92613fc1_61fb_41b8_be4e_b195896e0b23}>
+                                                  <View testID="dcf22c2e-1707-4d67-a571-08da14f135d9" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M10.268 21a2 2 0 0 0 3.464 0"></Path><Path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></Path></G></Svg></View>
+                                                  <Text testID="db9cf163-10b0-4e32-9e89-dadc27debd31" style={styles.node_db9cf163_10b0_4e32_9e89_dadc27debd31}>Notifications</Text>
                                     </View>
-                                    <View style={styles.node_5cec395a_0dec_4891_a45d_d9b29770dd5a}>
-                                                  <View style={styles.node_7a2c4cf6_7d44_4737_bfc8_b97a7a703f20}>
-                                                                  <Text style={styles.node_947d74ce_f60c_4d11_96d2_7e4375f0768f}>3</Text>
+                                    <View testID="5cec395a-0dec-4891-a45d-d9b29770dd5a" style={styles.node_5cec395a_0dec_4891_a45d_d9b29770dd5a}>
+                                                  <View testID="7a2c4cf6-7d44-4737-bfc8-b97a7a703f20" style={styles.node_7a2c4cf6_7d44_4737_bfc8_b97a7a703f20}>
+                                                                  <Text testID="947d74ce-f60c-4d11-96d2-7e4375f0768f" style={styles.node_947d74ce_f60c_4d11_96d2_7e4375f0768f}>3</Text>
                                                   </View>
-                                                  <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                                  <View testID="c20c6dd1-2caf-48ac-9d0c-9b77b54095cd" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                                     </View>
                         </View>
-                        <View style={styles.node_e02d2edc_d57e_4c5e_9a87_adeed17582b8}>
-                                    <View style={styles.node_ae3f61b2_1812_4f92_bd9b_f25fb8857ba5}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></Path><Path d="m9 12 2 2 4-4"></Path></G></Svg></View>
-                                                  <Text style={styles.node_7196bd30_5096_4e66_9f69_f71dd259fd54}>Security & Privacy</Text>
+                        <View testID="e02d2edc-d57e-4c5e-9a87-adeed17582b8" style={styles.node_e02d2edc_d57e_4c5e_9a87_adeed17582b8}>
+                                    <View testID="ae3f61b2-1812-4f92-bd9b-f25fb8857ba5" style={styles.node_ae3f61b2_1812_4f92_bd9b_f25fb8857ba5}>
+                                                  <View testID="24b775c4-bb8c-4def-b23e-521affec514d" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></Path><Path d="m9 12 2 2 4-4"></Path></G></Svg></View>
+                                                  <Text testID="7196bd30-5096-4e66-9f69-f71dd259fd54" style={styles.node_7196bd30_5096_4e66_9f69_f71dd259fd54}>Security & Privacy</Text>
                                     </View>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                    <View testID="99dd5f1b-f855-433f-ae50-222fcc3830b3" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                         </View>
-                        <View style={styles.node_abc490ef_b2ff_49cc_8f96_d8cce1b13155}>
-                                    <View style={styles.node_dfc1eb48_7e3b_40ac_8833_0405e346ca3c}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="10"></Circle><Path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></Path><Path d="M12 17h.01"></Path></G></Svg></View>
-                                                  <Text style={styles.node_51ea90c6_aa3c_4e3e_981c_5c750f1bacc9}>Help & Support</Text>
+                        <View testID="abc490ef-b2ff-49cc-8f96-d8cce1b13155" style={styles.node_abc490ef_b2ff_49cc_8f96_d8cce1b13155}>
+                                    <View testID="dfc1eb48-7e3b-40ac-8833-0405e346ca3c" style={styles.node_dfc1eb48_7e3b_40ac_8833_0405e346ca3c}>
+                                                  <View testID="2a5cb822-2b42-4d5f-bc66-1586b4de7959" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="10"></Circle><Path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></Path><Path d="M12 17h.01"></Path></G></Svg></View>
+                                                  <Text testID="51ea90c6-aa3c-4e3e-981c-5c750f1bacc9" style={styles.node_51ea90c6_aa3c_4e3e_981c_5c750f1bacc9}>Help & Support</Text>
                                     </View>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                    <View testID="6f59bd36-4570-471f-944b-5051db49a43e" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                         </View>
-                        <View style={styles.node_115ec3b7_5008_40f0_bbf2_50770a5433e3}>
-                                    <View style={styles.node_4919edfc_b8d8_457e_944c_47e64952fba6}>
-                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="10"></Circle><Path d="M12 16v-4"></Path><Path d="M12 8h.01"></Path></G></Svg></View>
-                                                  <Text style={styles.node_9001cd73_003b_46c7_8e6b_753d663fa99f}>About SkyBank</Text>
+                        <View testID="115ec3b7-5008-40f0-bbf2-50770a5433e3" style={styles.node_115ec3b7_5008_40f0_bbf2_50770a5433e3}>
+                                    <View testID="4919edfc-b8d8-457e-944c-47e64952fba6" style={styles.node_4919edfc_b8d8_457e_944c_47e64952fba6}>
+                                                  <View testID="00b883db-a0c6-478e-80c9-4f651f1c2463" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#0D1B4C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="10"></Circle><Path d="M12 16v-4"></Path><Path d="M12 8h.01"></Path></G></Svg></View>
+                                                  <Text testID="9001cd73-003b-46c7-8e6b-753d663fa99f" style={styles.node_9001cd73_003b_46c7_8e6b_753d663fa99f}>About SkyBank</Text>
                                     </View>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+                                    <View testID="667eae46-e601-4f2f-b60d-09f68de2a845" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#9CA3AF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
                         </View>
               </View>
-              <TouchableOpacity style={styles.node_488ff8eb_59ec_46ba_8994_b90d8639675e} activeOpacity={0.7} onPress={() => { try { app.navigate("Login"); } catch(e) { console.error('[Action Error]', e); } }}>
-                        <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#D92D20" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></Path><Polyline points="16 17 21 12 16 7"></Polyline><Line x1="21" x2="9" y1="12" y2="12"></Line></G></Svg></View>
-                        <Text style={styles.node_3e0becf3_58c6_447c_a174_82f536bfbc6c}>Log Out</Text>
+              <TouchableOpacity testID="488ff8eb-59ec-46ba-8994-b90d8639675e" accessible={true} accessibilityRole="button" style={styles.node_488ff8eb_59ec_46ba_8994_b90d8639675e} activeOpacity={0.7} onPress={() => { try { app.navigate("Login"); } catch(e) { console.error('[Action Error]', e); } }}>
+                        <View testID="49c61af1-62a0-4a4a-a3d1-431b284fd61d" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#D92D20" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></Path><Polyline points="16 17 21 12 16 7"></Polyline><Line x1="21" x2="9" y1="12" y2="12"></Line></G></Svg></View>
+                        <Text testID="3e0becf3-58c6-447c-a174-82f536bfbc6c" style={styles.node_3e0becf3_58c6_447c_a174_82f536bfbc6c}>Log Out</Text>
               </TouchableOpacity>
       </View>
       </ScrollView>

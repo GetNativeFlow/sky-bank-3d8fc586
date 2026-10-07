@@ -434,113 +434,113 @@ function Payments() {
         contentContainerStyle={styles.containerContent}
       >
       <StatusBar style="auto" />
-      <View style={styles.node_b4e83f84_e9b9_48d8_81f5_c7133f8b54ab}>
-              <Text style={styles.node_40a8910a_03ee_451b_b1f3_750eb87bd46e}>Payments</Text>
-              <View style={styles.node_05b48d9c_ae20_4caa_b0e0_0c792a06cb7b}>
-                        <View style={styles.node_42cecc13_4be1_477c_ad03_bc6fae65cfde}>
-                                    <View style={styles.node_5ed68932_309f_4ca9_ac45_cea741abfaaf}>
-                                                  <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="4"></Circle><Path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></Path></G></Svg></View>
+      <View testID="b4e83f84-e9b9-48d8-81f5-c7133f8b54ab" style={styles.node_b4e83f84_e9b9_48d8_81f5_c7133f8b54ab}>
+              <Text testID="40a8910a-03ee-451b-b1f3-750eb87bd46e" style={styles.node_40a8910a_03ee_451b_b1f3_750eb87bd46e}>Payments</Text>
+              <View testID="05b48d9c-ae20-4caa-b0e0-0c792a06cb7b" style={styles.node_05b48d9c_ae20_4caa_b0e0_0c792a06cb7b}>
+                        <View testID="42cecc13-4be1-477c-ad03-bc6fae65cfde" style={styles.node_42cecc13_4be1_477c_ad03_bc6fae65cfde}>
+                                    <View testID="5ed68932-309f-4ca9-ac45-cea741abfaaf" style={styles.node_5ed68932_309f_4ca9_ac45_cea741abfaaf}>
+                                                  <View testID="8cd952c1-4578-405f-b006-e7505103de33" accessible={true} accessibilityRole="image" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="4"></Circle><Path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></Path></G></Svg></View>
                                     </View>
-                                    <Text style={styles.node_a2fc6d2a_8cf9_455c_a70b_1c9f15706049}>UPI</Text>
+                                    <Text testID="a2fc6d2a-8cf9-455c-a70b-1c9f15706049" style={styles.node_a2fc6d2a_8cf9_455c_a70b_1c9f15706049}>UPI</Text>
                         </View>
-                        <View style={styles.node_5f95ffb0_c56a_4752_9571_77b5195eb296}>
-                                    <View style={styles.node_db5b1f7b_b599_42b1_bb59_6f76e85b803d}>
-                                                  <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M3 7V5a2 2 0 0 1 2-2h2"></Path><Path d="M17 3h2a2 2 0 0 1 2 2v2"></Path><Path d="M21 17v2a2 2 0 0 1-2 2h-2"></Path><Path d="M7 21H5a2 2 0 0 1-2-2v-2"></Path></G></Svg></View>
+                        <View testID="5f95ffb0-c56a-4752-9571-77b5195eb296" style={styles.node_5f95ffb0_c56a_4752_9571_77b5195eb296}>
+                                    <View testID="db5b1f7b-b599-42b1-bb59-6f76e85b803d" style={styles.node_db5b1f7b_b599_42b1_bb59_6f76e85b803d}>
+                                                  <View testID="5110f842-8689-4f3c-8d52-dcd37aba3485" accessible={true} accessibilityRole="image" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M3 7V5a2 2 0 0 1 2-2h2"></Path><Path d="M17 3h2a2 2 0 0 1 2 2v2"></Path><Path d="M21 17v2a2 2 0 0 1-2 2h-2"></Path><Path d="M7 21H5a2 2 0 0 1-2-2v-2"></Path></G></Svg></View>
                                     </View>
-                                    <Text style={styles.node_eb0abe27_bb91_4e92_8162_ae6369119666}>Scan & Pay</Text>
+                                    <Text testID="eb0abe27-bb91-4e92-8162-ae6369119666" style={styles.node_eb0abe27_bb91_4e92_8162_ae6369119666}>Scan & Pay</Text>
                         </View>
-                        <View style={styles.node_54f79af6_fbb4_4b50_8a56_4cb521196cd9}>
-                                    <View style={styles.node_d744334b_f15c_4304_820f_53768ef8db47}>
-                                                  <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></Path><Path d="m21.854 2.147-10.94 10.939"></Path></G></Svg></View>
+                        <View testID="54f79af6-fbb4-4b50-8a56-4cb521196cd9" style={styles.node_54f79af6_fbb4_4b50_8a56_4cb521196cd9}>
+                                    <View testID="d744334b-f15c-4304-820f-53768ef8db47" style={styles.node_d744334b_f15c_4304_820f_53768ef8db47}>
+                                                  <View testID="d5d72d9e-dc0a-43d8-b5dd-d3ce9000fe8d" accessible={true} accessibilityRole="image" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></Path><Path d="m21.854 2.147-10.94 10.939"></Path></G></Svg></View>
                                     </View>
-                                    <Text style={styles.node_e6f92fb0_b077_4e9d_adee_006a5d1d581b}>Send</Text>
+                                    <Text testID="e6f92fb0-b077-4e9d-adee-006a5d1d581b" style={styles.node_e6f92fb0_b077_4e9d_adee_006a5d1d581b}>Send</Text>
                         </View>
-                        <View style={styles.node_4ed42e1f_cb69_424e_b396_03f0f38fa756}>
-                                    <View style={styles.node_f233f8eb_da96_4b0d_8a62_043d01a61c5f}>
-                                                  <View style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Polyline points="14 15 9 20 4 15"></Polyline><Path d="M20 4h-7a4 4 0 0 0-4 4v12"></Path></G></Svg></View>
+                        <View testID="4ed42e1f-cb69-424e-b396-03f0f38fa756" style={styles.node_4ed42e1f_cb69_424e_b396_03f0f38fa756}>
+                                    <View testID="f233f8eb-da96-4b0d-8a62-043d01a61c5f" style={styles.node_f233f8eb_da96_4b0d_8a62_043d01a61c5f}>
+                                                  <View testID="3e6aed4f-d052-4bf5-842d-629f2ec5df30" accessible={true} accessibilityRole="image" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Polyline points="14 15 9 20 4 15"></Polyline><Path d="M20 4h-7a4 4 0 0 0-4 4v12"></Path></G></Svg></View>
                                     </View>
-                                    <Text style={styles.node_e2dd8236_039b_4598_a490_2e507532a3d1}>Request</Text>
-                        </View>
-              </View>
-              <View style={styles.node_d0e272c1_d590_43d3_976c_8d99aa4eaca2}>
-                        <View style={styles.node_3dd91219_a10d_44b5_b18a_ee1d6216df61}>
-                                    <Text style={styles.node_958453d1_6760_4a1e_b489_bc7fb8bbd849}>UPI</Text>
-                                    <Text style={styles.node_72923042_c795_491f_ad69_f9052418870a}>View all</Text>
-                        </View>
-                        <View style={styles.node_5ac9d05e_18ed_4a1a_8167_1d1f8ca02c2d}>
-                                    <View style={styles.node_172ffb1f_f0cd_491c_9c1a_9c2e5d1f336f}>
-                                                  <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#FFFFFF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="4"></Circle><Path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></Path></G></Svg></View>
-                                    </View>
-                                    <View style={styles.node_bc19dfc9_0926_41d0_aced_d167320da912}>
-                                                  <Text style={styles.node_834929a7_22fe_414e_aead_a4a5d534eec3}>alice@upi</Text>
-                                                  <Text style={styles.node_056b0130_6147_4816_b521_0f7047199b41}>{(() => { const __v = ((__applyTransforms(listaccountsthedemohasonemainaccountData?.[0]?.balance, [{"type":"format-currency","locale":"en-US","currency":"INR","signDisplay":"auto"}])) || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                    </View>
+                                    <Text testID="e2dd8236-039b-4598-a490-2e507532a3d1" style={styles.node_e2dd8236_039b_4598_a490_2e507532a3d1}>Request</Text>
                         </View>
               </View>
-              <View style={styles.node_d30c075a_cd61_4e79_87cb_54fa3cc5fa3d}>
-                        <Text style={styles.node_8a7eda24_3c99_4b78_87c5_353c43822fcf}>Bill Payments</Text>
-                        <View style={styles.node_dbed5305_c674_4e4d_848d_4c5644e1f104}>
-                                    <View style={styles.node_e8fa959a_4398_4fa6_8b2f_1a205f6cd221}>
-                                                  <View style={styles.node_aa25f87d_d637_441c_a6bb_41195cf5a543}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></Path></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_404ffd57_1949_4425_a0ff_e7d1b9277fea}>Electricity</Text>
-                                    </View>
-                                    <View style={styles.node_f21d6a22_1d4e_45fe_b447_e1c1c535f73e}>
-                                                  <View style={styles.node_72f8f403_3187_43a3_afe2_22b7ecb04fca}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></Path></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_98c503c1_c7f4_4fe1_a061_515ca60bc9b2}>Water</Text>
-                                    </View>
-                                    <View style={styles.node_44448f44_2105_4087_89a0_22d6ca9d7795}>
-                                                  <View style={styles.node_70ab1a5d_b9f0_4720_b76e_bbd125f9aa00}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="14" height="20" x="5" y="2" rx="2" ry="2"></Rect><Path d="M12 18h.01"></Path></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_b0cdadaf_19ef_4101_900a_2842b57d6ec8}>Mobile</Text>
-                                    </View>
-                                    <View style={styles.node_6a16ed29_6488_4b33_9ca9_6a8415452570}>
-                                                  <View style={styles.node_2082f3da_e156_4715_bb63_4ebbf948c918}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="20" height="15" x="2" y="7" rx="2" ry="2"></Rect><Polyline points="17 2 12 7 7 2"></Polyline></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_5cafce6d_7964_4050_940e_5f9558b825b1}>DTH</Text>
-                                    </View>
+              <View testID="d0e272c1-d590-43d3-976c-8d99aa4eaca2" style={styles.node_d0e272c1_d590_43d3_976c_8d99aa4eaca2}>
+                        <View testID="3dd91219-a10d-44b5-b18a-ee1d6216df61" style={styles.node_3dd91219_a10d_44b5_b18a_ee1d6216df61}>
+                                    <Text testID="958453d1-6760-4a1e-b489-bc7fb8bbd849" style={styles.node_958453d1_6760_4a1e_b489_bc7fb8bbd849}>UPI</Text>
+                                    <Text testID="72923042-c795-491f-ad69-f9052418870a" style={styles.node_72923042_c795_491f_ad69_f9052418870a}>View all</Text>
                         </View>
-                        <View style={styles.node_2b491640_25c5_44a2_b866_f77d3f27a4c9}>
-                                    <View style={styles.node_f6fef555_fcdc_4a8b_93a6_2a2a36e39661}>
-                                                  <View style={styles.node_03fa7890_4476_4b88_bcee_b55d68af18ee}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 20h.01"></Path><Path d="M2 8.82a15 15 0 0 1 20 0"></Path><Path d="M5 12.859a10 10 0 0 1 14 0"></Path><Path d="M8.5 16.429a5 5 0 0 1 7 0"></Path></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_7d5e511c_bf13_401a_8c14_717131466c2f}>Broadband</Text>
+                        <View testID="5ac9d05e-18ed-4a1a-8167-1d1f8ca02c2d" style={styles.node_5ac9d05e_18ed_4a1a_8167_1d1f8ca02c2d}>
+                                    <View testID="172ffb1f-f0cd-491c-9c1a-9c2e5d1f336f" style={styles.node_172ffb1f_f0cd_491c_9c1a_9c2e5d1f336f}>
+                                                  <View testID="e244f6bc-cee1-46f5-a0d1-714b4fe7c2c0" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#FFFFFF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="4"></Circle><Path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></Path></G></Svg></View>
                                     </View>
-                                    <View style={styles.node_d78e342f_5bf4_421f_a9f6_aa0e606ed615}>
-                                                  <View style={styles.node_4ebc3949_9229_47b0_9d96_46b07c55b055}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></Path></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_37c9f520_b40b_4c31_83c7_ec62c3ec4147}>Gas</Text>
-                                    </View>
-                                    <View style={styles.node_7ceefec9_b6d0_4e47_8008_6d5fedfcfd5a}>
-                                                  <View style={styles.node_46c2d57b_6c22_4ce7_b221_464de0b740e6}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="20" height="14" x="2" y="5" rx="2"></Rect><Line x1="2" x2="22" y1="10" y2="10"></Line></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_e0c2aeb0_8506_42c4_8eae_0aaedd50598a}>Credit Card</Text>
-                                    </View>
-                                    <View style={styles.node_2645401c_62c8_4d1c_a9cf_cb25453393c6}>
-                                                  <View style={styles.node_b5e060d6_6570_4c20_8f64_931459760e73}>
-                                                                  <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="1"></Circle><Circle cx="19" cy="12" r="1"></Circle><Circle cx="5" cy="12" r="1"></Circle></G></Svg></View>
-                                                  </View>
-                                                  <Text style={styles.node_5541029f_e02f_413e_9f16_13c3e1299754}>More</Text>
+                                    <View testID="bc19dfc9-0926-41d0-aced-d167320da912" style={styles.node_bc19dfc9_0926_41d0_aced_d167320da912}>
+                                                  <Text testID="834929a7-22fe-414e-aead-a4a5d534eec3" style={styles.node_834929a7_22fe_414e_aead_a4a5d534eec3}>alice@upi</Text>
+                                                  <Text testID="056b0130-6147-4816-b521-0f7047199b41" style={styles.node_056b0130_6147_4816_b521_0f7047199b41}>{(() => { const __v = ((__applyTransforms(listaccountsthedemohasonemainaccountData?.[0]?.balance, [{"type":"format-currency","locale":"en-US","currency":"INR","signDisplay":"auto"}])) || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
                                     </View>
                         </View>
               </View>
-              <View style={styles.node_5334f6ae_2d49_4c79_aa28_0d6b996925f8}>
-                        <View style={styles.node_518d5a98_2f99_4e23_a85b_0747ce456a7d}>
-                                    <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m17 2 4 4-4 4"></Path><Path d="M3 11v-1a4 4 0 0 1 4-4h14"></Path><Path d="m7 22-4-4 4-4"></Path><Path d="M21 13v1a4 4 0 0 1-4 4H3"></Path></G></Svg></View>
+              <View testID="d30c075a-cd61-4e79-87cb-54fa3cc5fa3d" style={styles.node_d30c075a_cd61_4e79_87cb_54fa3cc5fa3d}>
+                        <Text testID="8a7eda24-3c99-4b78-87c5-353c43822fcf" style={styles.node_8a7eda24_3c99_4b78_87c5_353c43822fcf}>Bill Payments</Text>
+                        <View testID="dbed5305-c674-4e4d-848d-4c5644e1f104" style={styles.node_dbed5305_c674_4e4d_848d_4c5644e1f104}>
+                                    <View testID="e8fa959a-4398-4fa6-8b2f-1a205f6cd221" style={styles.node_e8fa959a_4398_4fa6_8b2f_1a205f6cd221}>
+                                                  <View testID="aa25f87d-d637-441c-a6bb-41195cf5a543" style={styles.node_aa25f87d_d637_441c_a6bb_41195cf5a543}>
+                                                                  <View testID="6740a869-62dd-4c39-8604-2d8e6a39b3de" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></Path></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="404ffd57-1949-4425-a0ff-e7d1b9277fea" style={styles.node_404ffd57_1949_4425_a0ff_e7d1b9277fea}>Electricity</Text>
+                                    </View>
+                                    <View testID="f21d6a22-1d4e-45fe-b447-e1c1c535f73e" style={styles.node_f21d6a22_1d4e_45fe_b447_e1c1c535f73e}>
+                                                  <View testID="72f8f403-3187-43a3-afe2-22b7ecb04fca" style={styles.node_72f8f403_3187_43a3_afe2_22b7ecb04fca}>
+                                                                  <View testID="fb8e5c55-4fe8-48e3-bc44-6e49085cf4e7" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></Path></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="98c503c1-c7f4-4fe1-a061-515ca60bc9b2" style={styles.node_98c503c1_c7f4_4fe1_a061_515ca60bc9b2}>Water</Text>
+                                    </View>
+                                    <View testID="44448f44-2105-4087-89a0-22d6ca9d7795" style={styles.node_44448f44_2105_4087_89a0_22d6ca9d7795}>
+                                                  <View testID="70ab1a5d-b9f0-4720-b76e-bbd125f9aa00" style={styles.node_70ab1a5d_b9f0_4720_b76e_bbd125f9aa00}>
+                                                                  <View testID="b51b920d-ce7c-4616-9d7d-bdeb04d6387f" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="14" height="20" x="5" y="2" rx="2" ry="2"></Rect><Path d="M12 18h.01"></Path></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="b0cdadaf-19ef-4101-900a-2842b57d6ec8" style={styles.node_b0cdadaf_19ef_4101_900a_2842b57d6ec8}>Mobile</Text>
+                                    </View>
+                                    <View testID="6a16ed29-6488-4b33-9ca9-6a8415452570" style={styles.node_6a16ed29_6488_4b33_9ca9_6a8415452570}>
+                                                  <View testID="2082f3da-e156-4715-bb63-4ebbf948c918" style={styles.node_2082f3da_e156_4715_bb63_4ebbf948c918}>
+                                                                  <View testID="fb180ac7-7741-4818-9e92-6379b299a4b4" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="20" height="15" x="2" y="7" rx="2" ry="2"></Rect><Polyline points="17 2 12 7 7 2"></Polyline></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="5cafce6d-7964-4050-940e-5f9558b825b1" style={styles.node_5cafce6d_7964_4050_940e_5f9558b825b1}>DTH</Text>
+                                    </View>
                         </View>
-                        <View style={styles.node_c3ec7a99_4ca9_4a7d_9703_760f2f8a80cb}>
-                                    <Text style={styles.node_aead18c6_64a5_41a1_81c3_b243cbb31307}>Save time with UPI AutoPay</Text>
-                                    <Text style={styles.node_e34d8f2f_894b_4763_b6e6_66daaed711cb}>Set up recurring payments for bills & more.</Text>
+                        <View testID="2b491640-25c5-44a2-b866-f77d3f27a4c9" style={styles.node_2b491640_25c5_44a2_b866_f77d3f27a4c9}>
+                                    <View testID="f6fef555-fcdc-4a8b-93a6-2a2a36e39661" style={styles.node_f6fef555_fcdc_4a8b_93a6_2a2a36e39661}>
+                                                  <View testID="03fa7890-4476-4b88-bcee-b55d68af18ee" style={styles.node_03fa7890_4476_4b88_bcee_b55d68af18ee}>
+                                                                  <View testID="21416d9c-bb21-45f0-bc74-a73c1d12b10a" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 20h.01"></Path><Path d="M2 8.82a15 15 0 0 1 20 0"></Path><Path d="M5 12.859a10 10 0 0 1 14 0"></Path><Path d="M8.5 16.429a5 5 0 0 1 7 0"></Path></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="7d5e511c-bf13-401a-8c14-717131466c2f" style={styles.node_7d5e511c_bf13_401a_8c14_717131466c2f}>Broadband</Text>
+                                    </View>
+                                    <View testID="d78e342f-5bf4-421f-a9f6-aa0e606ed615" style={styles.node_d78e342f_5bf4_421f_a9f6_aa0e606ed615}>
+                                                  <View testID="4ebc3949-9229-47b0-9d96-46b07c55b055" style={styles.node_4ebc3949_9229_47b0_9d96_46b07c55b055}>
+                                                                  <View testID="bd8423de-8531-4906-a91a-10e7ecfb9852" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></Path></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="37c9f520-b40b-4c31-83c7-ec62c3ec4147" style={styles.node_37c9f520_b40b_4c31_83c7_ec62c3ec4147}>Gas</Text>
+                                    </View>
+                                    <View testID="7ceefec9-b6d0-4e47-8008-6d5fedfcfd5a" style={styles.node_7ceefec9_b6d0_4e47_8008_6d5fedfcfd5a}>
+                                                  <View testID="46c2d57b-6c22-4ce7-b221-464de0b740e6" style={styles.node_46c2d57b_6c22_4ce7_b221_464de0b740e6}>
+                                                                  <View testID="85024a46-a0aa-4368-a3c2-aa71cfc1c9f0" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Rect width="20" height="14" x="2" y="5" rx="2"></Rect><Line x1="2" x2="22" y1="10" y2="10"></Line></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="e0c2aeb0-8506-42c4-8eae-0aaedd50598a" style={styles.node_e0c2aeb0_8506_42c4_8eae_0aaedd50598a}>Credit Card</Text>
+                                    </View>
+                                    <View testID="2645401c-62c8-4d1c-a9cf-cb25453393c6" style={styles.node_2645401c_62c8_4d1c_a9cf_cb25453393c6}>
+                                                  <View testID="b5e060d6-6570-4c20-8f64-931459760e73" style={styles.node_b5e060d6_6570_4c20_8f64_931459760e73}>
+                                                                  <View testID="40b9c118-0c50-47e5-9360-22906ec1bb50" accessible={true} accessibilityRole="image" style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Circle cx="12" cy="12" r="1"></Circle><Circle cx="19" cy="12" r="1"></Circle><Circle cx="5" cy="12" r="1"></Circle></G></Svg></View>
+                                                  </View>
+                                                  <Text testID="5541029f-e02f-413e-9f16-13c3e1299754" style={styles.node_5541029f_e02f_413e_9f16_13c3e1299754}>More</Text>
+                                    </View>
                         </View>
-                        <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#6B7280" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
+              </View>
+              <View testID="5334f6ae-2d49-4c79-aa28-0d6b996925f8" style={styles.node_5334f6ae_2d49_4c79_aa28_0d6b996925f8}>
+                        <View testID="518d5a98-2f99-4e23-a85b-0747ce456a7d" style={styles.node_518d5a98_2f99_4e23_a85b_0747ce456a7d}>
+                                    <View testID="e47556fe-fc83-4980-9fad-a39ae58ce9ff" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m17 2 4 4-4 4"></Path><Path d="M3 11v-1a4 4 0 0 1 4-4h14"></Path><Path d="m7 22-4-4 4-4"></Path><Path d="M21 13v1a4 4 0 0 1-4 4H3"></Path></G></Svg></View>
+                        </View>
+                        <View testID="c3ec7a99-4ca9-4a7d-9703-760f2f8a80cb" style={styles.node_c3ec7a99_4ca9_4a7d_9703_760f2f8a80cb}>
+                                    <Text testID="aead18c6-64a5-41a1-81c3-b243cbb31307" style={styles.node_aead18c6_64a5_41a1_81c3_b243cbb31307}>Save time with UPI AutoPay</Text>
+                                    <Text testID="e34d8f2f-894b-4763-b6e6-66daaed711cb" style={styles.node_e34d8f2f_894b_4763_b6e6_66daaed711cb}>Set up recurring payments for bills & more.</Text>
+                        </View>
+                        <View testID="209371b6-5aa4-4453-aa57-bb8c387e3c4f" accessible={true} accessibilityRole="image" style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={20} height={20} fill="none"><G stroke="#6B7280" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
               </View>
       </View>
       </ScrollView>
