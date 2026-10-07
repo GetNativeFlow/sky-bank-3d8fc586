@@ -5,7 +5,7 @@ import { DynamicUIView, UIThemeProvider, type UITheme } from '@nativeflow/dynami
 import { apiFetch } from './auth/apiClient';
 import { useAuthStore } from './auth/store';
 import { appRuntime } from './app';
-import { getBorderRadius, getSpacing, getThemeColors } from '../config/theme';
+import { getBorderRadius, getSpacing, getThemeColors, getTypography } from '../config/theme';
 
 const PAGE_NAMES: Record<string, string> = {"f8caca43-5622-4119-9267-9c39737d4b73":"Login","0c287a5d-f853-4a53-bf43-689ad97ecc57":"Home","54c9bf2f-c22c-4014-80ce-d30365b1ade8":"Accounts","934c139f-33ab-4eb2-b6f8-31d45f7f8d40":"Investments","d7c5d5b7-3ef2-416e-8e16-1165b6e1588a":"Loans","9a327574-76df-49d2-8288-b3061e36aae1":"Payments","c15eaee9-d14b-4938-9a30-974bd7daadb5":"Transactions","f4cd0440-7bf9-4b16-9948-57f8eecfa30e":"AI Mintly","7bff0c20-97fe-4ee2-8ee1-5cec220beb53":"Welcome","470825cd-e400-4376-9a92-cbbd97c4dd15":"Profile","cbfa8566-9918-44aa-9794-33d608452474":"Sign Up","ef8f3d77-b861-4fd1-9e15-54a1edc4f198":"Forgot Password","6941836e-57ad-48d6-beab-293dde1888c1":"Check Email"};
 const CONFIGS: Record<string, any> = {
@@ -586,7 +586,7 @@ function looks() {
   };
 }
 
-const DEFAULT_LOOKS: Record<string, string> = {};
+const DEFAULT_LOOKS: Record<string, string> = {"Heading":"Title","Card":"Card","Form":"Form","Box":"Question bubble","Text":"Body","Button":"Primary","Button:secondary":"Secondary"};
 
 /** The app's theme colors, by Dynamic UI's names. Read on every render, so theme changes apply; unset ones keep its defaults. */
 function uiTheme(): Partial<UITheme> {

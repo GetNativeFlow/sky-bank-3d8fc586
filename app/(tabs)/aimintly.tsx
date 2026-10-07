@@ -168,7 +168,7 @@ function AIMintly() {
               {(!(_uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.hidden)) && (
               <View style={[styles.node_d872f965_2885_414e_a83e_8f899d906701, _uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.style]}>
                         {(!(_uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.hidden)) && (
-                        <TextInput style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 18, backgroundColor: '#FFFFFF', maxHeight: 133, textAlignVertical: 'top', fieldSizing: 'content' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Type your question..." multiline value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
+                        <TextInput style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 0, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 16, backgroundColor: 'transparent', maxHeight: 120, textAlignVertical: 'top', fieldSizing: 'content' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Ask anything" multiline value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
                             try {
                               nfDynamicUi.ask("c58f0af1-09d2-4b97-8329-6a67b9fd0bfb", question);
                               ui.hide('fed856f6-d758-4f41-a0c8-c7ac50b2f8c3');
@@ -537,49 +537,58 @@ function createStyles() {
     flexShrink: 0,
   },
   node_d872f965_2885_414e_a83e_8f899d906701: {
-    gap: 10,
-    alignItems: 'stretch',
-    paddingTop: 12,
-    paddingLeft: 20,
-    paddingRight: 20,
+    gap: 8,
+    _rnShadow: {"shadowColor":"#000000","shadowOffset":{"width":0,"height":4},"shadowRadius":12,"shadowOpacity":0.12},
+    boxShadow: '0px 4px 12px rgba(0,0,0,0.12)',
+    alignItems: 'center',
+    marginLeft: 4,
+    paddingTop: 6,
+    marginRight: 4,
+    paddingLeft: 6,
+    borderRadius: 999,
+    marginBottom: 8,
+    paddingRight: 6,
+    paddingBottom: 6,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'flex-start',
     flexWrap: 'nowrap',
     flexDirection: 'row',
     width: '100%',
   },
   node_400551d6_073b_49ef_9023_97e45ce65507: {
+    color: '#111827',
     fontSize: 15,
-    minHeight: 52,
+    minHeight: 36,
     borderColor: '#D1D5DB',
-    borderWidth: 1,
-    paddingLeft: 20,
+    borderWidth: 0,
+    paddingLeft: 10,
     borderRadius: 26,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
     minWidth: 0,
   },
   node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70: {
-    width: 52,
-    height: 52,
+    width: 36,
+    height: 44,
     alignItems: 'center',
     borderColor: '#C7D2FE',
     borderWidth: 1,
     borderRadius: 26,
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
   },
   node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65: {
     color: '#2541B2',
   },
   node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6: {
-    width: 52,
-    height: 52,
+    width: 44,
+    height: 44,
     alignItems: 'center',
-    borderRadius: 26,
+    borderRadius: 22,
     justifyContent: 'center',
-    backgroundColor: '#2F4DE0',
+    backgroundColor: colors.primary,
   },
   node_fcef7438_a598_46a0_a976_aac5ea9ce19a: {
     color: '#FFFFFF',

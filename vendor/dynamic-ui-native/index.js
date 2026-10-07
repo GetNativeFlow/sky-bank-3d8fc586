@@ -257,6 +257,13 @@ function sensitiveKind(input) {
 function isSensitive(input) {
   return sensitiveKind(input) !== void 0;
 }
+var IDENTITY_NAMES = /* @__PURE__ */ new Set(["userid", "ownerid", "createdby", "updatedby", "modifiedby", "authorid"]);
+function isIdentity(input) {
+  return IDENTITY_NAMES.has(input.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, ""));
+}
+function isCodeOwned(input) {
+  return input.in === "header" || isIdentity(input);
+}
 
 // packages/dynamic-ui-catalog/src/prompt.ts
 var VALUES = [
@@ -310,6 +317,7 @@ function propsSchema(name) {
       shape.operation = import_zod.z.string().optional();
       shape.fields = import_zod.z.array(formField);
       shape.values = import_zod.z.record(import_zod.z.string(), import_zod.z.unknown()).optional();
+      shape.present = import_zod.z.record(import_zod.z.string(), import_zod.z.unknown()).optional();
       break;
   }
   shape.formats = import_zod.z.record(import_zod.z.string(), import_zod.z.enum(FORMATS)).optional();
@@ -342,7 +350,11 @@ var catalogDefinition = {
       description: "Ask a follow-up question. A template has {name:type} slots filled from values. With pick, the device keeps the tapped row for later answers."
     },
     runOperation: {
-      params: import_zod.z.object({ operation: import_zod.z.string(), values: import_zod.z.record(import_zod.z.string(), import_zod.z.unknown()).optional() }),
+      params: import_zod.z.object({
+        operation: import_zod.z.string(),
+        values: import_zod.z.record(import_zod.z.string(), import_zod.z.unknown()).optional(),
+        present: import_zod.z.record(import_zod.z.string(), import_zod.z.unknown()).optional()
+      }),
       description: "Start an operation. The app confirms with the user, then the server runs it."
     },
     openPage: {
@@ -418,9 +430,12 @@ function resolveTone(theme, tone) {
 // packages/dynamic-ui-native/src/components/action.tsx
 var import_jsx_runtime2 = require("react/jsx-runtime");
 function Button({ label, variant = "solid", size = "md", disabled, look, onPress }) {
-  var _a;
+  var _a, _b, _c;
   const theme = useTheme();
   const solid = variant === "solid";
+  const border = look == null ? void 0 : look.view.borderColor;
+  const outline = (_a = border != null ? border : look == null ? void 0 : look.view.backgroundColor) != null ? _a : theme.primary;
+  const outlineText = border ? (_b = look == null ? void 0 : look.color) != null ? _b : border : outline;
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
     import_react_native.Pressable,
     {
@@ -436,15 +451,18 @@ function Button({ label, variant = "solid", size = "md", disabled, look, onPress
         backgroundColor: solid ? theme.primary : "transparent",
         opacity: disabled ? 0.5 : pressed ? 0.8 : 1,
         alignSelf: "flex-start",
-        ...look == null ? void 0 : look.view
+        ...look == null ? void 0 : look.view,
+        // Outline keeps the themed shape, drawn in the themed border (or fill) color: Edit and Cancel still read as secondary.
+        ...solid ? null : { backgroundColor: "transparent", borderColor: outline }
       }),
       children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
         import_react_native.Text,
         {
           style: {
-            color: (_a = look == null ? void 0 : look.color) != null ? _a : solid ? theme.onPrimary : theme.primary,
             fontSize: size === "sm" ? 14 : 16,
-            fontWeight: "600"
+            fontWeight: "600",
+            ...look == null ? void 0 : look.text,
+            color: solid ? (_c = look == null ? void 0 : look.color) != null ? _c : theme.onPrimary : outlineText
           },
           children: label != null ? label : ""
         }
@@ -547,15 +565,17 @@ function contrast(a, b) {
 }
 var MIN_CONTRAST = 3;
 function textStyle(kind, p, theme, ink) {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
   const plain = !p.tone || p.tone === "default";
   let themed = (_b = p.color) != null ? _b : (_a = p.look) == null ? void 0 : _a.color;
-  if (themed && ink.color && ink.background && ((_c = contrast(themed, ink.background)) != null ? _c : MIN_CONTRAST) < MIN_CONTRAST) themed = void 0;
+  if (themed && ink.background && ((_c = contrast(themed, ink.background)) != null ? _c : MIN_CONTRAST) < MIN_CONTRAST) themed = void 0;
   const onSurface = !themed && ink.color && (plain || p.tone === "muted");
   return {
     ...(_d = p.look) == null ? void 0 : _d.view,
-    fontSize: fontSizeFor(kind, p.size, p.sub),
-    fontWeight: p.bold ? "bold" : "normal",
+    // The theme's text style, unless the answer asked for a size or bold itself.
+    ...(_e = p.look) == null ? void 0 : _e.text,
+    fontSize: p.size || p.sub || !((_g = (_f = p.look) == null ? void 0 : _f.text) == null ? void 0 : _g.fontSize) ? fontSizeFor(kind, p.size, p.sub) : p.look.text.fontSize,
+    fontWeight: p.bold ? "bold" : (_j = (_i = (_h = p.look) == null ? void 0 : _h.text) == null ? void 0 : _i.fontWeight) != null ? _j : "normal",
     fontStyle: p.italic ? "italic" : "normal",
     textAlign: p.align,
     color: onSurface ? ink.color : themed && plain ? themed : resolveTone(theme, p.tone),
@@ -592,11 +612,13 @@ function TextField({
   right,
   left,
   keyboardType,
-  secureTextEntry
+  secureTextEntry,
+  look
 }) {
+  var _a, _b;
   const theme = useTheme();
   const [focused, setFocused] = React3.useState(false);
-  const borderColor = error ? theme.error : focused ? theme.primary : theme.border;
+  const borderColor = error ? theme.error : focused ? theme.primary : (_a = look == null ? void 0 : look.view.borderColor) != null ? _a : theme.border;
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_react_native3.View, { style: { gap: 6 }, children: [
     label ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text, { text: label, size: "xs", bold: true, tone: "muted" }) : null,
     /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
@@ -607,11 +629,12 @@ function TextField({
           alignItems: multiline ? "flex-end" : "center",
           gap: 8,
           borderWidth: 1,
-          borderColor,
           borderRadius: theme.radius,
           backgroundColor: theme.surface,
           paddingLeft: left ? 10 : 12,
           paddingRight: right ? 6 : 12,
+          ...look == null ? void 0 : look.view,
+          borderColor,
           opacity: disabled ? 0.6 : 1
         },
         children: [
@@ -640,7 +663,8 @@ function TextField({
                 maxHeight: multiline ? 120 : void 0,
                 paddingVertical: 10,
                 fontSize: 16,
-                color: theme.text,
+                ...look == null ? void 0 : look.text,
+                color: (_b = look == null ? void 0 : look.color) != null ? _b : theme.text,
                 // The frame above draws focus; the browser's own ring would be a second border.
                 ...import_react_native3.Platform.OS === "web" ? { outlineStyle: "none" } : null,
                 // A web textarea never grows by itself; this sizes it to its text.
@@ -672,8 +696,8 @@ function MoneyField(props) {
 function DateField(props) {
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(TextField, { placeholder: "YYYY-MM-DD", ...props, keyboardType: "numbers-and-punctuation" });
 }
-function Select({ label, value, options, onChange, error, disabled, placeholder = "Choose\u2026" }) {
-  var _a;
+function Select({ label, value, options, onChange, error, disabled, placeholder = "Choose\u2026", look }) {
+  var _a, _b, _c;
   const theme = useTheme();
   const [open, setOpen] = React3.useState(false);
   const current = options.find((o) => o.value === value);
@@ -687,14 +711,15 @@ function Select({ label, value, options, onChange, error, disabled, placeholder 
         onPress: () => setOpen((o) => !o),
         style: {
           borderWidth: 1,
-          borderColor: error ? theme.error : open ? theme.primary : theme.border,
           borderRadius: theme.radius,
           backgroundColor: theme.surface,
           paddingHorizontal: 12,
           paddingVertical: 11,
+          ...look == null ? void 0 : look.view,
+          borderColor: error ? theme.error : open ? theme.primary : (_a = look == null ? void 0 : look.view.borderColor) != null ? _a : theme.border,
           opacity: disabled ? 0.6 : 1
         },
-        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text, { text: (_a = current == null ? void 0 : current.label) != null ? _a : placeholder, size: "md", tone: current ? "default" : "muted" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text, { text: (_b = current == null ? void 0 : current.label) != null ? _b : placeholder, size: ((_c = look == null ? void 0 : look.text) == null ? void 0 : _c.fontSize) ? void 0 : "md", tone: current ? "default" : "muted", look: look && { view: {}, color: look.color, text: look.text } })
       }
     ),
     open ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_react_native3.View, { style: { borderWidth: 1, borderColor: theme.border, borderRadius: theme.radius, backgroundColor: theme.surface }, children: options.map((option) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
@@ -713,7 +738,8 @@ function Select({ label, value, options, onChange, error, disabled, placeholder 
     error ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text, { text: error, size: "xs", tone: "error" }) : null
   ] });
 }
-function SwitchField({ label, value, onChange, disabled }) {
+function SwitchField({ label, value, onChange, disabled, look }) {
+  var _a, _b;
   const theme = useTheme();
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_react_native3.View, { style: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 }, children: [
     label ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text, { text: label, size: "sm" }) : null,
@@ -723,18 +749,48 @@ function SwitchField({ label, value, onChange, disabled }) {
         value,
         onValueChange: onChange,
         disabled,
-        trackColor: { true: theme.primary, false: theme.border },
+        trackColor: {
+          true: (_a = look == null ? void 0 : look.view.backgroundColor) != null ? _a : theme.primary,
+          false: (_b = look == null ? void 0 : look.view.borderColor) != null ? _b : theme.border
+        },
         accessibilityLabel: label
       }
     )
   ] });
 }
 
-// packages/dynamic-ui-native/src/components/form.tsx
-var React4 = __toESM(require("react"));
-var import_react_native4 = require("react-native");
-
 // packages/dynamic-ui-native/src/components/inputs.ts
+function readField(row, path) {
+  return path.split(".").reduce((node, key) => node && typeof node === "object" ? node[key] : void 0, row);
+}
+function fillRowLabel(template, row) {
+  return template.replace(/\{(\w+(?:\.\w+)*)\}/g, (_, path) => {
+    var _a;
+    return String((_a = readField(row, path)) != null ? _a : "");
+  }).trim();
+}
+function optionsFor(input, words) {
+  var _a;
+  const pick2 = words == null ? void 0 : words.pick;
+  if (pick2 && Array.isArray(pick2.rows)) {
+    return pick2.rows.flatMap((row) => {
+      const value = readField(row, pick2.value);
+      if (value === void 0 || value === null || typeof value === "object") return [];
+      return [{ value: String(value), label: fillRowLabel(pick2.label, row) || String(value) }];
+    });
+  }
+  if ((_a = input.enum) == null ? void 0 : _a.length) return input.enum.map((v) => {
+    var _a2, _b;
+    return { value: v, label: (_b = (_a2 = words == null ? void 0 : words.values) == null ? void 0 : _a2[v]) != null ? _b : v };
+  });
+  return void 0;
+}
+function valueWords(value, words) {
+  var _a, _b, _c;
+  if (value === void 0 || value === null) return void 0;
+  const option = (words == null ? void 0 : words.pick) && Array.isArray(words.pick.rows) ? (_a = optionsFor({}, words)) == null ? void 0 : _a.find((o) => o.value === String(value)) : void 0;
+  return (_c = option == null ? void 0 : option.label) != null ? _c : (_b = words == null ? void 0 : words.values) == null ? void 0 : _b[String(value)];
+}
 function widgetFor(input, money) {
   var _a;
   if ((_a = input.enum) == null ? void 0 : _a.length) return "select";
@@ -763,14 +819,15 @@ function parseInput(field, raw) {
   var _a, _b, _c;
   const { input, widget } = field;
   if (widget === "switch") return { value: raw === true };
-  const text = String(raw).trim();
-  if (text === "") return input.required ? { error: `${field.label} is required.` } : {};
+  const text2 = String(raw).trim();
+  if (text2 === "") return input.required ? { error: `${field.label} is required.` } : {};
   if (widget === "select") {
     const allowed = (_c = (_b = (_a = field.options) == null ? void 0 : _a.map((o) => o.value)) != null ? _b : input.enum) != null ? _c : [];
-    return allowed.includes(text) ? { value: text } : { error: `Choose a ${field.label.toLowerCase()}.` };
+    if (!allowed.includes(text2)) return { error: `Choose a ${field.label.toLowerCase()}.` };
+    return { value: input.type === "number" || input.type === "integer" ? Number(text2) : text2 };
   }
   if (widget === "number" || widget === "money") {
-    const n = Number(text.replace(/,/g, ""));
+    const n = Number(text2.replace(/,/g, ""));
     if (!Number.isFinite(n)) return { error: `${field.label} must be a number.` };
     if (input.type === "integer" && !Number.isInteger(n)) return { error: `${field.label} must be a whole number.` };
     if (input.min !== void 0 && n < input.min) return { error: `${field.label} must be at least ${input.min}.` };
@@ -778,39 +835,53 @@ function parseInput(field, raw) {
     return { value: n };
   }
   if (widget === "date") {
-    if (!DATE_RE.test(text) || Number.isNaN((/* @__PURE__ */ new Date(`${text}T00:00:00Z`)).getTime())) {
+    if (!DATE_RE.test(text2) || Number.isNaN((/* @__PURE__ */ new Date(`${text2}T00:00:00Z`)).getTime())) {
       return { error: `${field.label} must be a date like 2026-09-30.` };
     }
-    return { value: input.format === "date-time" ? `${text}T00:00:00Z` : text };
+    return { value: input.format === "date-time" ? `${text2}T00:00:00Z` : text2 };
   }
   if (input.pattern) {
     try {
-      if (!new RegExp(input.pattern).test(text)) return { error: `${field.label} is not in the right format.` };
+      if (!new RegExp(input.pattern).test(text2)) return { error: `${field.label} is not in the right format.` };
     } catch {
     }
   }
-  if (input.min !== void 0 && text.length < input.min) return { error: `${field.label} is too short.` };
-  if (input.max !== void 0 && text.length > input.max) return { error: `${field.label} is too long.` };
-  return { value: text };
+  if (input.min !== void 0 && text2.length < input.min) return { error: `${field.label} is too short.` };
+  if (input.max !== void 0 && text2.length > input.max) return { error: `${field.label} is too long.` };
+  return { value: text2 };
 }
-function parseAll(fields, raw) {
+function parseAll(fields, raw, touched = /* @__PURE__ */ new Set()) {
   var _a;
   const values = {};
   const errors = {};
   for (const field of fields) {
+    if (field.widget === "switch" && !field.prefilled && !field.input.required && !touched.has(field.input.name)) continue;
     const result = parseInput(field, (_a = raw[field.input.name]) != null ? _a : field.initial);
     if (result.error) errors[field.input.name] = result.error;
     else if (result.value !== void 0) values[field.input.name] = result.value;
   }
   return { values, errors };
 }
-function formInputs(fields, values = {}, settings = []) {
+function formInputs(fields, values = {}, settings = [], present) {
   return fields.flatMap((field) => {
+    var _a, _b, _c;
     const setting = settings.find((s) => s.name === field.name);
     if (setting == null ? void 0 : setting.hidden) return [];
+    const words = (_a = present == null ? void 0 : present.fields) == null ? void 0 : _a[field.name];
     const input = { ...field, label: field.label === field.name ? void 0 : field.label };
-    const widget = widgetFor(input, setting == null ? void 0 : setting.money);
-    return [{ input, label: labelFor(input, setting == null ? void 0 : setting.label), widget, initial: toWidgetValue(widget, values[field.name]) }];
+    const options = optionsFor(input, words);
+    const widget = options && input.type !== "boolean" ? "select" : widgetFor(input, setting == null ? void 0 : setting.money);
+    const help = (_b = words == null ? void 0 : words.help) != null ? _b : field.description;
+    const prefilled = values[field.name] !== void 0 && values[field.name] !== null;
+    return [{
+      input,
+      label: labelFor(input, (_c = setting == null ? void 0 : setting.label) != null ? _c : words == null ? void 0 : words.label),
+      widget,
+      ...options && widget === "select" ? { options } : {},
+      initial: toWidgetValue(widget, values[field.name]),
+      prefilled,
+      ...help ? { help } : {}
+    }];
   });
 }
 var SLOT_RE = /\{(\w+)(?::(text|number|money|date))?\}/g;
@@ -821,81 +892,10 @@ function fillAskTemplate(template, values) {
   });
 }
 
-// packages/dynamic-ui-native/src/components/form.tsx
-var import_jsx_runtime5 = require("react/jsx-runtime");
-function FormView({ title, fields, submitLabel = "Continue", currencySymbol, busy, error, look, onSubmit }) {
-  const theme = useTheme();
-  const [raw, setRaw] = React4.useState(
-    () => Object.fromEntries(fields.map((f) => [f.input.name, f.initial]))
-  );
-  const [errors, setErrors] = React4.useState({});
-  const set = (name) => (next) => {
-    setRaw((r) => ({ ...r, [name]: next }));
-    setErrors((e) => {
-      if (!e[name]) return e;
-      const { [name]: _, ...rest } = e;
-      return rest;
-    });
-  };
-  const submit = () => {
-    const { values, errors: found } = parseAll(fields, raw);
-    setErrors(found);
-    if (Object.keys(found).length === 0) onSubmit(values);
-  };
-  return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
-    import_react_native4.View,
-    {
-      style: {
-        gap: 12,
-        padding: 16,
-        borderRadius: theme.radius,
-        borderWidth: 1,
-        borderColor: theme.border,
-        backgroundColor: theme.surface,
-        ...look == null ? void 0 : look.view
-      },
-      children: [
-        title ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Heading, { text: title, size: "lg", color: look == null ? void 0 : look.color }) : null,
-        fields.map((field) => {
-          var _a, _b, _c;
-          const name = field.input.name;
-          const value = (_a = raw[name]) != null ? _a : field.initial;
-          const common = { label: field.label, error: errors[name], disabled: busy };
-          switch (field.widget) {
-            case "switch":
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(SwitchField, { label: field.label, value: value === true, onChange: set(name), disabled: busy }, name);
-            case "select":
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
-                Select,
-                {
-                  ...common,
-                  value: String(value),
-                  options: (_c = field.options) != null ? _c : ((_b = field.input.enum) != null ? _b : []).map((v) => ({ label: v, value: v })),
-                  onChange: set(name)
-                },
-                name
-              );
-            case "money":
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(MoneyField, { ...common, prefix: currencySymbol, value: String(value), onChangeText: set(name) }, name);
-            case "number":
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(NumberField, { ...common, value: String(value), onChangeText: set(name) }, name);
-            case "date":
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(DateField, { ...common, value: String(value), onChangeText: set(name) }, name);
-            default:
-              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(TextField, { ...common, value: String(value), onChangeText: set(name) }, name);
-          }
-        }),
-        error ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Text, { text: error, size: "sm", tone: "error" }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Button, { label: busy ? "Working\u2026" : submitLabel, disabled: busy, onPress: submit })
-      ]
-    }
-  );
-}
-
 // packages/dynamic-ui-native/src/components/secure.tsx
-var React5 = __toESM(require("react"));
-var import_react_native5 = require("react-native");
-var import_jsx_runtime6 = require("react/jsx-runtime");
+var React4 = __toESM(require("react"));
+var import_react_native4 = require("react-native");
+var import_jsx_runtime5 = require("react/jsx-runtime");
 var MAX_PIN = 12;
 function pinLength(input) {
   var _a;
@@ -911,15 +911,15 @@ function PinPad({ label, value, onChange, length, disabled, error }) {
     if (key === "back") onChange(value.slice(0, -1));
     else if (key && value.length < max) onChange(value + key);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { gap: 12, alignItems: "center" }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-      import_react_native5.View,
+  return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_react_native4.View, { style: { gap: 12, alignItems: "center" }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+      import_react_native4.View,
       {
         accessible: true,
         accessibilityLabel: `${label}: ${value.length}${length ? ` of ${length}` : ""} digits entered`,
         style: { flexDirection: "row", gap: 12, minHeight: 16 },
-        children: Array.from({ length: slots }, (_, i) => /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-          import_react_native5.View,
+        children: Array.from({ length: slots }, (_, i) => /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+          import_react_native4.View,
           {
             style: {
               width: 14,
@@ -934,10 +934,10 @@ function PinPad({ label, value, onChange, length, disabled, error }) {
         ))
       }
     ),
-    error ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { text: error, size: "xs", tone: "error" }) : null,
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { style: { flexDirection: "row", flexWrap: "wrap", width: 3 * 72 + 2 * 12, gap: 12 }, children: KEYS.map(
-      (key, i) => key === "" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { style: { width: 72, height: 52 } }, i) : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        import_react_native5.Pressable,
+    error ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Text, { text: error, size: "xs", tone: "error" }) : null,
+    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.View, { style: { flexDirection: "row", flexWrap: "wrap", width: 3 * 72 + 2 * 12, gap: 12 }, children: KEYS.map(
+      (key, i) => key === "" ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.View, { style: { width: 72, height: 52 } }, i) : /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+        import_react_native4.Pressable,
         {
           accessibilityRole: "button",
           accessibilityLabel: key === "back" ? "Delete" : key,
@@ -952,17 +952,17 @@ function PinPad({ label, value, onChange, length, disabled, error }) {
             backgroundColor: pressed ? theme.border : key === "back" ? "transparent" : theme.background,
             opacity: disabled ? 0.5 : 1
           }),
-          children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.Text, { style: { fontSize: key === "back" ? 18 : 22, fontWeight: "600", color: theme.text }, children: key === "back" ? "\u232B" : key })
+          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.Text, { style: { fontSize: key === "back" ? 18 : 22, fontWeight: "600", color: theme.text }, children: key === "back" ? "\u232B" : key })
         },
         i
       )
     ) })
   ] });
 }
-function PasswordField({ label, value, onChange, disabled, error }) {
+function PasswordField({ label, value, onChange, disabled, error, look }) {
   const theme = useTheme();
-  const [shown, setShown] = React5.useState(false);
-  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+  const [shown, setShown] = React4.useState(false);
+  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
     TextField,
     {
       label,
@@ -970,43 +970,44 @@ function PasswordField({ label, value, onChange, disabled, error }) {
       onChangeText: onChange,
       disabled,
       error,
+      look,
       secureTextEntry: !shown,
-      right: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-        import_react_native5.Pressable,
+      right: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+        import_react_native4.Pressable,
         {
           accessibilityRole: "button",
           accessibilityLabel: shown ? "Hide password" : "Show password",
           onPress: () => setShown(!shown),
           style: { paddingHorizontal: 8, paddingVertical: 6 },
-          children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.Text, { style: { color: theme.primary, fontWeight: "600", fontSize: 14 }, children: shown ? "Hide" : "Show" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.Text, { style: { color: theme.primary, fontWeight: "600", fontSize: 14 }, children: shown ? "Hide" : "Show" })
         }
       )
     }
   );
 }
 function SecureInput(props) {
-  const { input, ...rest } = props;
-  return sensitiveKind(input) === "pin" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(PinPad, { ...rest, length: pinLength(input) }) : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(PasswordField, { ...rest });
+  const { input, look, ...rest } = props;
+  return sensitiveKind(input) === "pin" ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(PinPad, { ...rest, length: pinLength(input) }) : /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(PasswordField, { ...rest, look });
 }
-function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
-  var _a;
+function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel, parts = {} }) {
+  var _a, _b;
   const theme = useTheme();
-  const [step, setStep] = React5.useState(0);
-  const [typed, setTyped] = React5.useState({});
-  React5.useEffect(() => {
+  const [step, setStep] = React4.useState(0);
+  const [typed, setTyped] = React4.useState({});
+  React4.useEffect(() => {
     setStep(0);
     setTyped({});
   }, [attempt]);
-  const cancel = React5.useRef(onCancel);
+  const cancel = React4.useRef(onCancel);
   cancel.current = onCancel;
-  const drag = React5.useRef(new import_react_native5.Animated.Value(0)).current;
-  const pan = React5.useMemo(
-    () => import_react_native5.PanResponder.create({
+  const drag = React4.useRef(new import_react_native4.Animated.Value(0)).current;
+  const pan = React4.useMemo(
+    () => import_react_native4.PanResponder.create({
       onMoveShouldSetPanResponder: (_, g) => g.dy > 4,
       onPanResponderMove: (_, g) => drag.setValue(Math.max(0, g.dy)),
       onPanResponderRelease: (_, g) => {
         if (g.dy > 80) cancel.current();
-        else import_react_native5.Animated.spring(drag, { toValue: 0, useNativeDriver: false }).start();
+        else import_react_native4.Animated.spring(drag, { toValue: 0, useNativeDriver: false }).start();
       }
     }),
     [drag]
@@ -1018,9 +1019,9 @@ function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
   const length = sensitiveKind(input) === "pin" ? pinLength(input) : void 0;
   const ready = length ? value.length === length : !input.required || value.length > 0;
   const last = step >= asks.length - 1;
-  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.Modal, { transparent: true, visible: true, animationType: "slide", onRequestClose: onCancel, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { flex: 1, justifyContent: "flex-end" }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-      import_react_native5.Pressable,
+  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.Modal, { transparent: true, visible: true, animationType: "slide", onRequestClose: onCancel, children: /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_react_native4.View, { style: { flex: 1, justifyContent: "flex-end" }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+      import_react_native4.Pressable,
       {
         accessibilityLabel: "Close",
         disabled: busy,
@@ -1028,8 +1029,8 @@ function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
         style: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)" }
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.KeyboardAvoidingView, { behavior: import_react_native5.Platform.OS === "ios" ? "padding" : void 0, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
-      import_react_native5.Animated.View,
+    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.KeyboardAvoidingView, { behavior: import_react_native4.Platform.OS === "ios" ? "padding" : void 0, children: /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
+      import_react_native4.Animated.View,
       {
         testID: "secret-sheet",
         style: {
@@ -1042,12 +1043,12 @@ function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
           gap: 16
         },
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { ...pan.panHandlers, style: { alignItems: "center", gap: 8 }, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { style: { width: 40, height: 4, borderRadius: 2, backgroundColor: theme.border } }),
-            asks.length > 1 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { text: `Step ${step + 1} of ${asks.length}`, size: "xs", tone: "muted" }) : null,
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Heading, { text: `Enter ${label}`, size: "md", align: "center" })
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_react_native4.View, { ...pan.panHandlers, style: { alignItems: "center", gap: 8 }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_react_native4.View, { style: { width: 40, height: 4, borderRadius: 2, backgroundColor: theme.border } }),
+            asks.length > 1 ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Text, { text: `Step ${step + 1} of ${asks.length}`, size: "xs", tone: "muted" }) : null,
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Heading, { text: `Enter ${label}`, size: "md", align: "center" })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
             SecureInput,
             {
               input,
@@ -1055,14 +1056,25 @@ function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
               value,
               onChange: (next) => setTyped((all) => ({ ...all, [input.name]: next })),
               disabled: busy,
-              error: step === 0 && !value ? error : void 0
+              error: step === 0 && !value ? error : void 0,
+              look: parts.input
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native5.View, { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" }, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Button, { label: "Cancel", variant: "outline", disabled: busy, onPress: onCancel }),
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_react_native4.View, { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
               Button,
               {
+                label: "Cancel",
+                variant: parts.secondary ? "solid" : "outline",
+                disabled: busy,
+                onPress: onCancel,
+                look: (_b = parts.secondary) != null ? _b : parts.button
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              Button,
+              {
+                look: parts.button,
                 label: busy ? "Working\u2026" : "OK",
                 disabled: busy || !ready,
                 onPress: () => last ? onSubmit(typed) : setStep(step + 1)
@@ -1075,16 +1087,98 @@ function SecretSheet({ asks, error, attempt = 0, busy, onSubmit, onCancel }) {
   ] }) });
 }
 
+// packages/dynamic-ui-native/src/confirmSpec.ts
+var SECONDARY_BUTTON = "Button:secondary";
+function text(text2, more = {}) {
+  return { type: "Text", props: { text: text2, ...more } };
+}
+function button(label, action, more = {}) {
+  return { type: "Button", props: { label, ...more }, on: { press: { action } } };
+}
+function confirmSpec(card) {
+  const elements = {};
+  const children = [];
+  const add = (key, element) => {
+    elements[key] = element;
+    children.push(key);
+  };
+  add("heading", { type: "Heading", props: { text: card.heading, size: "lg" } });
+  if (card.subline) add("subline", text(card.subline, { size: "sm", tone: "muted" }));
+  for (const row of card.rows) {
+    elements[`label-${row.name}`] = text(row.label, { size: "sm", tone: "muted" });
+    elements[`value-${row.name}`] = text(row.value, { size: "sm", bold: true });
+    add(`row-${row.name}`, {
+      type: "Row",
+      props: { justify: "space-between", gap: "md" },
+      children: [`label-${row.name}`, `value-${row.name}`]
+    });
+  }
+  if (card.error) add("error", text(card.error, { size: "sm", tone: "error" }));
+  elements.confirm = button(card.confirmLabel, "confirm");
+  const secondary = card.secondaryStyle ? { style: card.secondaryStyle } : { variant: "outline" };
+  elements.edit = button("Edit", "edit", secondary);
+  elements.cancel = button("Cancel", "cancel", secondary);
+  add("actions", { type: "Row", props: { gap: "md", wrap: true }, children: ["confirm", "edit", "cancel"] });
+  elements.card = { type: "Card", props: { gap: "md", padding: "lg" }, children };
+  return { root: "card", elements };
+}
+function resultSpec(card) {
+  const elements = {};
+  const children = [];
+  const add = (key, element) => {
+    elements[key] = element;
+    children.push(key);
+  };
+  elements.heading = { type: "Heading", props: { text: card.heading, size: "lg" } };
+  if (card.badge) {
+    elements.badge = { type: "Badge", props: { text: "Done", tone: "success" } };
+    add("top", { type: "Row", props: { justify: "space-between", align: "center", gap: "md" }, children: ["heading", "badge"] });
+  } else children.push("heading");
+  if (card.message) add("message", text(card.message, { size: "sm", tone: "success" }));
+  if (card.subline) add("subline", text(card.subline, { size: "sm", tone: "muted" }));
+  for (const row of card.rows) {
+    elements[`label-${row.name}`] = text(row.label, { size: "sm", tone: "muted" });
+    elements[`value-${row.name}`] = text(row.value, { size: "sm", bold: true });
+    add(`row-${row.name}`, {
+      type: "Row",
+      props: { justify: "space-between", gap: "md" },
+      children: [`label-${row.name}`, `value-${row.name}`]
+    });
+  }
+  elements.card = { type: "Card", props: { gap: "md", padding: "lg" }, children };
+  return { root: "card", elements };
+}
+var EDIT_VALUES = "/edit/values";
+function editSpec(operation, title, fields, present) {
+  return {
+    root: "form",
+    elements: {
+      form: {
+        type: "Form",
+        props: {
+          title,
+          submitLabel: "Review",
+          operation,
+          fields,
+          values: { $bindState: EDIT_VALUES },
+          ...present ? { present } : {}
+        },
+        on: { submit: { action: "review", params: { values: { $state: EDIT_VALUES } } } }
+      }
+    }
+  };
+}
+
 // packages/dynamic-ui-native/src/registry.tsx
 var React7 = __toESM(require("react"));
 var import_react_native10 = require("react-native");
 var import_react_native11 = require("@json-render/react-native");
 
 // packages/dynamic-ui-native/src/components/chart.tsx
-var React6 = __toESM(require("react"));
-var import_react_native6 = require("react-native");
+var React5 = __toESM(require("react"));
+var import_react_native5 = require("react-native");
 var import_react_native_svg = require("react-native-svg");
-var import_jsx_runtime7 = require("react/jsx-runtime");
+var import_jsx_runtime6 = require("react/jsx-runtime");
 var SVG_NAMES_USED = ["Svg", "Rect", "Line", "Path", "Text"];
 var MAX_POINTS = 60;
 function colorFor(theme, tone) {
@@ -1103,15 +1197,15 @@ function toPoints(rows, x, y) {
   return Array.from({ length: MAX_POINTS }, (_, i) => points[Math.floor(i * step)]);
 }
 function useWidth(initial = 300) {
-  const [width, setWidth] = React6.useState(initial);
-  const onLayout = React6.useCallback((e) => {
+  const [width, setWidth] = React5.useState(initial);
+  const onLayout = React5.useCallback((e) => {
     const next = Math.round(e.nativeEvent.layout.width);
     if (next > 0) setWidth(next);
   }, []);
   return { width, onLayout };
 }
 function Empty() {
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Text, { text: "No data yet", size: "sm", tone: "muted" });
+  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { text: "No data yet", size: "sm", tone: "muted" });
 }
 function labelEvery(count, max) {
   return Math.max(1, Math.ceil(count / max));
@@ -1120,7 +1214,7 @@ function BarChart({ rows, x, y, format, tone, height = 180, formatOptions }) {
   const theme = useTheme();
   const { width, onLayout } = useWidth();
   const points = toPoints(rows, x, y);
-  if (points.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Empty, {});
+  if (points.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Empty, {});
   const labelSpace = 20;
   const valueSpace = points.length <= 8 ? 16 : 0;
   const plot = height - labelSpace - valueSpace;
@@ -1132,16 +1226,16 @@ function BarChart({ rows, x, y, format, tone, height = 180, formatOptions }) {
   const bar = Math.max(2, slot * 0.6);
   const every = labelEvery(points.length, Math.floor(width / 48));
   const color = colorFor(theme, tone);
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native6.View, { onLayout, style: { width: "100%" }, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_react_native_svg.Svg, { width, height, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Line, { x1: 0, y1: baseline, x2: width, y2: baseline, stroke: theme.border, strokeWidth: 1 }),
+  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { onLayout, style: { width: "100%" }, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native_svg.Svg, { width, height, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: baseline, x2: width, y2: baseline, stroke: theme.border, strokeWidth: 1 }),
     points.map((p, i) => {
       const h = Math.abs(p.value) / span * plot;
       const bx = i * slot + (slot - bar) / 2;
       const by = p.value >= 0 ? baseline - h : baseline;
-      return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(React6.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Rect, { x: bx, y: by, width: bar, height: Math.max(1, h), rx: 2, fill: color }),
-        valueSpace ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: by - 4, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: formatValue(p.value, format != null ? format : "number", formatOptions) }) : null,
-        i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: height - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }) : null
+      return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(React5.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Rect, { x: bx, y: by, width: bar, height: Math.max(1, h), rx: 2, fill: color }),
+        valueSpace ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: by - 4, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: formatValue(p.value, format != null ? format : "number", formatOptions) }) : null,
+        i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: height - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }) : null
       ] }, i);
     })
   ] }) });
@@ -1150,7 +1244,7 @@ function LineChart({ rows, x, y, format, tone, height, sparkline, formatOptions 
   const theme = useTheme();
   const { width, onLayout } = useWidth(sparkline ? 120 : 300);
   const points = toPoints(rows, x, y);
-  if (points.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Empty, {});
+  if (points.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Empty, {});
   const h = height != null ? height : sparkline ? 32 : 180;
   const labelSpace = sparkline ? 0 : 20;
   const pad = sparkline ? 2 : 8;
@@ -1165,33 +1259,110 @@ function LineChart({ rows, x, y, format, tone, height, sparkline, formatOptions 
   const every = labelEvery(points.length, Math.floor(width / 56));
   const color = colorFor(theme, tone);
   const last = points[points.length - 1];
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native6.View, { onLayout, style: { width: sparkline ? void 0 : "100%", flexGrow: sparkline ? 1 : void 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_react_native_svg.Svg, { width, height: h, children: [
-    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Line, { x1: 0, y1: pad + plot, x2: width, y2: pad + plot, stroke: theme.border, strokeWidth: 1 }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Path, { d, stroke: color, strokeWidth: sparkline ? 1.5 : 2, fill: "none", strokeLinejoin: "round", strokeLinecap: "round" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { onLayout, style: { width: sparkline ? void 0 : "100%", flexGrow: sparkline ? 1 : void 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native_svg.Svg, { width, height: h, children: [
+    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: pad + plot, x2: width, y2: pad + plot, stroke: theme.border, strokeWidth: 1 }),
+    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Path, { d, stroke: color, strokeWidth: sparkline ? 1.5 : 2, fill: "none", strokeLinejoin: "round", strokeLinecap: "round" }),
     sparkline ? null : points.map(
-      (p, i) => i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Text, { x: px(i), y: h - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }, i) : null
+      (p, i) => i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: px(i), y: h - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }, i) : null
     ),
-    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native_svg.Text, { x: width - pad, y: Math.max(10, py(last.value) - 6), fontSize: 10, fill: theme.muted, textAnchor: "end", children: formatValue(last.value, format != null ? format : "number", formatOptions) })
+    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: width - pad, y: Math.max(10, py(last.value) - 6), fontSize: 10, fill: theme.muted, textAnchor: "end", children: formatValue(last.value, format != null ? format : "number", formatOptions) })
   ] }) });
 }
 
 // packages/dynamic-ui-native/src/components/data.tsx
-var import_react_native7 = require("react-native");
-var import_jsx_runtime8 = require("react/jsx-runtime");
+var import_react_native6 = require("react-native");
+var import_jsx_runtime7 = require("react/jsx-runtime");
 function ListRow({ title, subtitle, trailing, trailingTone = "default" }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_react_native7.View, { style: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_react_native7.View, { style: { flex: 1, gap: 2, minWidth: 0 }, children: [
-      title ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Text, { text: title, size: "sm", bold: true, numberOfLines: 1 }) : null,
-      subtitle ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Text, { text: subtitle, size: "xs", tone: "muted", numberOfLines: 1 }) : null
+  return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_react_native6.View, { style: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_react_native6.View, { style: { flex: 1, gap: 2, minWidth: 0 }, children: [
+      title ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Text, { text: title, size: "sm", bold: true, numberOfLines: 1 }) : null,
+      subtitle ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Text, { text: subtitle, size: "xs", tone: "muted", numberOfLines: 1 }) : null
     ] }),
-    trailing ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Text, { text: trailing, size: "sm", bold: true, tone: trailingTone }) : null
+    trailing ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Text, { text: trailing, size: "sm", bold: true, tone: trailingTone }) : null
   ] });
 }
 function ProgressBar({ progress = 0, tone = "primary" }) {
   const theme = useTheme();
   const pct = Math.max(0, Math.min(1, Number(progress) || 0));
   const color = tone === "success" ? theme.success : tone === "warning" ? theme.warning : tone === "error" ? theme.error : theme.primary;
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_react_native7.View, { style: { height: 6, borderRadius: 3, backgroundColor: theme.border, overflow: "hidden" }, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_react_native7.View, { style: { width: `${pct * 100}%`, height: "100%", backgroundColor: color } }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native6.View, { style: { height: 6, borderRadius: 3, backgroundColor: theme.border, overflow: "hidden" }, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_react_native6.View, { style: { width: `${pct * 100}%`, height: "100%", backgroundColor: color } }) });
+}
+
+// packages/dynamic-ui-native/src/components/form.tsx
+var React6 = __toESM(require("react"));
+var import_react_native7 = require("react-native");
+var import_jsx_runtime8 = require("react/jsx-runtime");
+function FormView({ title, fields, submitLabel = "Continue", currencySymbol, busy, error, look, parts = {}, onSubmit }) {
+  const theme = useTheme();
+  const [raw, setRaw] = React6.useState(
+    () => Object.fromEntries(fields.map((f) => [f.input.name, f.initial]))
+  );
+  const [errors, setErrors] = React6.useState({});
+  const touched = React6.useRef(/* @__PURE__ */ new Set());
+  const set = (name) => (next) => {
+    touched.current.add(name);
+    setRaw((r) => ({ ...r, [name]: next }));
+    setErrors((e) => {
+      if (!e[name]) return e;
+      const { [name]: _, ...rest } = e;
+      return rest;
+    });
+  };
+  const submit = () => {
+    const { values, errors: found } = parseAll(fields, raw, touched.current);
+    setErrors(found);
+    if (Object.keys(found).length === 0) onSubmit(values);
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+    import_react_native7.View,
+    {
+      style: {
+        gap: 12,
+        padding: 16,
+        borderRadius: theme.radius,
+        borderWidth: 1,
+        borderColor: theme.border,
+        backgroundColor: theme.surface,
+        ...look == null ? void 0 : look.view
+      },
+      children: [
+        title ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Heading, { text: title, size: "lg", color: look == null ? void 0 : look.color }) : null,
+        fields.map((field) => {
+          var _a, _b, _c;
+          const name = field.input.name;
+          const value = (_a = raw[name]) != null ? _a : field.initial;
+          const common = { label: field.label, error: errors[name], disabled: busy };
+          const text2 = { ...common, helperText: field.help, look: parts.input };
+          switch (field.widget) {
+            case "switch":
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(SwitchField, { label: field.label, value: value === true, onChange: set(name), disabled: busy, look: parts.switch }, name);
+            case "select":
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+                Select,
+                {
+                  ...common,
+                  look: parts.select,
+                  value: String(value),
+                  options: (_c = field.options) != null ? _c : ((_b = field.input.enum) != null ? _b : []).map((v) => ({ label: v, value: v })),
+                  onChange: set(name)
+                },
+                name
+              );
+            case "money":
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(MoneyField, { ...text2, prefix: currencySymbol, value: String(value), onChangeText: set(name) }, name);
+            case "number":
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(NumberField, { ...text2, value: String(value), onChangeText: set(name) }, name);
+            case "date":
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(DateField, { ...text2, value: String(value), onChangeText: set(name) }, name);
+            default:
+              return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(TextField, { ...text2, value: String(value), onChangeText: set(name) }, name);
+          }
+        }),
+        error ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Text, { text: error, size: "sm", tone: "error" }) : null,
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Button, { label: busy ? "Working\u2026" : submitLabel, disabled: busy, onPress: submit, look: parts.button })
+      ]
+    }
+  );
 }
 
 // packages/dynamic-ui-native/src/components/layout.tsx
@@ -1267,7 +1438,7 @@ function Card({ title, subtitle, gap = "lg", padding = "xl", look, children }) {
     }
   );
 }
-function Badge({ text, tone = "default", look }) {
+function Badge({ text: text2, tone = "default", look }) {
   const theme = useTheme();
   const color = tone === "success" ? theme.success : tone === "warning" ? theme.warning : tone === "error" ? theme.error : tone === "primary" ? theme.primary : theme.muted;
   return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
@@ -1282,7 +1453,7 @@ function Badge({ text, tone = "default", look }) {
         borderColor: color,
         ...look == null ? void 0 : look.view
       },
-      children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Ink, { background: look == null ? void 0 : look.view.backgroundColor, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { text: text != null ? text : "", size: "xs", bold: true, tone: tone !== "default" ? tone : (look == null ? void 0 : look.color) ? "default" : "muted", color: tone === "default" ? look == null ? void 0 : look.color : void 0 }) })
+      children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Ink, { background: look == null ? void 0 : look.view.backgroundColor, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { text: text2 != null ? text2 : "", size: "xs", bold: true, tone: tone !== "default" ? tone : (look == null ? void 0 : look.color) ? "default" : "muted", color: tone === "default" ? look == null ? void 0 : look.color : void 0 }) })
     }
   );
 }
@@ -1308,18 +1479,22 @@ function pick(props, ...names) {
 }
 var LAYOUT = ["gap", "padding", "align", "justify", "wrap"];
 function Form({ props, emit, bindings }) {
-  var _a, _b;
+  var _a, _b, _c;
   const store = (0, import_react_native11.useStateStore)();
   const { currencySymbol, fieldSettings } = React7.useContext(ViewSettingsContext);
   const values = (_a = props.values) != null ? _a : {};
   const operation = typeof props.operation === "string" ? props.operation : void 0;
-  const fields = formInputs((_b = props.fields) != null ? _b : [], values, operation ? fieldSettings == null ? void 0 : fieldSettings(operation) : void 0);
+  const present = props.present;
+  const fields = formInputs((_b = props.fields) != null ? _b : [], values, operation ? fieldSettings == null ? void 0 : fieldSettings(operation) : void 0, present);
   const look = useLook("Form", props);
+  const { lookFor } = React7.useContext(ViewSettingsContext);
+  const parts = { input: lookFor == null ? void 0 : lookFor("Input"), select: lookFor == null ? void 0 : lookFor("Select"), switch: lookFor == null ? void 0 : lookFor("Switch"), button: lookFor == null ? void 0 : lookFor("Button") };
   return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
     FormView,
     {
       look,
-      title: props.title,
+      parts,
+      title: (_c = props.title) != null ? _c : present == null ? void 0 : present.title,
       submitLabel: props.submitLabel,
       currencySymbol,
       fields,
@@ -1400,6 +1575,7 @@ var SPACING = [
   "borderRadius"
 ];
 var COLORS = ["backgroundColor", "borderColor"];
+var TEXT_NUMBERS = ["fontSize", "lineHeight", "letterSpacing"];
 function toLook(style) {
   if (!style) return void 0;
   const view = {};
@@ -1409,7 +1585,14 @@ function toLook(style) {
   }
   for (const key of COLORS) if (typeof style[key] === "string" && style[key]) view[key] = style[key];
   const color = typeof style.color === "string" && style.color ? style.color : void 0;
-  return { view, ...color ? { color } : {} };
+  const text2 = {};
+  for (const key of TEXT_NUMBERS) {
+    const n = typeof style[key] === "string" ? Number(style[key]) : style[key];
+    if (typeof n === "number" && Number.isFinite(n)) text2[key] = n;
+  }
+  if (typeof style.fontFamily === "string" && style.fontFamily) text2.fontFamily = style.fontFamily;
+  if (typeof style.fontWeight === "string" && style.fontWeight || typeof style.fontWeight === "number") text2.fontWeight = String(style.fontWeight);
+  return { view, ...color ? { color } : {}, ...Object.keys(text2).length ? { text: text2 } : {} };
 }
 
 // packages/dynamic-ui-native/src/stream.ts
@@ -1445,10 +1628,10 @@ var xhrTransport = (request, onText) => new Promise((resolve, reject) => {
   let seen = 0;
   const flush = () => {
     var _a2;
-    const text = (_a2 = xhr.responseText) != null ? _a2 : "";
-    if (text.length > seen) {
-      const chunk = text.slice(seen);
-      seen = text.length;
+    const text2 = (_a2 = xhr.responseText) != null ? _a2 : "";
+    if (text2.length > seen) {
+      const chunk = text2.slice(seen);
+      seen = text2.length;
       onText(chunk);
     }
   };
@@ -1475,8 +1658,19 @@ function effectiveConfirm(op) {
   if (op.confirm === "none" && (!op.safe || op.inputs.some(isSensitive))) return "sheet";
   return op.confirm;
 }
-function secretValue(input, text) {
-  return input.type === "number" || input.type === "integer" ? Number(text) : text;
+function openInputs(op) {
+  return op.inputs.filter(
+    (i) => {
+      var _a;
+      return !isSensitive(i) && !isCodeOwned(i) && !((_a = op.fields) == null ? void 0 : _a.some((f) => f.name === i.name && (f.fixed !== void 0 || f.hidden)));
+    }
+  );
+}
+function sentValues(op, values) {
+  return Object.fromEntries(openInputs(op).filter((i) => values[i.name] !== void 0 && values[i.name] !== null).map((i) => [i.name, values[i.name]]));
+}
+function secretValue(input, text2) {
+  return input.type === "number" || input.type === "integer" ? Number(text2) : text2;
 }
 function fixedValues(op, me) {
   var _a;
@@ -1487,13 +1681,21 @@ function fixedValues(op, me) {
   }
   return out;
 }
-function display(value, input, op, options) {
-  var _a, _b;
+function display(value, input, op, options, present) {
+  var _a, _b, _c;
+  const words = valueWords(value, (_a = present == null ? void 0 : present.fields) == null ? void 0 : _a[input.name]);
+  if (words) return words;
   if (typeof value === "boolean") return value ? "Yes" : "No";
-  const widget = widgetFor(input, (_b = (_a = op.fields) == null ? void 0 : _a.find((f) => f.name === input.name)) == null ? void 0 : _b.money);
+  const widget = widgetFor(input, (_c = (_b = op.fields) == null ? void 0 : _b.find((f) => f.name === input.name)) == null ? void 0 : _c.money);
   if (widget === "money") return formatValue(value, "money", options);
   if (widget === "date") return formatValue(value, "date", options);
   return String(value != null ? value : "");
+}
+function fillSummary(summary, values, op, options, present) {
+  return summary.replace(/\{(\w+)\}/g, (_, name) => {
+    const input = op.inputs.find((i) => i.name === name);
+    return input && values[name] !== void 0 ? display(values[name], input, op, options, present) : "";
+  }).replace(/\s+/g, " ").trim();
 }
 async function readError(res) {
   try {
@@ -1513,7 +1715,7 @@ function bubble(width, side, box) {
   return width === "full" ? { ...box, alignSelf: "stretch" } : { ...box, alignSelf: side, maxWidth: "85%" };
 }
 var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
-  var _a, _b;
+  var _a, _b, _c, _d;
   const {
     endpoint,
     operations = [],
@@ -1544,10 +1746,11 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
   const [busy, setBusy] = React8.useState(false);
   const [pending, setPending] = React8.useState(null);
   const [sheet, setSheet] = React8.useState(null);
+  const [pendingEntry, setPendingEntry] = React8.useState(null);
   const base = endpoint.replace(/\/$/, "");
   const notes = React8.useRef([]);
   const picks = React8.useRef({});
-  const note = (text) => notes.current.push(`[${text}]`);
+  const note = (text2) => notes.current.push(`[${text2}]`);
   const update = (index, change) => setEntries((list) => list.map((e, i) => i === index ? { ...e, ...change } : e));
   const ask = async (question, pick2) => {
     const q = question.trim();
@@ -1565,10 +1768,10 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     const store = (0, import_react_native13.createStateStore)({});
     setEntries((list) => [...list, { question: q, sent, text: "", spec: null, store, status: "streaming" }]);
     const spec = { root: "", elements: {} };
-    let text = "";
+    let text2 = "";
     let ended = null;
     const parser = new SseParser();
-    const flush = () => update(index, { text, spec: spec.root ? JSON.parse(JSON.stringify(spec)) : null });
+    const flush = () => update(index, { text: text2, spec: spec.root ? JSON.parse(JSON.stringify(spec)) : null });
     try {
       const res = await transport(
         {
@@ -1580,7 +1783,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           var _a2, _b2;
           for (const { event, data } of parser.push(chunk)) {
             const d = data;
-            if (event === "text") text += String((_a2 = d.delta) != null ? _a2 : "");
+            if (event === "text") text2 += String((_a2 = d.delta) != null ? _a2 : "");
             else if (event === "patch") (0, import_core.applySpecStreamPatch)(spec, d);
             else if (event === "state") store.set(String(d.path), d.value);
             else if (event === "done") ended = { status: "done", answer: d.answer };
@@ -1606,16 +1809,16 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     (_a2 = busyListener.current) == null ? void 0 : _a2.call(busyListener, busy);
   }, [busy]);
   const config = (name) => operations.find((o) => o.name === name);
-  const startOperation = (name, values) => {
+  const startOperation = (name, values, present, entry) => {
+    setPendingEntry(entry != null ? entry : null);
     const op = config(name);
     if (!op) {
       setPending({ stage: "done", operation: name, message: `This app can\u2019t run \u201C${name}\u201D.` });
       return;
     }
-    const fixed = fixedValues(op, me);
-    const missing = op.inputs.filter((i) => i.required && !isSensitive(i) && values[i.name] === void 0 && fixed[i.name] === void 0);
+    const missing = openInputs(op).filter((i) => i.required && (values[i.name] === void 0 || values[i.name] === null));
     if (missing.length) {
-      setPending({ stage: "edit", operation: name, values, only: missing.map((i) => i.name) });
+      setPending({ stage: "edit", operation: name, values, only: missing.map((i) => i.name), present });
       return;
     }
     const mode = effectiveConfirm(op);
@@ -1624,19 +1827,19 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
         setPending({ stage: "done", operation: name, message: "The screen for this is not available." });
         return;
       }
-      const merged = { ...values, ...fixed };
+      const merged = { ...values, ...fixedValues(op, me) };
       navigate(op.screen.pageId, Object.fromEntries(Object.entries(op.screen.params).map(([p, inputName]) => [p, merged[inputName]])));
       note(`The user opened the app screen for ${name}.`);
       setPending(null);
       return;
     }
     if (mode === "none") {
-      void run(name, values);
+      void run(name, values, present);
       return;
     }
-    setPending({ stage: "review", operation: name, values });
+    setPending({ stage: "review", operation: name, values, present });
   };
-  const run = async (name, values, secrets = {}) => {
+  const run = async (name, values, present, secrets = {}) => {
     var _a2, _b2;
     const op = config(name);
     if (!op) return;
@@ -1645,23 +1848,23 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
       if (!passed) {
         note(`The user did not pass the biometric check for ${name}.`);
         setSheet(null);
-        setPending({ stage: "error", operation: name, values, error: confirmBiometric ? "Not confirmed." : "Biometric check is not available." });
+        setPending({ stage: "error", operation: name, values, error: confirmBiometric ? "Not confirmed." : "Biometric check is not available.", present });
         return;
       }
     }
     const typed = Object.fromEntries(
       op.inputs.filter((i) => isSensitive(i) && secrets[i.name]).map((i) => [i.name, secretValue(i, secrets[i.name])])
     );
-    setPending({ stage: "running", operation: name, values });
+    setPending({ stage: "running", operation: name, values, present });
     try {
       const res = await sessionFetch(`${base}/operation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ operation: name, values: { ...values, ...typed } })
+        body: JSON.stringify({ operation: name, values: { ...sentValues(op, values), ...typed } })
       });
       const body = await res.json().catch(() => ({}));
       if (!body.ok && (body.status === 401 || body.status === 403) && op.inputs.some(isSensitive)) {
-        setPending({ stage: "review", operation: name, values });
+        setPending({ stage: "review", operation: name, values, present });
         setSheet((s) => {
           var _a3;
           return s ? { ...s, error: (_a3 = body.error) != null ? _a3 : "That was not accepted. Try again.", attempt: s.attempt + 1 } : s;
@@ -1671,42 +1874,80 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
       setSheet(null);
       if (!res.ok || !body.ok) {
         note(`The user confirmed ${name}. It did not go through.`);
-        setPending({ stage: "error", operation: name, values, error: (_a2 = body.error) != null ? _a2 : "It didn\u2019t go through." });
+        setPending({ stage: "error", operation: name, values, error: (_a2 = body.error) != null ? _a2 : "It didn\u2019t go through.", present });
         return;
       }
     } catch (e) {
       setSheet(null);
       note(`The user confirmed ${name}. It did not go through.`);
-      setPending({ stage: "error", operation: name, values, error: e.message });
+      setPending({ stage: "error", operation: name, values, error: e.message, present });
       return;
     }
     note(`The user confirmed ${name}. It went through.`);
-    setPending({ stage: "done", operation: name, message: (_b2 = op.successMessage) != null ? _b2 : "Done." });
+    setPending({ stage: "done", operation: name, message: (_b2 = op.successMessage) != null ? _b2 : "Done.", values, present });
     if (op.refreshAsk) void ask(op.refreshAsk);
   };
-  const latest = React8.useRef({ ask, startOperation, navigate });
-  latest.current = { ask, startOperation, navigate };
-  const handlers = React8.useMemo(
+  const latest = React8.useRef({ ask, startOperation, navigate, run, config, note });
+  latest.current = { ask, startOperation, navigate, run, config, note };
+  const handlerSets = React8.useRef(/* @__PURE__ */ new Map());
+  const handlersFor = (entry) => {
+    let set = handlerSets.current.get(entry);
+    if (!set) {
+      set = {
+        ask: (p) => {
+          var _a2, _b2;
+          const question = typeof p.template === "string" ? fillAskTemplate(p.template, (_a2 = p.values) != null ? _a2 : {}) : String((_b2 = p.query) != null ? _b2 : "");
+          const pick2 = p.pick;
+          void latest.current.ask(question, pick2 && typeof pick2.name === "string" ? pick2 : void 0);
+        },
+        runOperation: (p) => {
+          var _a2, _b2;
+          return latest.current.startOperation(String((_a2 = p.operation) != null ? _a2 : ""), (_b2 = p.values) != null ? _b2 : {}, p.present, entry);
+        },
+        openPage: (p) => {
+          var _a2, _b2, _c2, _d2;
+          return (_d2 = (_c2 = latest.current).navigate) == null ? void 0 : _d2.call(_c2, String((_a2 = p.page) != null ? _a2 : ""), (_b2 = p.params) != null ? _b2 : {});
+        },
+        openUrl: (p) => {
+          var _a2;
+          const url = (_a2 = p.link) == null ? void 0 : _a2.url;
+          if (typeof url === "string" && /^https?:\/\//i.test(url)) void import_react_native12.Linking.openURL(url).catch(() => {
+          });
+        }
+      };
+      handlerSets.current.set(entry, set);
+    }
+    return set;
+  };
+  const pendingRef = React8.useRef(pending);
+  pendingRef.current = pending;
+  const confirmHandlers = React8.useMemo(
     () => ({
-      ask: (p) => {
-        var _a2, _b2;
-        const question = typeof p.template === "string" ? fillAskTemplate(p.template, (_a2 = p.values) != null ? _a2 : {}) : String((_b2 = p.query) != null ? _b2 : "");
-        const pick2 = p.pick;
-        void latest.current.ask(question, pick2 && typeof pick2.name === "string" ? pick2 : void 0);
+      confirm: () => {
+        const p = pendingRef.current;
+        if (!p || p.stage !== "review" && p.stage !== "error") return;
+        const op = latest.current.config(p.operation);
+        if (op == null ? void 0 : op.inputs.some(isSensitive)) setSheet({ operation: p.operation, attempt: 0 });
+        else void latest.current.run(p.operation, p.values, p.present);
       },
-      runOperation: (p) => {
-        var _a2, _b2;
-        return latest.current.startOperation(String((_a2 = p.operation) != null ? _a2 : ""), (_b2 = p.values) != null ? _b2 : {});
+      edit: () => {
+        const p = pendingRef.current;
+        if (!p || p.stage !== "review" && p.stage !== "error") return;
+        setSheet(null);
+        setPending({ stage: "edit", operation: p.operation, values: p.values, present: p.present });
       },
-      openPage: (p) => {
-        var _a2, _b2, _c, _d;
-        return (_d = (_c = latest.current).navigate) == null ? void 0 : _d.call(_c, String((_a2 = p.page) != null ? _a2 : ""), (_b2 = p.params) != null ? _b2 : {});
+      cancel: () => {
+        const p = pendingRef.current;
+        if (!p || p.stage === "running" || p.stage === "done") return;
+        latest.current.note(`The user cancelled ${p.operation}.`);
+        setSheet(null);
+        setPending(null);
       },
-      openUrl: (p) => {
+      review: (params) => {
         var _a2;
-        const url = (_a2 = p.link) == null ? void 0 : _a2.url;
-        if (typeof url === "string" && /^https?:\/\//i.test(url)) void import_react_native12.Linking.openURL(url).catch(() => {
-        });
+        const p = pendingRef.current;
+        if (!p || p.stage !== "edit") return;
+        setPending({ stage: "review", operation: p.operation, values: { ...p.values, ...(_a2 = params.values) != null ? _a2 : {} }, present: p.present });
       }
     }),
     []
@@ -1745,87 +1986,61 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     gap: 10,
     ...answerLook == null ? void 0 : answerLook.view
   };
+  const pendingStore = React8.useMemo(
+    () => (0, import_react_native13.createStateStore)((pending == null ? void 0 : pending.stage) === "edit" ? { edit: { values: pending.values } } : {}),
+    [pending]
+  );
   function renderPending(p) {
+    var _a2, _b2, _c2, _d2, _e, _f;
     const op = config(p.operation);
-    if (p.stage === "done") return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: p.message, size: "sm", tone: "success" });
+    if (p.stage === "done" && (!op || !p.values)) return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: p.message, size: "sm", tone: "success" });
     if (!op) return null;
-    if (p.stage === "edit") {
-      return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-        FormView,
-        {
-          title: op.description,
-          submitLabel: "Review",
-          currencySymbol,
-          fields: formInputs(
-            op.inputs.filter((i) => !isSensitive(i)).filter((i) => {
-              var _a2;
-              return !((_a2 = op.fields) == null ? void 0 : _a2.some((f) => f.name === i.name && f.fixed !== void 0));
-            }).filter((i) => !p.only || p.only.includes(i.name)).map((i) => {
-              var _a2;
-              return { ...i, label: (_a2 = i.label) != null ? _a2 : i.name };
-            }),
-            p.values,
-            op.fields
-          ),
-          onSubmit: (values) => setPending({ stage: "review", operation: p.operation, values: { ...p.values, ...values } })
-        }
-      );
+    const present = p.present;
+    const labelOf = (input2) => {
+      var _a3, _b3, _c3, _d3, _e2;
+      return labelFor(input2, (_e2 = (_b3 = (_a3 = op.fields) == null ? void 0 : _a3.find((f) => f.name === input2.name)) == null ? void 0 : _b3.label) != null ? _e2 : (_d3 = (_c3 = present == null ? void 0 : present.fields) == null ? void 0 : _c3[input2.name]) == null ? void 0 : _d3.label);
+    };
+    const draw = (spec) => /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.JSONUIProvider, { registry, store: pendingStore, handlers: confirmHandlers, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.Renderer, { spec, registry, includeStandard: false }) });
+    const rowsFor = (values) => openInputs(op).filter((i) => values[i.name] !== void 0).map((input2) => ({ name: input2.name, label: labelOf(input2), value: display(values[input2.name], input2, op, formatOptions, present) }));
+    if (p.stage === "done") {
+      const sent = sentValues(op, p.values);
+      return draw(resultSpec({
+        heading: (_a2 = present == null ? void 0 : present.title) != null ? _a2 : p.message,
+        badge: !!(present == null ? void 0 : present.title),
+        message: (present == null ? void 0 : present.title) && op.successMessage ? op.successMessage : void 0,
+        subline: (present == null ? void 0 : present.summary) ? fillSummary(present.summary, sent, op, formatOptions, present) : void 0,
+        rows: rowsFor(sent)
+      }));
     }
-    const shown = { ...p.values, ...fixedValues(op, me) };
+    if (p.stage === "edit") {
+      const fields = openInputs(op).filter((i) => !p.only || p.only.includes(i.name)).map((i) => {
+        var _a3, _b3;
+        return {
+          name: i.name,
+          label: (_a3 = i.label) != null ? _a3 : i.name,
+          type: i.type,
+          ...i.format ? { format: i.format } : {},
+          ...((_b3 = i.enum) == null ? void 0 : _b3.length) ? { enum: i.enum } : {},
+          ...i.required ? { required: true } : {},
+          ...i.description ? { description: i.description } : {}
+        };
+      });
+      return draw(editSpec(op.name, (_b2 = present == null ? void 0 : present.title) != null ? _b2 : op.description, fields, present));
+    }
+    const shown = sentValues(op, p.values);
     const secure = op.inputs.filter(isSensitive);
     const busy2 = p.stage === "running";
-    const labelOf = (input2) => {
-      var _a2, _b2;
-      return labelFor(input2, (_b2 = (_a2 = op.fields) == null ? void 0 : _a2.find((f) => f.name === input2.name)) == null ? void 0 : _b2.label);
-    };
-    const card = { gap: 12, padding: 16, borderRadius: theme.radius, borderWidth: 1, borderColor: theme.primary, backgroundColor: theme.surface };
-    const actions = /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { flexDirection: "row", gap: 8, flexWrap: "wrap" }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-        Button,
-        {
-          label: busy2 ? "Working\u2026" : p.stage === "error" ? "Try again" : "Confirm",
-          disabled: busy2,
-          onPress: () => secure.length ? setSheet({ operation: p.operation, attempt: 0 }) : void run(p.operation, p.values)
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-        Button,
-        {
-          label: "Edit",
-          variant: "outline",
-          disabled: busy2,
-          onPress: () => {
-            setSheet(null);
-            setPending({ stage: "edit", operation: p.operation, values: p.values });
-          }
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-        Button,
-        {
-          label: "Cancel",
-          variant: "outline",
-          disabled: busy2,
-          onPress: () => {
-            note(`The user cancelled ${p.operation}.`);
-            setSheet(null);
-            setPending(null);
-          }
-        }
-      )
-    ] });
-    const error = p.stage === "error" ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: p.error, size: "sm", tone: "error" }) : null;
+    const card = confirmSpec({
+      // Without the answer's words, the card says what it always said.
+      heading: (_c2 = present == null ? void 0 : present.title) != null ? _c2 : "Check and confirm",
+      subline: (present == null ? void 0 : present.summary) ? fillSummary(present.summary, shown, op, formatOptions, present) : (present == null ? void 0 : present.title) ? void 0 : op.description,
+      rows: rowsFor(shown),
+      error: p.stage === "error" ? p.error : void 0,
+      confirmLabel: busy2 ? "Working\u2026" : p.stage === "error" ? "Try again" : "Confirm",
+      secondaryStyle: defaultLooks == null ? void 0 : defaultLooks[SECONDARY_BUTTON]
+    });
     return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { gap: 12 }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: card, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Heading, { text: "Check and confirm", size: "lg" }),
-        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: op.description, size: "sm", tone: "muted" }),
-        op.inputs.filter((i) => !isSensitive(i) && shown[i.name] !== void 0).map((input2) => /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { flexDirection: "row", justifyContent: "space-between", gap: 12 }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: labelOf(input2), size: "sm", tone: "muted" }),
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: display(shown[input2.name], input2, op, formatOptions), size: "sm", bold: true })
-        ] }, input2.name)),
-        error,
-        actions
-      ] }),
+      draw(card),
       (sheet == null ? void 0 : sheet.operation) === p.operation ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
         SecretSheet,
         {
@@ -1833,8 +2048,13 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           error: sheet.error,
           attempt: sheet.attempt,
           busy: busy2,
-          onSubmit: (typed) => void run(p.operation, p.values, typed),
-          onCancel: () => setSheet(null)
+          onSubmit: (typed) => void run(p.operation, p.values, present, typed),
+          onCancel: () => setSheet(null),
+          parts: {
+            input: (_d2 = settings.lookFor) == null ? void 0 : _d2.call(settings, "Input"),
+            button: (_e = settings.lookFor) == null ? void 0 : _e.call(settings, "Button"),
+            secondary: (defaultLooks == null ? void 0 : defaultLooks[SECONDARY_BUTTON]) ? (_f = settings.lookFor) == null ? void 0 : _f.call(settings, "Button", defaultLooks[SECONDARY_BUTTON]) : void 0
+          }
         }
       ) : null
     ] });
@@ -1850,13 +2070,14 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native12.View, { testID: "answer-bubble", style: bubble(answerWidth, "flex-start", answerBox), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Ink, { color: answerLook == null ? void 0 : answerLook.color, background: answerBox.backgroundColor, children: [
             entry.status === "streaming" && !entry.text && !entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: "Thinking\u2026", size: "sm", tone: "muted" }) : null,
             entry.text ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.text, size: "md" }) : null,
-            entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.JSONUIProvider, { registry, store: entry.store, handlers, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.Renderer, { spec: entry.spec, registry, includeStandard: false, loading: entry.status === "streaming" }) }) : null,
+            entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.JSONUIProvider, { registry, store: entry.store, handlers: handlersFor(i), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.Renderer, { spec: entry.spec, registry, includeStandard: false, loading: entry.status === "streaming" }) }) : null,
             /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(SourceErrors, { store: entry.store }),
             entry.error ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.error, size: "sm", tone: "error" }) : null
-          ] }) })
+          ] }) }),
+          pending && pendingEntry === i ? renderPending(pending) : null
         ] }, i);
       }),
-      pending ? renderPending(pending) : null
+      pending && (pendingEntry === null || pendingEntry >= entries.length) ? renderPending(pending) : null
     ] }),
     showComposer ? (
       // Multi-line: return adds a new line, so only Send sends.
@@ -1868,7 +2089,8 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
           onChangeText: setInput,
           placeholder,
           disabled: busy,
-          right: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Button, { label: "Send", size: "sm", disabled: busy || !input.trim(), onPress: () => void ask(input) })
+          look: (_c = settings.lookFor) == null ? void 0 : _c.call(settings, "Input"),
+          right: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Button, { label: "Send", size: "sm", disabled: busy || !input.trim(), onPress: () => void ask(input), look: (_d = settings.lookFor) == null ? void 0 : _d.call(settings, "Button") })
         }
       )
     ) : null
