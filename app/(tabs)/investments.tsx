@@ -5,6 +5,7 @@ import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 're
 import { default as LucideDynamic } from '../../components/LucideDynamic';
 import { default as NativeFlowGiftedChart } from '../../components/NativeFlowGiftedChart';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getThemeColors } from '../../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -14,7 +15,7 @@ function Investments() {
   const routeParams = useLocalSearchParams();
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -91,7 +92,7 @@ function Investments() {
               </View>
       </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

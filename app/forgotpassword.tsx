@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, View, TouchableOpacity, Text, TextInput, Activi
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getThemeColors } from '../config/theme';
 import { useAuthActions } from '../lib/auth/useAuth';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -24,7 +25,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -70,7 +71,7 @@ export default function ForgotPassword() {
               </TouchableOpacity>
       </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

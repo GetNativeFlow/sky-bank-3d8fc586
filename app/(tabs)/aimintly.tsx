@@ -1,14 +1,16 @@
 import { Can } from '@/components/Can';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Text, TextInput } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text, TextInput, ActivityIndicator } from 'react-native';
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getThemeColors } from '../../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { bindUi } from '../../lib/ui';
 import * as nfDynamicUi from '../../lib/dynamicUi';
 import * as nfVoice from '../../lib/voice';
+import { getThemeColors as nfVoiceColors } from '../../config/theme';
 
 function AIMintly() {
   const colors = getThemeColors();
@@ -17,11 +19,13 @@ function AIMintly() {
   const [state_c58f0af1_09d2_4b97_8329_6a67b9fd0bfb, setState_c58f0af1_09d2_4b97_8329_6a67b9fd0bfb] = useState({ isBusy: false });
   const [state_400551d6_073b_49ef_9023_97e45ce65507, setState_400551d6_073b_49ef_9023_97e45ce65507] = useState({ text: "", isFocused: false, errorMessage: "", isValid: true });
   const [_uiOv, _setUiOv] = useState({});
-  const ui = bindUi(_uiOv, _setUiOv, { "Column 1": "node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53", "Row 1": "node_197618e6_6a58_4ff5_86b2_ec4abf21a149", "Center 1": "node_7cf473f0_9fb3_46c9_b6ea_e1d2adc97516", "Center 2": "node_60b603f5_bc9d_4110_acff_2279c9cb9aab", "Row 2": "node_f03922b6_b9f8_4981_848e_50e17b7a1538", "Box 2": "node_91cb14db_ad0c_47a1_b4a9_3a921a1960fe", "Box 3": "node_1fb014ad_bc4b_46fb_bd13_2e2c1b9ff2c0", "Column 2": "node_dc9e4259_a235_4772_81c9_fcb47ccf56e7", "Text 1": "node_407f530f_19be_46f2_9d7b_92c1fcd94f11", "Text 2": "node_5c4f9d0f_7313_40ef_bc75_1a412cc0fc87", "Column 3": "node_fed856f6_d758_4f41_a0c8_c7ac50b2f8c3", "Center 3": "node_034e1270_f38f_4206_b461_0e16d7e4e62c", "Center 4": "node_01612518_844b_4c2e_8b84_8603fba727eb", "Center 5": "node_d5dc431e_a232_4268_a578_517897205629", "Row 3": "node_7212e92a_8f2d_4270_b88b_9c2f16c7e898", "Box 4": "node_1d848026_6fda_4902_ae90_2853c53d7d5b", "Box 5": "node_f38b9a4c_32be_4e33_887e_7318a11b5c03", "Box 6": "node_495b5e6f_5e31_4e3c_ad39_44cd6dfafc14", "Text 3": "node_faadea75_6825_4237_ad62_4393e1b62883", "Text 4": "node_ead86d71_556a_453d_b04b_bd401f2e9c22", "Column 4": "node_1e6a29ee_b2fc_4769_9d82_c3b35bf7fb05", "Row 4": "node_5e9453b1_412b_406f_8bc2_eeffb3554791", "Pressable 1": "node_53ed257d_9186_489b_b18e_89d3b6825dd2", "Text 5": "node_334ff4cc_398e_4744_b9e6_8919a476c60a", "Pressable 2": "node_ec37f844_1ef8_4a2f_a0f8_43dce9bfefed", "Text 6": "node_601ce714_2405_4fa5_a9b7_299fd0076aa8", "Row 5": "node_03b7e77e_434b_45c3_8f1d_c26a8c461847", "Pressable 3": "node_57cd631b_e1dc_45e1_8c85_91816e0819c7", "Text 7": "node_af306bfa_a0b8_46a9_8286_af021045b709", "Pressable 4": "node_b7630fd2_1d27_4a2f_bf3d_de755742b0ec", "Text 8": "node_58907809_e352_413c_95b9_1bd1bdbba21e", "Dynamic UI": "node_c58f0af1_09d2_4b97_8329_6a67b9fd0bfb", "Row 6": "node_d872f965_2885_414e_a83e_8f899d906701", "Input": "node_400551d6_073b_49ef_9023_97e45ce65507", "Pressable 5": "node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70", "Icon 1": "node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65", "Pressable 6": "node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6", "Icon 2": "node_fcef7438_a598_46a0_a976_aac5ea9ce19a", "Text 9": "node_ce1ce562_5a51_4f23_bca1_b668a565c6c7" }, { node_400551d6_073b_49ef_9023_97e45ce65507: setState_400551d6_073b_49ef_9023_97e45ce65507 }, { node_400551d6_073b_49ef_9023_97e45ce65507: ["text"] }, { node_400551d6_073b_49ef_9023_97e45ce65507: state_400551d6_073b_49ef_9023_97e45ce65507 });
+  const ui = bindUi(_uiOv, _setUiOv, { "Column 1": "node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53", "Row 1": "node_197618e6_6a58_4ff5_86b2_ec4abf21a149", "Center 1": "node_7cf473f0_9fb3_46c9_b6ea_e1d2adc97516", "Center 2": "node_60b603f5_bc9d_4110_acff_2279c9cb9aab", "Row 2": "node_f03922b6_b9f8_4981_848e_50e17b7a1538", "Box 2": "node_91cb14db_ad0c_47a1_b4a9_3a921a1960fe", "Box 3": "node_1fb014ad_bc4b_46fb_bd13_2e2c1b9ff2c0", "Column 2": "node_dc9e4259_a235_4772_81c9_fcb47ccf56e7", "Text 1": "node_407f530f_19be_46f2_9d7b_92c1fcd94f11", "Text 2": "node_5c4f9d0f_7313_40ef_bc75_1a412cc0fc87", "Column 3": "node_fed856f6_d758_4f41_a0c8_c7ac50b2f8c3", "Center 3": "node_034e1270_f38f_4206_b461_0e16d7e4e62c", "Center 4": "node_01612518_844b_4c2e_8b84_8603fba727eb", "Center 5": "node_d5dc431e_a232_4268_a578_517897205629", "Row 3": "node_7212e92a_8f2d_4270_b88b_9c2f16c7e898", "Box 4": "node_1d848026_6fda_4902_ae90_2853c53d7d5b", "Box 5": "node_f38b9a4c_32be_4e33_887e_7318a11b5c03", "Box 6": "node_495b5e6f_5e31_4e3c_ad39_44cd6dfafc14", "Text 3": "node_faadea75_6825_4237_ad62_4393e1b62883", "Text 4": "node_ead86d71_556a_453d_b04b_bd401f2e9c22", "Column 4": "node_1e6a29ee_b2fc_4769_9d82_c3b35bf7fb05", "Row 4": "node_5e9453b1_412b_406f_8bc2_eeffb3554791", "Pressable 1": "node_53ed257d_9186_489b_b18e_89d3b6825dd2", "Text 5": "node_334ff4cc_398e_4744_b9e6_8919a476c60a", "Pressable 2": "node_ec37f844_1ef8_4a2f_a0f8_43dce9bfefed", "Text 6": "node_601ce714_2405_4fa5_a9b7_299fd0076aa8", "Row 5": "node_03b7e77e_434b_45c3_8f1d_c26a8c461847", "Pressable 3": "node_57cd631b_e1dc_45e1_8c85_91816e0819c7", "Text 7": "node_af306bfa_a0b8_46a9_8286_af021045b709", "Pressable 4": "node_b7630fd2_1d27_4a2f_bf3d_de755742b0ec", "Text 8": "node_58907809_e352_413c_95b9_1bd1bdbba21e", "Dynamic UI": "node_c58f0af1_09d2_4b97_8329_6a67b9fd0bfb", "Row 6": "node_d872f965_2885_414e_a83e_8f899d906701", "Input": "node_400551d6_073b_49ef_9023_97e45ce65507", "Icon Button": "node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70", "Pressable 5": "node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6", "Icon": "node_fcef7438_a598_46a0_a976_aac5ea9ce19a", "Text 9": "node_ce1ce562_5a51_4f23_bca1_b668a565c6c7" }, { node_400551d6_073b_49ef_9023_97e45ce65507: setState_400551d6_073b_49ef_9023_97e45ce65507 }, { node_400551d6_073b_49ef_9023_97e45ce65507: ["text"] }, { node_400551d6_073b_49ef_9023_97e45ce65507: state_400551d6_073b_49ef_9023_97e45ce65507 });
+  const voiceState = nfVoice.useVoiceState();
+  const voiceColors = nfVoiceColors();
   const [question, setQuestion] = useState("");
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","left","right"]} style={styles.screenRoot}>
       <StatusBar style="auto" />
       <View style={styles.container}>
       {(!(_uiOv.node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53 && _uiOv.node_25f4b4cd_128c_4d38_b0aa_044a8ba55f53.hidden)) && (
@@ -168,7 +172,7 @@ function AIMintly() {
               {(!(_uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.hidden)) && (
               <View testID="d872f965-2885-414e-a83e-8f899d906701" style={[styles.node_d872f965_2885_414e_a83e_8f899d906701, _uiOv.node_d872f965_2885_414e_a83e_8f899d906701 && _uiOv.node_d872f965_2885_414e_a83e_8f899d906701.style]}>
                         {(!(_uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.hidden)) && (
-                        <TextInput testID="400551d6-073b-49ef-9023-97e45ce65507" accessible={true} accessibilityRole="button" style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 0, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 16, backgroundColor: 'transparent', maxHeight: 120, textAlignVertical: 'top', fieldSizing: 'content' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Ask anything" multiline value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
+                        <TextInput testID="400551d6-073b-49ef-9023-97e45ce65507" style={[[styles.node_400551d6_073b_49ef_9023_97e45ce65507, { borderWidth: 0, borderColor: '#D1D5DB', borderRadius: 26, padding: 10, fontSize: 16, backgroundColor: 'transparent', maxHeight: 120, textAlignVertical: 'top', fieldSizing: 'content' }], _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507 && _uiOv.node_400551d6_073b_49ef_9023_97e45ce65507.style]} placeholder="Ask anything" multiline value={question ?? ''} onChangeText={(v) => { if (typeof setState_400551d6_073b_49ef_9023_97e45ce65507 === 'function') setState_400551d6_073b_49ef_9023_97e45ce65507(prev => ({...prev, text: v})); setQuestion(v); }} onSubmitEditing={() => {
                             try {
                               nfDynamicUi.ask("c58f0af1-09d2-4b97-8329-6a67b9fd0bfb", question);
                               ui.hide('fed856f6-d758-4f41-a0c8-c7ac50b2f8c3');
@@ -179,10 +183,8 @@ function AIMintly() {
                           }} />
                         )}
                         {(!(_uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70 && _uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70.hidden)) && (
-                        <TouchableOpacity testID="7d0f2c4e-5b1a-4e8f-9c3d-2a6b8e1f4c70" accessible={true} accessibilityRole="button" style={[styles.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70, _uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70 && _uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70.style]} activeOpacity={0.7} onPress={() => { try { void nfVoice.toggle({ lang: undefined, onText: (text) => setQuestion(text) }); } catch(e) { console.error('[Action Error]', e); } }}>
-                                    {(!(_uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65 && _uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65.hidden)) && (
-                                    <View testID="5e3a9c1d-7f2b-4d6e-8a4c-9b1f3e7d2a65" accessible={true} accessibilityRole="image" style={[{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }, _uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65 && _uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65.style]}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke={((_uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65 && _uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65.style && _uiOv.node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65.style.color) || '#2541B2')} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></Path><Path d="M19 10v2a7 7 0 0 1-14 0v-2"></Path><Line x1="12" x2="12" y1="19" y2="22"></Line></G></Svg></View>
-                                    )}
+                        <TouchableOpacity testID="7d0f2c4e-5b1a-4e8f-9c3d-2a6b8e1f4c70" accessible={true} accessibilityRole="button" style={[[styles.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70, { backgroundColor: 'transparent', borderRadius: 26, padding: 8, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, width: 38, height: 38, borderWidth: 1, borderColor: '#C7D2FE', alignSelf: 'center' }, voiceState === 'recording' && { backgroundColor: (voiceColors.error || '#DC2626') + '22', borderRadius: 999 }], _uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70 && _uiOv.node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70.style]} activeOpacity={0.7} disabled={voiceState === 'sending'} onPress={() => { try { void nfVoice.toggle({ lang: undefined, onText: (text) => setQuestion(text) }); } catch(e) { console.error('[Action Error]', e); } }}>
+                          {voiceState === 'sending' ? <ActivityIndicator size="small" color={'#2541B2'} /> : voiceState === 'recording' ? (<View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke={(voiceColors.error || '#DC2626')} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></Path><Path d="M19 10v2a7 7 0 0 1-14 0v-2"></Path><Line x1="12" x2="12" y1="19" y2="22"></Line></G></Svg></View>) : (<View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center' }}><Svg viewBox="0 0 24 24" width={22} height={22} fill="none"><G stroke="#2541B2" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></Path><Path d="M19 10v2a7 7 0 0 1-14 0v-2"></Path><Line x1="12" x2="12" y1="19" y2="22"></Line></G></Svg></View>)}
                         </TouchableOpacity>
                         )}
                         {(!(_uiOv.node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6 && _uiOv.node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6.hidden)) && (
@@ -208,7 +210,7 @@ function AIMintly() {
       </View>
       )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -570,17 +572,10 @@ function createStyles() {
     minWidth: 0,
   },
   node_7d0f2c4e_5b1a_4e8f_9c3d_2a6b8e1f4c70: {
-    width: 36,
-    height: 44,
-    alignItems: 'center',
     borderColor: '#C7D2FE',
     borderWidth: 1,
     borderRadius: 26,
-    justifyContent: 'center',
     backgroundColor: 'transparent',
-  },
-  node_5e3a9c1d_7f2b_4d6e_8a4c_9b1f3e7d2a65: {
-    color: '#2541B2',
   },
   node_f51b634d_2c63_42b3_bb8a_88e6bd8830f6: {
     width: 44,

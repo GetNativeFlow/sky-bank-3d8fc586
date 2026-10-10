@@ -9,10 +9,9 @@
   ],
   "serverArtifacts": {
     "rlsMigrations": [
-      "supabase/migrations/20261005162809_auth_rls.sql",
-      "supabase/migrations/20261006161404_auth_rls.sql",
-      "supabase/migrations/20261007154118_auth_rls.sql",
-      "supabase/migrations/20261007155312_auth_rls.sql"
+      "supabase/migrations/20261007124801_auth_rls.sql",
+      "supabase/migrations/20261010062318_auth_rls.sql",
+      "supabase/migrations/20261010062405_auth_rls.sql"
     ],
     "accessPolicyJson": null,
     "policies": []
@@ -28,11 +27,11 @@
     "lib/auth/DeepLinkGate.ts": "57c0c821b6104107",
     "lib/auth/offlineQueue.ts": "d6ee0d584aedd52e",
     "components/Can.tsx": "3d848fae39332fd8",
-    "lib/auth/adapter.ts": "12a83efc09fd485e",
+    "lib/auth/adapter.ts": "b2a6a736a891fdac",
     "lib/auth/BiometricGate.tsx": "dea00f29d66bafff",
     "lib/auth/BiometricEnrolmentSheet.tsx": "a18c8ec156149e4f",
     "lib/auth/BiometricSettingsRow.tsx": "4695fad2768a0d8c",
-    "supabase/migrations/20261007155312_auth_rls.sql": "c24514ddda97310b"
+    "supabase/migrations/20261010062405_auth_rls.sql": "c24514ddda97310b"
   },
   "enforcementAnnotations": {}
 }

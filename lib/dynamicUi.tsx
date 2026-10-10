@@ -550,43 +550,55 @@ const CONFIGS: Record<string, any> = {
 
 /** The themed components ticked for Dynamic UI. Read on every render, so theme colors stay current. */
 function looks() {
+  const colors = getThemeColors() as Record<string, string>;
   return {
     Heading: {
-      "Title": { color: "#0F1E4D" },
-      "On dark": { color: "#FFFFFF" },
+      "Title": { color: colors.primaryText, fontSize: 18, fontWeight: "700" },
+      "On dark": { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
+      "Amount": { color: colors.primaryText, fontSize: 28, fontWeight: "800", letterSpacing: -0.5 },
     },
     Card: {
-      "Card": { color: "#0F1E4D", padding: 16, borderColor: "#E5E7EB", borderWidth: 1, borderRadius: 20, backgroundColor: "#FFFFFF" },
-      "Highlight": { color: "#FFFFFF", padding: 20, borderRadius: 20, backgroundColor: "#0D1B4C" },
-      "Soft blue": { color: "#0F1E4D", padding: 16, borderColor: "#C7D2FE", borderWidth: 1, borderRadius: 16, backgroundColor: "#E8EEFF" },
+      "Card": { gap: 12, color: "#0F1E4D", padding: 16, borderColor: "#E5E7EB", borderWidth: 1, borderRadius: 20, backgroundColor: colors.surface },
+      "Highlight": { gap: 12, color: "#FFFFFF", padding: 16, borderRadius: 20, backgroundColor: "#0D1B4C" },
+      "Soft blue": { gap: 12, color: "#0F1E4D", padding: 16, borderColor: "#C7D2FE", borderWidth: 1, borderRadius: 20, backgroundColor: "#E8EEFF" },
     },
     Badge: {
-      "Success": { color: "#16A34A", paddingTop: 4, paddingLeft: 10, borderRadius: 12, paddingRight: 10, paddingBottom: 4, backgroundColor: "#D3F0DE" },
-      "Warning": { color: "#B45309", paddingTop: 4, paddingLeft: 10, borderRadius: 12, paddingRight: 10, paddingBottom: 4, backgroundColor: "#FBE6C8" },
-      "Danger": { color: "#B91C1C", paddingTop: 4, paddingLeft: 10, borderRadius: 12, paddingRight: 10, paddingBottom: 4, backgroundColor: "#FBDADA" },
-      "Info": { color: "#2541B2", paddingTop: 4, paddingLeft: 10, borderRadius: 12, paddingRight: 10, paddingBottom: 4, backgroundColor: "#DCE6FB" },
+      "Success": { color: "#16A34A", fontSize: 12, fontWeight: "600", paddingTop: 4, paddingLeft: 10, borderRadius: 999, paddingRight: 10, paddingBottom: 4, backgroundColor: "#D3F0DE" },
+      "Warning": { color: "#B45309", fontSize: 12, fontWeight: "600", paddingTop: 4, paddingLeft: 10, borderRadius: 999, paddingRight: 10, paddingBottom: 4, backgroundColor: "#FBE6C8" },
+      "Danger": { color: "#B91C1C", fontSize: 12, fontWeight: "600", paddingTop: 4, paddingLeft: 10, borderRadius: 999, paddingRight: 10, paddingBottom: 4, backgroundColor: "#FBDADA" },
+      "Info": { color: "#2541B2", fontSize: 12, fontWeight: "600", paddingTop: 4, paddingLeft: 10, borderRadius: 999, paddingRight: 10, paddingBottom: 4, backgroundColor: "#DCE6FB" },
+      "Neutral": { color: "#4B5563", fontSize: 12, fontWeight: "600", paddingTop: 4, paddingLeft: 10, borderRadius: 999, paddingRight: 10, paddingBottom: 4, backgroundColor: "#EEF0F4" },
     },
     Form: {
-      "Form": { gap: 12, padding: 16, borderColor: "#E5E7EB", borderWidth: 1, borderRadius: 20, backgroundColor: "#FFFFFF" },
+      "Form": { gap: 14, padding: 16, borderColor: "#E5E7EB", borderWidth: 1, borderRadius: 20, backgroundColor: colors.surface },
     },
     Box: {
       "Question bubble": { color: "#FFFFFF", paddingTop: 12, paddingLeft: 16, borderRadius: 20, paddingRight: 16, paddingBottom: 12, backgroundColor: "#2F4DE0" },
       "Answer bubble": { gap: 12, color: "#374151", padding: 16, borderColor: "#E5E7EB", borderWidth: 1, borderRadius: 20, backgroundColor: "#FFFFFF" },
     },
     Text: {
-      "Body": { color: "#374151" },
-      "Muted": { color: "#6B7280" },
-      "On dark": { color: "#FFFFFF" },
-      "On dark muted": { color: "#AEB8E0" },
+      "Body": { color: "#374151", fontSize: 15, lineHeight: 22 },
+      "Muted": { color: "#6B7280", fontSize: 13, lineHeight: 18 },
+      "On dark": { color: "#FFFFFF", fontSize: 15, lineHeight: 22 },
+      "On dark muted": { color: "#AEB8E0", fontSize: 13, lineHeight: 18 },
     },
     Button: {
-      "Primary": { color: "#FFFFFF", paddingTop: 12, paddingLeft: 20, borderRadius: 24, paddingRight: 20, paddingBottom: 12, backgroundColor: "#2F4DE0" },
-      "Secondary": { color: "#1E3A8A", paddingTop: 12, borderColor: "#C7D2FE", borderWidth: 1, paddingLeft: 20, borderRadius: 24, paddingRight: 20, paddingBottom: 12, backgroundColor: "#FFFFFF" },
+      "Primary": { color: "#FFFFFF", fontSize: 15, fontWeight: "600", paddingTop: 12, paddingLeft: 20, borderRadius: 24, paddingRight: 20, paddingBottom: 12, backgroundColor: colors.primary },
+      "Secondary": { color: "#1E3A8A", fontSize: 15, fontWeight: "600", paddingTop: 12, borderColor: "#C7D2FE", borderWidth: 1, paddingLeft: 20, borderRadius: 24, paddingRight: 20, paddingBottom: 12, backgroundColor: colors.surface },
+    },
+    Input: {
+      "Field": { color: colors.primaryText, fontSize: 15, paddingTop: 12, borderColor: "#D1D5DB", borderWidth: 1, paddingLeft: 14, borderRadius: 14, paddingRight: 14, paddingBottom: 12, backgroundColor: colors.surface },
+    },
+    Select: {
+      "Field": { color: colors.primaryText, fontSize: 15, paddingTop: 12, borderColor: "#D1D5DB", borderWidth: 1, paddingLeft: 14, borderRadius: 14, paddingRight: 14, paddingBottom: 12, backgroundColor: colors.surface },
+    },
+    Switch: {
+      "Field": { borderColor: "#D1D5DB", backgroundColor: colors.primary },
     },
   };
 }
 
-const DEFAULT_LOOKS: Record<string, string> = {"Heading":"Title","Card":"Card","Form":"Form","Box":"Question bubble","Text":"Body","Button":"Primary","Button:secondary":"Secondary"};
+const DEFAULT_LOOKS: Record<string, string> = {"Heading":"Title","Card":"Card","Form":"Form","Box":"Question bubble","Text":"Body","Button":"Primary","Input":"Field","Select":"Field","Switch":"Field","Button:secondary":"Secondary"};
 
 /** The app's theme colors, by Dynamic UI's names. Read on every render, so theme changes apply; unset ones keep its defaults. */
 function uiTheme(): Partial<UITheme> {

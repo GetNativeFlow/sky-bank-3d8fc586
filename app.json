@@ -44,7 +44,12 @@
           }
         }
       ],
-      "expo-speech-recognition"
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Sky Bank uses the microphone so you can ask questions by voice."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

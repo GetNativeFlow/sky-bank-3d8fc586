@@ -1,20 +1,14 @@
-import { Can } from '@/components/Can';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Text, TextInput, FlatList } from 'react-native';
-import { Svg, Circle, Line, Path, Rect, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
-import { default as StudioSpinner } from '../components/StudioSpinner';
-import { default as LucideDynamic } from '../components/LucideDynamic';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
+import { default as LucideDynamic } from '../../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { getThemeColors } from '../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { appRuntime as app } from '../lib/app';
+import { appRuntime as app } from '../../lib/app';
 
-function Transactions() {
-  const colors = getThemeColors();
+export default function BottomBar({ systemNav, systemInsets }) {
   const router = useRouter();
   const routeParams = useLocalSearchParams();
-  const [state_0a329270_7887_48c2_822b_f14e1ac7ecab, setState_0a329270_7887_48c2_822b_f14e1ac7ecab] = useState({ searchText: "", isFocused: false, isDropdownOpen: false, selectedItem: "" });
   // ── Auto-generated fetch helpers ──
   const __vars = {};
   // Tokenise a variable path the same way resolvePathValue does (see
@@ -411,7 +405,7 @@ function Transactions() {
     return v;
   };
 
-  const [listtransactionsData, setListtransactionsData] = useState([]);
+  const [listtransactionsData, setListtransactionsData] = useState(null);
   const [listtransactionsDataLoading, setListtransactionsDataLoading] = useState(false);
   const [listtransactionsDataError, setListtransactionsDataError] = useState(null);
 
@@ -420,11 +414,7 @@ function Transactions() {
     setListtransactionsDataError(null);
     fetch(interpolateVars('https://wylsvmumemzvltauwqno.supabase.co/rest/v1/transactions') + '?' + new URLSearchParams([[interpolateVars('order'), interpolateVars('created_at.desc')]]).toString(), { method: 'GET', headers: { 'apikey': interpolateVars('sb_publishable_7a7JrfhaF6ofII_rSFE8mQ_dZWL0adq') } })
       .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-      .then(json => {
-        const arr = walkArrayPath(json, '');
-        setListtransactionsData(Array.isArray(arr) ? arr : []);
-        setListtransactionsDataLoading(false);
-      })
+      .then(json => { setListtransactionsData(json); setListtransactionsDataLoading(false); })
       .catch(err => {
         console.warn('[Preview] List transactions fetch failed:', err && err.message ? err.message : err);
         setListtransactionsDataError(err && err.message ? err.message : String(err));
@@ -434,195 +424,44 @@ function Transactions() {
 
   useEffect(() => { fetchListtransactionsData(); }, []);
 
+  const [listaccountsthedemohasonemainaccountData, setListaccountsthedemohasonemainaccountData] = useState(null);
+  const [listaccountsthedemohasonemainaccountDataLoading, setListaccountsthedemohasonemainaccountDataLoading] = useState(false);
+  const [listaccountsthedemohasonemainaccountDataError, setListaccountsthedemohasonemainaccountDataError] = useState(null);
+
+  const fetchListaccountsthedemohasonemainaccountData = () => {
+    setListaccountsthedemohasonemainaccountDataLoading(true);
+    setListaccountsthedemohasonemainaccountDataError(null);
+    fetch(interpolateVars('https://wylsvmumemzvltauwqno.supabase.co/rest/v1/accounts') + '?' + new URLSearchParams([[interpolateVars('select'), interpolateVars('*')]]).toString(), { method: 'GET', headers: { 'apikey': interpolateVars('sb_publishable_7a7JrfhaF6ofII_rSFE8mQ_dZWL0adq') } })
+      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(json => { setListaccountsthedemohasonemainaccountData(json); setListaccountsthedemohasonemainaccountDataLoading(false); })
+      .catch(err => {
+        console.warn('[Preview] List accounts (the demo has one main account) fetch failed:', err && err.message ? err.message : err);
+        setListaccountsthedemohasonemainaccountDataError(err && err.message ? err.message : String(err));
+        setListaccountsthedemohasonemainaccountDataLoading(false);
+      });
+  };
+
+  useEffect(() => { fetchListaccountsthedemohasonemainaccountData(); }, []);
+
   return (
-    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.containerContent}
-      >
-      <StatusBar style="auto" />
-      <View testID="555bdfb3-8e43-4a93-b787-3f84eb6d4901" style={styles.node_555bdfb3_8e43_4a93_b787_3f84eb6d4901}>
-              <Text testID="6794e9f8-5552-4ad8-bca0-8d95761bef2c" accessible={true} accessibilityRole="header" accessibilityLabel="Transactions" style={styles.node_6794e9f8_5552_4ad8_bca0_8d95761bef2c} onPress={() => { try { app.navigate("Accounts"); } catch(e) { console.error('[Action Error]', e); } }}>Transactions</Text>
-              <View testID="0a329270-7887-48c2-822b-f14e1ac7ecab" accessibilityRole="search" style={{ position: 'relative' }}>
-              <View style={[styles.node_0a329270_7887_48c2_822b_f14e1ac7ecab, { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', borderRadius: 16, backgroundColor: '#FFFFFF', paddingHorizontal: 8 }]}>
-                <View style={{ width: 18, height: 18, marginHorizontal: 4 }}><Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><Circle cx={11} cy={11} r={8} /><Line x1={21} y1={21} x2={16.65} y2={16.65} /></Svg></View>
-                <TextInput style={{ flex: 1, fontSize: 16, padding: 8, color: '#333' }} placeholder="Search transactions" placeholderTextColor="#9CA3AF" value={typeof state_0a329270_7887_48c2_822b_f14e1ac7ecab !== 'undefined' ? (state_0a329270_7887_48c2_822b_f14e1ac7ecab.searchText ?? '') : ''} onChangeText={(v) => { if (typeof setState_0a329270_7887_48c2_822b_f14e1ac7ecab === 'function') setState_0a329270_7887_48c2_822b_f14e1ac7ecab(prev => ({...prev, searchText: v})); }} onFocus={() => { if (typeof setState_0a329270_7887_48c2_822b_f14e1ac7ecab === 'function') setState_0a329270_7887_48c2_822b_f14e1ac7ecab(prev => ({...prev, isFocused: true, isDropdownOpen: true})); }} onBlur={() => { if (typeof setState_0a329270_7887_48c2_822b_f14e1ac7ecab === 'function') setState_0a329270_7887_48c2_822b_f14e1ac7ecab(prev => ({...prev, isFocused: false})); }} returnKeyType="search" />
-                
-                  {(typeof state_0a329270_7887_48c2_822b_f14e1ac7ecab !== 'undefined' && state_0a329270_7887_48c2_822b_f14e1ac7ecab.searchText) ? <TouchableOpacity onPress={() => { if (typeof setState_0a329270_7887_48c2_822b_f14e1ac7ecab === 'function') setState_0a329270_7887_48c2_822b_f14e1ac7ecab(prev => ({...prev, searchText: '', selectedItem: ''})); }}><View style={{ width: 18, height: 18, marginHorizontal: 4 }}><Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><Line x1={18} y1={6} x2={6} y2={18} /><Line x1={6} y1={6} x2={18} y2={18} /></Svg></View></TouchableOpacity> : null}
-              </View>
-              </View>
-              {listtransactionsDataLoading ? <View testID="306639b2-b31a-4245-aa30-d99835890405" style={{ padding: 20, alignItems: 'center' }}><StudioSpinner /></View> : <View style={[styles.node_306639b2_b31a_4245_aa30_d99835890405, styles.node_306639b2_b31a_4245_aa30_d99835890405Content]}>
-                {(Array.isArray(listtransactionsData) ? listtransactionsData : []).map((item, index, arr) => (
-                  <View key={index}>
-                    <View>
-                        <View testID="a70079d4-dcfe-4c19-a309-e57bee5820b9" style={styles.node_a70079d4_dcfe_4c19_a309_e57bee5820b9}>
-                                    <View testID="975fc607-6e3c-4a22-926f-a9d24a4cb7a8" style={styles.node_975fc607_6e3c_4a22_926f_a9d24a4cb7a8}>
-                                                  <View testID="968e697f-b45a-4cc4-a834-7072041ba259" accessible={true} accessibilityRole="image" style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name={__applyTransforms(item.category, [{"type":"map-icon","cases":[{"then":"utensils","when":"food"},{"then":"utensils","when":"dining"},{"then":"utensils","when":"restaurants"},{"then":"car","when":"transport"},{"then":"plane","when":"travel"},{"then":"fuel","when":"fuel"},{"then":"smartphone","when":"upi"},{"then":"arrow-left-right","when":"transfer"},{"then":"repeat","when":"subscriptions"},{"then":"film","when":"entertainment"},{"then":"briefcase","when":"salary"},{"then":"wallet","when":"income"},{"then":"rotate-ccw","when":"refund"},{"then":"percent","when":"interest"},{"then":"shopping-bag","when":"shopping"},{"then":"shopping-cart","when":"groceries"},{"then":"file-text","when":"bills"},{"then":"zap","when":"utilities"},{"then":"house","when":"rent"},{"then":"heart-pulse","when":"health"},{"then":"graduation-cap","when":"education"},{"then":"trending-up","when":"investment"},{"then":"banknote","when":"cash"},{"then":"banknote","when":"atm"},{"then":"coffee","when":"coffee"}],"default":"receipt","matchMode":"ci"}])} size={18} color={'#10B981'} strokeWidth={2} /></View>
-                                    </View>
-                                    <View testID="7aca105d-d2e6-460f-87fd-b6629d031dfd" style={styles.node_7aca105d_d2e6_460f_87fd_b6629d031dfd}>
-                                                  <Text testID="4b3cebd0-60c6-48b9-bd4a-82f22ac6e73f" style={styles.node_4b3cebd0_60c6_48b9_bd4a_82f22ac6e73f}>{(() => { const __v = (item.merchant); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                                  <Text testID="a9ba5a69-35ed-4d5a-9a3a-28164f5ede69" style={styles.node_a9ba5a69_35ed_4d5a_9a3a_28164f5ede69}>{(() => { const __v = (item.category); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                    </View>
-                                    <View testID="992f4c02-eced-4526-aed9-c079ea5c340c" style={styles.node_992f4c02_eced_4526_aed9_c079ea5c340c}>
-                                                  <Text testID="1627dbfb-9929-4af5-95cb-78ce0da7472b" style={[styles.node_1627dbfb_9929_4af5_95cb_78ce0da7472b, { "color": (String(item.type) === String("credit") ? "#249689" : "#FF5963") }]}>{(() => { const __v = (__applyTransforms(item.amount, [{"type":"format-currency","locale":"en-US","currency":"INR"}])); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                                  <Text testID="ab7eed4e-f78b-4188-bfcc-2c8c37408250" style={styles.node_ab7eed4e_f78b_4188_bfcc_2c8c37408250}>{(() => { const __v = (__applyTransforms(item.created_at, [{"type":"format-date","format":"short","locale":"en-US"}])); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                    </View>
-                                    <View testID="203e8cf8-29a9-47ad-b245-f0d3ae8c1947" accessible={true} accessibilityRole="image" style={{ width: 16, height: 16, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={16} height={16} fill="none"><G stroke="#D1D5DB" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m9 18 6-6-6-6"></Path></G></Svg></View>
-                        </View>
-                    </View>
-                    {index < arr.length - 1 && <View style={{ height: 1, backgroundColor: '#F0F1F4', marginVertical: 0 }} />}
-                  </View>
-                ))}
-              </View>}
-      </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View testID="eacf2dc8-09c2-42b4-98c0-5d67ad82ca18" style={[styles.node_eacf2dc8_09c2_42b4_98c0_5d67ad82ca18, { flexDirection: "row", alignItems: "stretch", backgroundColor: '#FFFFFF', borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.08)', paddingBottom: systemInsets.bottom, paddingLeft: systemInsets.left, paddingRight: systemInsets.right, minHeight: 50 + systemInsets.bottom }]}>
+          {systemNav.items.map((navItem) => (
+          <TouchableOpacity testID="f28e6610-ce6e-44e7-8526-d3a817546b63" key={navItem.pageId} onPress={navItem.onPress} activeOpacity={0.7} accessibilityRole="tab" accessibilityState={{ selected: navItem.active }} style={[styles.node_f28e6610_ce6e_44e7_8526_d3a817546b63, { flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2 }]}>
+                  <View testID="a80d5fd0-49c9-4a9c-8864-19335efe726e" accessible={true} accessibilityRole="image" style={[{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }, { "color": (String(navItem.active) === String("true") ? "#2563EB" : "#6B7280") }]}><LucideDynamic name={navItem.icon} size={20} color={(((String(navItem.active) === String("true") ? "#2563EB" : "#6B7280")) || '#9CA3AF')} strokeWidth={2} /></View>
+                  <Text testID="6272033a-5948-4809-a8c1-2c4e0ff1fcac" style={[styles.node_6272033a_5948_4809_a8c1_2c4e0ff1fcac, { "color": (String(navItem.active) === String("true") ? "#2563EB" : "#6B7280") }]} numberOfLines={1}>{(() => { const __v = (navItem.label); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
+          </TouchableOpacity>
+          ))}
+    </View>
   );
 }
 
-const styles = createStyles();
+const styles = StyleSheet.create({
+  node_f28e6610_ce6e_44e7_8526_d3a817546b63: {
+    flexDirection: 'column',
+    gap: 2,
+  },
+  node_6272033a_5948_4809_a8c1_2c4e0ff1fcac: {
+    fontSize: 10,
+  },
+});
 
-function createStyles() {
-  const colors = getThemeColors();
-  return StyleSheet.create({
-  screenRoot: {
-    flex: 1,
-    height: '100%',
-    width: '100%',
-    minWidth: 0,
-    alignSelf: 'stretch',
-    backgroundColor: '#ffffff',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F5F9',
-    height: '100%',
-    width: '100%',
-    minWidth: 0,
-    alignSelf: 'stretch',
-  },
-  containerContent: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    width: '100%',
-    alignSelf: 'stretch',
-  },
-  node_555bdfb3_8e43_4a93_b787_3f84eb6d4901: {
-    gap: 16,
-    paddingTop: 45,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 20,
-    backgroundColor: colors.background,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flexWrap: 'nowrap',
-    flexDirection: 'column',
-    minHeight: 0,
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  node_6794e9f8_5552_4ad8_bca0_8d95761bef2c: {
-    color: '#1E2A5A',
-    fontWeight: '800',
-    fontSize: 28,
-  },
-  node_0a329270_7887_48c2_822b_f14e1ac7ecab: {
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  node_306639b2_b31a_4245_aa30_d99835890405: {
-    _rnShadow: {"shadowColor":"#000","shadowOffset":{"width":0,"height":2},"shadowRadius":8,"shadowOpacity":0.05},
-    boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-    minHeight: 60,
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    flexWrap: 'nowrap',
-    overflow: 'visible',
-  },
-  node_306639b2_b31a_4245_aa30_d99835890405Content: {
-    paddingTop: 8,
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingBottom: 8,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  node_a70079d4_dcfe_4c19_a309_e57bee5820b9: {
-    padding: 10,
-    minHeight: 56,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    flexDirection: 'row',
-    gap: 8,
-    width: '100%',
-  },
-  node_975fc607_6e3c_4a22_926f_a9d24a4cb7a8: {
-    width: 36,
-    height: 36,
-    minHeight: 36,
-    borderRadius: 12,
-    backgroundColor: '#ECFDF5',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
-    overflow: 'hidden',
-  },
-  node_968e697f_b45a_4cc4_a834_7072041ba259: {
-    color: '#10B981',
-  },
-  node_7aca105d_d2e6_460f_87fd_b6629d031dfd: {
-    minHeight: 40,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    flexWrap: 'nowrap',
-    flexDirection: 'column',
-    gap: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    minWidth: 0,
-    overflow: 'hidden',
-  },
-  node_4b3cebd0_60c6_48b9_bd4a_82f22ac6e73f: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  node_a9ba5a69_35ed_4d5a_9a3a_28164f5ede69: {
-    color: '#6B7280',
-    fontSize: 12,
-  },
-  node_992f4c02_eced_4526_aed9_c079ea5c340c: {
-    minHeight: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    flexWrap: 'nowrap',
-    flexDirection: 'column',
-    gap: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    minWidth: 0,
-    overflow: 'hidden',
-  },
-  node_1627dbfb_9929_4af5_95cb_78ce0da7472b: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  node_ab7eed4e_f78b_4188_bfcc_2c8c37408250: {
-    color: '#9CA3AF',
-    fontSize: 12,
-  },
-  node_203e8cf8_29a9_47ad_b245_f0d3ae8c1947: {
-    color: '#D1D5DB',
-  },
-  });
-}
-
-export default function TransactionsGuarded(props: any) {
-  return <Can permissions={[]} redirectTo={"Login"}><Transactions {...props} /></Can>;
-}

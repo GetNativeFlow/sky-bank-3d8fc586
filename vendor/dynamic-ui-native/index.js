@@ -201,7 +201,7 @@ var COMPONENTS = {
   }
 };
 var COMPONENT_NAMES = Object.keys(COMPONENTS);
-var STYLABLE = ["Column", "Row", "Box", "Card", "Divider", "Text", "Heading", "Badge", "Button", "Form"];
+var STYLABLE = ["Column", "Row", "Box", "Card", "Divider", "Text", "Heading", "Badge", "Button", "Form", "BarChart", "LineChart"];
 
 // packages/dynamic-ui-catalog/src/values.ts
 var REDUCES = ["sum", "count", "avg", "min", "max", "first"];
@@ -229,11 +229,12 @@ function formatValue(value, format, options = {}) {
   if (format === "number") return formatNumber(n, options.locale, 0, 2);
   if (options.currency) {
     try {
-      return new Intl.NumberFormat(options.locale, { style: "currency", currency: options.currency }).format(n);
+      const digits = options.whole && Number.isInteger(n) ? { minimumFractionDigits: 0, maximumFractionDigits: 0 } : {};
+      return new Intl.NumberFormat(options.locale, { style: "currency", currency: options.currency, ...digits }).format(n);
     } catch {
     }
   }
-  return formatNumber(n, options.locale, 2, 2);
+  return options.whole && Number.isInteger(n) ? formatNumber(n, options.locale, 0, 0) : formatNumber(n, options.locale, 2, 2);
 }
 function formatNumber(n, locale, min, max) {
   try {
@@ -1181,10 +1182,25 @@ var import_react_native_svg = require("react-native-svg");
 var import_jsx_runtime6 = require("react/jsx-runtime");
 var SVG_NAMES_USED = ["Svg", "Rect", "Line", "Path", "Text"];
 var MAX_POINTS = 60;
-function colorFor(theme, tone) {
-  var _a;
+function colorFor(theme, tone, look) {
+  var _a, _b;
   if (tone) return theme[tone];
-  return (_a = theme.chart[0]) != null ? _a : theme.primary;
+  return (_b = (_a = look == null ? void 0 : look.view.backgroundColor) != null ? _a : theme.chart[0]) != null ? _b : theme.primary;
+}
+var WEB_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+function labelStyle(theme, look) {
+  var _a, _b, _c, _d, _e, _f;
+  const fontFamily = (_b = (_a = look == null ? void 0 : look.text) == null ? void 0 : _a.fontFamily) != null ? _b : import_react_native5.Platform.OS === "web" ? WEB_FONT : void 0;
+  return {
+    fontSize: (_d = (_c = look == null ? void 0 : look.text) == null ? void 0 : _c.fontSize) != null ? _d : 11,
+    fill: (_e = look == null ? void 0 : look.color) != null ? _e : theme.muted,
+    ...fontFamily ? { fontFamily } : {},
+    ...((_f = look == null ? void 0 : look.text) == null ? void 0 : _f.fontWeight) ? { fontWeight: String(look.text.fontWeight) } : {}
+  };
+}
+function valueLabel(value, format, options, symbol) {
+  const text2 = formatValue(value, format != null ? format : "number", { ...options, whole: true });
+  return format === "money" && !(options == null ? void 0 : options.currency) && symbol ? `${symbol}${text2}` : text2;
 }
 function toPoints(rows, x, y) {
   if (!Array.isArray(rows) || !x || !y) return [];
@@ -1210,7 +1226,8 @@ function Empty() {
 function labelEvery(count, max) {
   return Math.max(1, Math.ceil(count / max));
 }
-function BarChart({ rows, x, y, format, tone, height = 180, formatOptions }) {
+function BarChart({ rows, x, y, format, tone, height = 180, formatOptions, currencySymbol, look }) {
+  var _a, _b;
   const theme = useTheme();
   const { width, onLayout } = useWidth();
   const points = toPoints(rows, x, y);
@@ -1225,22 +1242,25 @@ function BarChart({ rows, x, y, format, tone, height = 180, formatOptions }) {
   const slot = width / points.length;
   const bar = Math.max(2, slot * 0.6);
   const every = labelEvery(points.length, Math.floor(width / 48));
-  const color = colorFor(theme, tone);
+  const color = colorFor(theme, tone, look);
+  const label = labelStyle(theme, look);
+  const radius = Math.min((_a = look == null ? void 0 : look.view.borderRadius) != null ? _a : 6, bar / 2);
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { onLayout, style: { width: "100%" }, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native_svg.Svg, { width, height, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: baseline, x2: width, y2: baseline, stroke: theme.border, strokeWidth: 1 }),
+    /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: baseline, x2: width, y2: baseline, stroke: (_b = look == null ? void 0 : look.view.borderColor) != null ? _b : theme.border, strokeWidth: 1 }),
     points.map((p, i) => {
       const h = Math.abs(p.value) / span * plot;
       const bx = i * slot + (slot - bar) / 2;
       const by = p.value >= 0 ? baseline - h : baseline;
       return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(React5.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Rect, { x: bx, y: by, width: bar, height: Math.max(1, h), rx: 2, fill: color }),
-        valueSpace ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: by - 4, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: formatValue(p.value, format != null ? format : "number", formatOptions) }) : null,
-        i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: height - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }) : null
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Rect, { x: bx, y: by, width: bar, height: Math.max(1, h), rx: Math.min(radius, h / 2), fill: color }),
+        valueSpace ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: by - 4, ...label, textAnchor: "middle", children: valueLabel(p.value, format, formatOptions, currencySymbol) }) : null,
+        i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: bx + bar / 2, y: height - 6, ...label, textAnchor: "middle", children: p.label }) : null
       ] }, i);
     })
   ] }) });
 }
-function LineChart({ rows, x, y, format, tone, height, sparkline, formatOptions }) {
+function LineChart({ rows, x, y, format, tone, height, sparkline, formatOptions, currencySymbol, look }) {
+  var _a;
   const theme = useTheme();
   const { width, onLayout } = useWidth(sparkline ? 120 : 300);
   const points = toPoints(rows, x, y);
@@ -1257,15 +1277,16 @@ function LineChart({ rows, x, y, format, tone, height, sparkline, formatOptions 
   const py = (v) => pad + (1 - (v - bottom) / span) * plot;
   const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${px(i).toFixed(1)},${py(p.value).toFixed(1)}`).join(" ");
   const every = labelEvery(points.length, Math.floor(width / 56));
-  const color = colorFor(theme, tone);
+  const color = colorFor(theme, tone, look);
+  const label = labelStyle(theme, look);
   const last = points[points.length - 1];
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native5.View, { onLayout, style: { width: sparkline ? void 0 : "100%", flexGrow: sparkline ? 1 : void 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_react_native_svg.Svg, { width, height: h, children: [
-    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: pad + plot, x2: width, y2: pad + plot, stroke: theme.border, strokeWidth: 1 }),
+    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Line, { x1: 0, y1: pad + plot, x2: width, y2: pad + plot, stroke: (_a = look == null ? void 0 : look.view.borderColor) != null ? _a : theme.border, strokeWidth: 1 }),
     /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Path, { d, stroke: color, strokeWidth: sparkline ? 1.5 : 2, fill: "none", strokeLinejoin: "round", strokeLinecap: "round" }),
     sparkline ? null : points.map(
-      (p, i) => i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: px(i), y: h - 6, fontSize: 10, fill: theme.muted, textAnchor: "middle", children: p.label }, i) : null
+      (p, i) => i % every === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: px(i), y: h - 6, ...label, textAnchor: "middle", children: p.label }, i) : null
     ),
-    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: width - pad, y: Math.max(10, py(last.value) - 6), fontSize: 10, fill: theme.muted, textAnchor: "end", children: formatValue(last.value, format != null ? format : "number", formatOptions) })
+    sparkline ? null : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_react_native_svg.Text, { x: width - pad, y: Math.max(10, py(last.value) - 6), ...label, textAnchor: "end", children: valueLabel(last.value, format, formatOptions, currencySymbol) })
   ] }) });
 }
 
@@ -1474,6 +1495,14 @@ function useLook(type, props) {
   const { lookFor } = React7.useContext(ViewSettingsContext);
   return lookFor == null ? void 0 : lookFor(type, typeof props.style === "string" ? props.style : void 0);
 }
+function useChartLook(type, props) {
+  var _a, _b, _c, _d;
+  const { lookFor } = React7.useContext(ViewSettingsContext);
+  const look = useLook(type, props);
+  const font = (_b = (_a = lookFor == null ? void 0 : lookFor("Text")) == null ? void 0 : _a.text) == null ? void 0 : _b.fontFamily;
+  if (!font || ((_c = look == null ? void 0 : look.text) == null ? void 0 : _c.fontFamily)) return look;
+  return { view: (_d = look == null ? void 0 : look.view) != null ? _d : {}, ...(look == null ? void 0 : look.color) ? { color: look.color } : {}, text: { ...look == null ? void 0 : look.text, fontFamily: font } };
+}
 function pick(props, ...names) {
   return Object.fromEntries(names.filter((n) => props[n] !== void 0).map((n) => [n, props[n]]));
 }
@@ -1543,12 +1572,12 @@ var components = {
   Button: ({ props, emit }) => /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Button, { ...pick(props, "variant", "size"), label: useText(props, "label"), look: useLook("Button", props), onPress: () => emit("press") }),
   Repeat: ({ props, children }) => /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Repeat, { props, children }),
   BarChart: ({ props }) => {
-    const { formatOptions } = React7.useContext(ViewSettingsContext);
-    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(BarChart, { ...pick(props, "rows", "x", "y", "format", "tone"), formatOptions });
+    const { formatOptions, currencySymbol } = React7.useContext(ViewSettingsContext);
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(BarChart, { ...pick(props, "rows", "x", "y", "format", "tone"), formatOptions, currencySymbol, look: useChartLook("BarChart", props) });
   },
   LineChart: ({ props }) => {
-    const { formatOptions } = React7.useContext(ViewSettingsContext);
-    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(LineChart, { ...pick(props, "rows", "x", "y", "format", "tone", "sparkline"), formatOptions });
+    const { formatOptions, currencySymbol } = React7.useContext(ViewSettingsContext);
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(LineChart, { ...pick(props, "rows", "x", "y", "format", "tone", "sparkline"), formatOptions, currencySymbol, look: useChartLook("LineChart", props) });
   },
   Form: ({ props, emit, bindings }) => /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Form, { props, emit, bindings })
 };
@@ -1919,6 +1948,7 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     }
     return set;
   };
+  const scrollRef = React8.useRef(null);
   const pendingRef = React8.useRef(pending);
   pendingRef.current = pending;
   const confirmHandlers = React8.useMemo(
@@ -2060,25 +2090,37 @@ var DynamicUIView = React8.forwardRef(function DynamicUIView2(props, ref) {
     ] });
   }
   return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(ViewSettingsContext.Provider, { value: settings, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { flex: 1, gap: 12 }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.ScrollView, { style: { flex: 1 }, contentContainerStyle: { gap: 16, paddingBottom: 8 }, children: [
-      entries.length === 0 && greeting ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: greeting, size: "md" }) : null,
-      entries.length === 0 && emptyHint ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: emptyHint, size: "sm", tone: "muted" }) : null,
-      entries.map((entry, i) => {
-        var _a2;
-        return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { gap: 10 }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native12.View, { testID: "question-bubble", style: bubble(questionWidth, questionAlign === "left" ? "flex-start" : "flex-end", questionBox), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.question, size: "md", color: (_a2 = questionLook == null ? void 0 : questionLook.color) != null ? _a2 : theme.onPrimary }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native12.View, { testID: "answer-bubble", style: bubble(answerWidth, "flex-start", answerBox), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Ink, { color: answerLook == null ? void 0 : answerLook.color, background: answerBox.backgroundColor, children: [
-            entry.status === "streaming" && !entry.text && !entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: "Thinking\u2026", size: "sm", tone: "muted" }) : null,
-            entry.text ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.text, size: "md" }) : null,
-            entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.JSONUIProvider, { registry, store: entry.store, handlers: handlersFor(i), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.Renderer, { spec: entry.spec, registry, includeStandard: false, loading: entry.status === "streaming" }) }) : null,
-            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(SourceErrors, { store: entry.store }),
-            entry.error ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.error, size: "sm", tone: "error" }) : null
-          ] }) }),
-          pending && pendingEntry === i ? renderPending(pending) : null
-        ] }, i);
-      }),
-      pending && (pendingEntry === null || pendingEntry >= entries.length) ? renderPending(pending) : null
-    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+      import_react_native12.ScrollView,
+      {
+        ref: scrollRef,
+        style: { flex: 1 },
+        contentContainerStyle: { gap: 16, paddingBottom: 8 },
+        onContentSizeChange: () => {
+          var _a2;
+          return (_a2 = scrollRef.current) == null ? void 0 : _a2.scrollToEnd({ animated: true });
+        },
+        children: [
+          entries.length === 0 && greeting ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: greeting, size: "md" }) : null,
+          entries.length === 0 && emptyHint ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: emptyHint, size: "sm", tone: "muted" }) : null,
+          entries.map((entry, i) => {
+            var _a2;
+            return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_react_native12.View, { style: { gap: 10 }, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native12.View, { testID: "question-bubble", style: bubble(questionWidth, questionAlign === "left" ? "flex-start" : "flex-end", questionBox), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.question, size: "md", color: (_a2 = questionLook == null ? void 0 : questionLook.color) != null ? _a2 : theme.onPrimary }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native12.View, { testID: "answer-bubble", style: bubble(answerWidth, "flex-start", answerBox), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Ink, { color: answerLook == null ? void 0 : answerLook.color, background: answerBox.backgroundColor, children: [
+                entry.status === "streaming" && !entry.text && !entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: "Thinking\u2026", size: "sm", tone: "muted" }) : null,
+                entry.text ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.text, size: "md" }) : null,
+                entry.spec ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.JSONUIProvider, { registry, store: entry.store, handlers: handlersFor(i), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_react_native13.Renderer, { spec: entry.spec, registry, includeStandard: false, loading: entry.status === "streaming" }) }) : null,
+                /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(SourceErrors, { store: entry.store }),
+                entry.error ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { text: entry.error, size: "sm", tone: "error" }) : null
+              ] }) }),
+              pending && pendingEntry === i ? renderPending(pending) : null
+            ] }, i);
+          }),
+          pending && (pendingEntry === null || pendingEntry >= entries.length) ? renderPending(pending) : null
+        ]
+      }
+    ),
     showComposer ? (
       // Multi-line: return adds a new line, so only Send sends.
       /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(

@@ -4,6 +4,7 @@ import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-nati
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../../lib/app';
 
@@ -426,7 +427,7 @@ function Accounts() {
   useEffect(() => { fetchListaccountsthedemohasonemainaccountData(); }, []);
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -536,7 +537,7 @@ function Accounts() {
               </View>
       </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

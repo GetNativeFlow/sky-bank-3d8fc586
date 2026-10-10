@@ -4,6 +4,7 @@ import { StyleSheet, View, TouchableOpacity, ScrollView, Text, ActivityIndicator
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../lib/app';
 
@@ -12,7 +13,7 @@ function Loans() {
   const routeParams = useLocalSearchParams();
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -64,7 +65,7 @@ function Loans() {
               <View testID="426684dd-b3f4-48c3-a2ed-6881fa88f118" style={styles.node_426684dd_b3f4_48c3_a2ed_6881fa88f118} />
       </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

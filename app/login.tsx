@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity, ScrollView, Text, TextInput, Activi
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthActions } from '../lib/auth/useAuth';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../lib/app';
@@ -22,7 +23,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -188,7 +189,7 @@ export default function Login() {
       </View>
       )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

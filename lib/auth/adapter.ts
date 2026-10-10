@@ -1,5 +1,5 @@
 // AUTO-GENERATED supabase adapter.
-import { createClient } from '@supabase/supabase-js';
+import { createClient, isAuthRetryableFetchError } from '@supabase/supabase-js';
 import type { AuthProvider, Grants, LoginInput, NormalizedUser, AuthState, SignUpInput } from './types';
 
 export const supabase = createClient("https://wylsvmumemzvltauwqno.supabase.co", "sb_publishable_7a7JrfhaF6ofII_rSFE8mQ_dZWL0adq");
@@ -9,6 +9,18 @@ const emailRedirect = REDIRECT_TO ? { emailRedirectTo: REDIRECT_TO } : {};
 
 const PERMS_BY_ROLE: Record<string, string[]> = {};
 const ROLE_MAPPING: Record<string, string> = {};
+
+// "Network request failed" means no response came back, usually a dropped
+// connection. Only safe-to-repeat calls go through this: never OTP verify or
+// anything that sends an email.
+async function withRetry<T extends { error: unknown }>(call: () => Promise<T>): Promise<T> {
+  let res = await call();
+  for (let i = 0; i < 2 && isAuthRetryableFetchError(res.error); i++) {
+    await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+    res = await call();
+  }
+  return res;
+}
 
 const listeners: Array<(s: AuthState) => void> = [];
 function emit(s: AuthState) { listeners.forEach((l) => l(s)); }
@@ -43,7 +55,7 @@ export const adapter: AuthProvider = {
   async login(input: LoginInput) {
     let user: NormalizedUser | null = null;
     if (input.kind === 'password') {
-      const { data, error } = await supabase.auth.signInWithPassword({ email: input.email, password: input.password });
+      const { data, error } = await withRetry(() => supabase.auth.signInWithPassword({ email: input.email, password: input.password }));
       if (error || !data.user) throw error || new Error('login failed');
       user = { id: data.user.id, email: data.user.email ?? null, displayName: (data.user.user_metadata as any)?.name ?? null };
     } else if (input.kind === 'oauth') {
@@ -106,12 +118,12 @@ export const adapter: AuthProvider = {
     return data.session?.access_token ?? null;
   },
   async getCurrentUser() {
-    const { data } = await supabase.auth.getUser();
+    const { data } = await withRetry(() => supabase.auth.getUser());
     if (!data.user) return null;
     return { id: data.user.id, email: data.user.email ?? null, displayName: (data.user.user_metadata as any)?.name ?? null };
   },
   async getGrants() {
-    const { data } = await supabase.auth.getUser();
+    const { data } = await withRetry(() => supabase.auth.getUser());
     if (!data.user) return { roles: [], permissions: [] };
     return loadGrants(data.user.id);
   },

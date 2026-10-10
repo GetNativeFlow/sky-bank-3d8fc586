@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, View, TouchableOpacity, Text, ActivityIndicator
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getThemeColors } from '../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../lib/app';
@@ -13,7 +14,7 @@ export default function CheckEmail() {
   const routeParams = useLocalSearchParams();
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerContent}
@@ -33,7 +34,7 @@ export default function CheckEmail() {
               </TouchableOpacity>
       </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

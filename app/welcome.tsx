@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Image, Text, Dimensions, ScrollView
 import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function Welcome() {
@@ -10,7 +11,7 @@ export default function Welcome() {
   const routeParams = useLocalSearchParams();
 
   return (
-    <View style={styles.screenRoot}>
+    <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <StatusBar style="auto" />
       <View style={styles.container}>
       <View testID="484aaeb6-260c-433d-99b1-62300a1fcfd5" style={styles.node_484aaeb6_260c_433d_99b1_62300a1fcfd5}>
@@ -34,7 +35,7 @@ export default function Welcome() {
               </View>
       </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
