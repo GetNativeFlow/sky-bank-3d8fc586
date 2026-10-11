@@ -463,7 +463,6 @@ function Home() {
                                                   <Text testID="bf8f22b8-aa91-416a-8f91-2422f0271216" style={styles.node_bf8f22b8_aa91_416a_8f91_2422f0271216}>vs last month</Text>
                                     </View>
                         </View>
-                        <View testID="21287377-44c7-4753-b7ef-cd9daa203882" accessible={true} accessibilityLabel="Profile" style={styles.node_21287377_44c7_4753_b7ef_cd9daa203882} />
               </View>
               <View testID="260b42e9-49f9-46a6-a029-b685180e6101" style={styles.node_260b42e9_49f9_46a6_a029_b685180e6101}>
                         <View testID="21d1ea39-7214-4ccc-b47a-ae8c4bb4fe65" style={styles.node_21d1ea39_7214_4ccc_b47a_ae8c4bb4fe65}>
@@ -739,20 +738,6 @@ function createStyles() {
     fontSize: 13,
     alignSelf: 'flex-start',
     flexShrink: 0,
-  },
-  node_21287377_44c7_4753_b7ef_cd9daa203882: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: 0,
-    overflow: 'visible',
-    position: 'absolute',
-    borderRadius: 4,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flexWrap: 'nowrap',
   },
   node_260b42e9_49f9_46a6_a029_b685180e6101: {
     gap: 0,
