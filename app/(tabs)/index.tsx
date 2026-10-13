@@ -502,7 +502,7 @@ function Home() {
                                     </View>
                                     <View testID="d0e12e58-ae9e-43d1-9134-de09878d8b6c" style={styles.node_d0e12e58_ae9e_43d1_9134_de09878d8b6c}>
                                                   <Text testID="45ce676c-f1aa-4e16-8ca0-3e913ba2453f" style={styles.node_45ce676c_f1aa_4e16_8ca0_3e913ba2453f}>Meet</Text>
-                                                  <Text testID="eee544d1-b47b-411d-90bf-449f7ec7f3b8" style={styles.node_eee544d1_b47b_411d_90bf_449f7ec7f3b8}>Mintly</Text>
+                                                  <Text testID="eee544d1-b47b-411d-90bf-449f7ec7f3b8" style={styles.node_eee544d1_b47b_411d_90bf_449f7ec7f3b8}>Mintly Ai</Text>
                                     </View>
                         </View>
                         <Text testID="ca0a11e0-ad46-4bc6-94d0-ce774015d39e" style={styles.node_ca0a11e0_ad46_4bc6_94d0_ce774015d39e}>Ask anything, get instant answers, make transactions and more.</Text>
