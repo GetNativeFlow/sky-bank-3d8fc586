@@ -4,12 +4,14 @@ import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 're
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getThemeColors } from '../config/theme';
 import { useAuthActions } from '../lib/auth/useAuth';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../lib/app';
 import { bindUi } from '../lib/ui';
 
 export default function Login() {
+  const colors = getThemeColors();
   const authActions = useAuthActions();
   const router = useRouter();
   const routeParams = useLocalSearchParams();
@@ -88,7 +90,7 @@ export default function Login() {
                         {(!(_uiOv.node_70ed48f4_d48f_4801_9344_e61f86960306 && _uiOv.node_70ed48f4_d48f_4801_9344_e61f86960306.hidden)) && (
                         <View testID="70ed48f4-d48f-4801-9344-e61f86960306" style={[styles.node_70ed48f4_d48f_4801_9344_e61f86960306, _uiOv.node_70ed48f4_d48f_4801_9344_e61f86960306 && _uiOv.node_70ed48f4_d48f_4801_9344_e61f86960306.style]}>
                                     {(!(_uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d && _uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d.hidden)) && (
-                                    <TouchableOpacity testID="cdefa296-7a29-45c4-a32d-a4e00e1c142d" accessible={true} accessibilityRole="checkbox" accessibilityState={{"checked":false}} onPress={() => { if (typeof setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d === 'function') setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d(prev => ({...prev, isChecked: !prev.isChecked})); }} style={[[styles.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d, { flexDirection: 'row', alignItems: 'center', gap: 8 }], _uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d && _uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d.style]}><View style={{ width: 20, height: 20, borderWidth: 2, borderColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#ffffff' : '#666', borderRadius: 3, backgroundColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? '#ffffff' : 'transparent', justifyContent: 'center', alignItems: 'center' }}>{(typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) && <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>✓</Text>}</View><Text>Remember Me</Text></TouchableOpacity>
+                                    <TouchableOpacity testID="cdefa296-7a29-45c4-a32d-a4e00e1c142d" accessible={true} accessibilityRole="checkbox" accessibilityState={{"checked":false}} onPress={() => { if (typeof setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d === 'function') setState_cdefa296_7a29_45c4_a32d_a4e00e1c142d(prev => ({...prev, isChecked: !prev.isChecked})); }} style={[[styles.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d, { flexDirection: 'row', alignItems: 'center', gap: 8 }], _uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d && _uiOv.node_cdefa296_7a29_45c4_a32d_a4e00e1c142d.style]}><View style={{ width: 20, height: 20, borderWidth: 2, borderColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? colors.primary : '#666', borderRadius: 3, backgroundColor: (typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) ? colors.primary : 'transparent', justifyContent: 'center', alignItems: 'center' }}>{(typeof state_cdefa296_7a29_45c4_a32d_a4e00e1c142d !== 'undefined' && state_cdefa296_7a29_45c4_a32d_a4e00e1c142d.isChecked) && <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>✓</Text>}</View><Text>Remember Me</Text></TouchableOpacity>
                                     )}
                         </View>
                         )}
@@ -193,14 +195,18 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = createStyles();
+
+function createStyles() {
+  const colors = getThemeColors();
+  return StyleSheet.create({
   screenRoot: {
     flex: 1,
     height: '100%',
     width: '100%',
     minWidth: 0,
     alignSelf: 'stretch',
-    backgroundColor: '#F5F7FB',
+    backgroundColor: '#FFFFFF',
   },
   container: {
     flex: 1,
@@ -524,5 +530,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
-});
-
+  });
+}
