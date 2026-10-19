@@ -146,3 +146,46 @@ workflows:
     artifacts:
       - ios/build/ipa/*.ipa
       - ios/build/App.xcarchive
+
+  ios-sim:
+    name: iOS Simulator app
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    environment:
+      node: 20
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: npm ci || npm install
+      - name: Expo prebuild
+        script: npx expo prebuild --platform ios --clean
+      - name: Pod install
+        script: |
+          cd ios
+          pod install
+      - name: Xcode simulator build
+        script: |
+          cd ios
+          WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
+          if [ -z "$WORKSPACE" ]; then echo "ERROR: no .xcworkspace produced by expo prebuild"; exit 1; fi
+          SCHEME="${XCODE_SCHEME:-${WORKSPACE%.xcworkspace}}"
+          # Release bundles the JS, so the app runs without Metro. Both chips: Apple silicon and Intel Macs.
+          echo "Building workspace=$WORKSPACE scheme=$SCHEME for the iOS Simulator"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
+            -sdk iphonesimulator -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath build/sim \
+            ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO \
+            build \
+            || { echo "ERROR: iOS simulator build failed."; exit 1; }
+      - name: Zip app
+        script: |
+          cd ios
+          APP=$(ls -d build/sim/Build/Products/Release-iphonesimulator/*.app | head -n 1)
+          if [ -z "$APP" ]; then echo "ERROR: no .app produced"; exit 1; fi
+          lipo -archs "$APP/$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$APP/Info.plist")"
+          mkdir -p build/sim-app
+          ditto -c -k --keepParent "$APP" build/sim-app/App-simulator.app.zip
+    artifacts:
+      - ios/build/sim-app/*.zip
