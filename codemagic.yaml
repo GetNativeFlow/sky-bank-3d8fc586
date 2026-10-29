@@ -113,23 +113,20 @@ workflows:
             || { echo "ERROR: Apple signing failed. Check the API key, the Certificate Private Key (it must match your Apple Distribution certificate, or a new certificate slot must be free) and that an app with bundle ID $IOS_BUNDLE_ID exists."; exit 1; }
           keychain add-certificates
           xcode-project use-profiles
-      - name: Xcode archive
+      - name: Build signed IPA
         script: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
           if [ -z "$WORKSPACE" ]; then echo "ERROR: no .xcworkspace produced by expo prebuild"; exit 1; fi
           SCHEME="${XCODE_SCHEME:-${WORKSPACE%.xcworkspace}}"
-          echo "Archiving workspace=$WORKSPACE scheme=$SCHEME (signed)"
-          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
-            -sdk iphoneos -configuration Release \
-            -archivePath build/App.xcarchive archive \
-            || { echo "ERROR: iOS archive failed."; exit 1; }
-      - name: Export IPA
-        script: |
-          cd ios
+          echo "Building signed IPA workspace=$WORKSPACE scheme=$SCHEME"
           mkdir -p build/ipa
-          xcode-project build-ipa --archive build/App.xcarchive --ipa-directory build/ipa \
-            || { echo "ERROR: IPA export failed."; exit 1; }
+          xcode-project build-ipa \
+            --workspace "$WORKSPACE" \
+            --scheme "$SCHEME" \
+            --archive-directory build \
+            --ipa-directory build/ipa \
+            || { echo "ERROR: Signed IPA build failed."; exit 1; }
           ls build/ipa/*.ipa >/dev/null 2>&1 || { echo "ERROR: no IPA produced"; exit 1; }
       - name: Upload to TestFlight
         script: |
@@ -141,7 +138,7 @@ workflows:
           fi
     artifacts:
       - ios/build/ipa/*.ipa
-      - ios/build/App.xcarchive
+      - ios/build/*.xcarchive
 
   ios-sim:
     name: iOS Simulator app
