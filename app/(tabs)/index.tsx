@@ -1,432 +1,38 @@
 import { Can } from '@/components/Can';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
-import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getThemeColors } from '../../config/theme';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { appRuntime as app } from '../../lib/app';
+import * as nf from '../../lib/runtime';
 
 function Home() {
   const colors = getThemeColors();
   const router = useRouter();
   const routeParams = useLocalSearchParams();
-  // ── Auto-generated fetch helpers ──
-  const __vars = {};
-  // Tokenise a variable path the same way resolvePathValue does (see
-  // src/lib/apiResponseUtils.ts — one grammar for canvas, codegen and preview):
-  // dot keys, [0] indices, and [] meaning index 0. Guarded by the parity test in
-  // src/lib/__tests__/apiPayloadVariables.test.ts.
-  const __pathTokens = (path) => {
-    const out = [];
-    const re = /([^\.\[\]]+)|\[(\d*)\]/g;
-    let m;
-    while ((m = re.exec(path)) !== null) {
-      if (m[1] != null) out.push(m[1]);
-      else out.push(m[2] === '' ? 0 : Number(m[2]));
-    }
-    return out;
-  };
-  // Longest-prefix match on the scope, then walk the remainder, so
-  // `cart.user.address.city` and `cart.lines[0].sku` reach into object and array
-  // variables. `found` stays false when a segment is absent (a typo) but is true
-  // for a variable that legitimately holds null.
-  const __lookupVar = (key) => {
-    const tokens = __pathTokens(String(key).trim());
-    for (let i = tokens.length; i >= 1; i--) {
-      const head = tokens.slice(0, i).join('.');
-      if (!(head in __vars)) continue;
-      let v = __vars[head];
-      for (const tok of tokens.slice(i)) {
-        if (v == null) return { found: false };
-        if (typeof tok === 'number') {
-          if (!Array.isArray(v) || !(tok in v)) return { found: false };
-        } else {
-          // Same array auto-unwrap as resolvePathValue: a string key against an
-          // array reads the first item, so `lines.sku` == `lines[0].sku`.
-          if (Array.isArray(v)) { v = v[0]; if (v == null) return { found: false }; }
-          if (!(tok in Object(v))) return { found: false };
-        }
-        v = v[tok];
-      }
-      return { found: true, value: v };
-    }
-    return { found: false };
-  };
-  const interpolateVars = (s) => {
-    if (typeof s !== 'string') return s;
-    return s.replace(/("?)\{\{\s*([\w.[\]-]+)\s*\}\}("?)/g, (_m, q1, key, q2) => {
-      try {
-        const hit = __lookupVar(key);
-        // Unknown variable: leave it intact, quotes included, so the bad request is
-        // visible in the network tab instead of silently sending an empty value.
-        if (!hit.found) return _m;
-        if (typeof hit.value === 'string') return q1 + hit.value + q2;
-        // Non-strings (object / array / number / boolean / null) are emitted as
-        // JSON. When the reference fills the whole quoted slot the quotes go with it,
-        // so `{"tags": "{{ cart.tags }}"}` sends a real array and `"{{ cart.qty }}"`
-        // a real number rather than JSON trapped inside a string.
-        const json = JSON.stringify(hit.value);
-        return q1 && q2 ? json : q1 + json + q2;
-      } catch { return _m; }
-    });
-  };
-  const walkArrayPath = (json, path) => {
-    if (!path) {
-      if (Array.isArray(json)) return json;
-      if (json && Array.isArray(json.data)) return json.data;
-      // Walk one level deep to find the first array (legacy behavior).
-      if (json && typeof json === 'object') {
-        for (const k of Object.keys(json)) {
-          if (Array.isArray(json[k])) return json[k];
-        }
-      }
-      return [];
-    }
-    const parts = String(path).split('.').filter(Boolean);
-    let cur = json;
-    for (const p of parts) { if (cur == null) return []; cur = cur[p]; }
-    return Array.isArray(cur) ? cur : [];
-  };
-  // ── Field Transform Pipeline (Phase 1) — keep in sync with src/lib/transforms/applyTransforms.ts ──
-  const __toNumber = (v) => {
-    if (typeof v === 'number' && isFinite(v)) return v;
-    if (typeof v === 'string' && v.trim() !== '') {
-      const cleaned = v.replace(/[^0-9.eE+\-]/g, '');
-      const n = Number(cleaned);
-      return isFinite(n) ? n : null;
-    }
-    return null;
-  };
-  const __toDate = (v) => {
-    if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
-    if (typeof v === 'number') { const d = new Date(v); return isNaN(d.getTime()) ? null : d; }
-    if (typeof v === 'string' && v.trim() !== '') { const d = new Date(v); return isNaN(d.getTime()) ? null : d; }
-    return null;
-  };
-  const __dateOpts = (f) => f === 'short' ? { dateStyle: 'short' } : f === 'medium' ? { dateStyle: 'medium' } : f === 'long' ? { dateStyle: 'long' } : null;
-  const __formatRelative = (d, locale) => {
-    const diff = d.getTime() - Date.now();
-    const RTF = Intl && Intl.RelativeTimeFormat;
-    if (typeof RTF !== 'function') return new Intl.DateTimeFormat(locale, { dateStyle: 'short' }).format(d);
-    const rtf = new RTF(locale, { numeric: 'auto' });
-    const abs = Math.abs(diff);
-    if (abs < 60000) return rtf.format(Math.round(diff / 1000), 'second');
-    if (abs < 3600000) return rtf.format(Math.round(diff / 60000), 'minute');
-    if (abs < 86400000) return rtf.format(Math.round(diff / 3600000), 'hour');
-    return rtf.format(Math.round(diff / 86400000), 'day');
-  };
-  const __formatCustomDate = (d, fmt) => {
-    const pad = (n) => String(n).padStart(2, '0');
-    return String(fmt)
-      .replace(/YYYY/g, String(d.getFullYear()))
-      .replace(/MM/g, pad(d.getMonth() + 1))
-      .replace(/DD/g, pad(d.getDate()))
-      .replace(/HH/g, pad(d.getHours()))
-      .replace(/mm/g, pad(d.getMinutes()))
-      .replace(/ss/g, pad(d.getSeconds()));
-  };
-  const __readRowField = (row, path) => {
-    if (!path) return undefined;
-    let cur = row;
-    for (const key of String(path).split('.')) {
-      if (cur == null || typeof cur !== 'object') return undefined;
-      cur = cur[key];
-    }
-    return cur;
-  };
-  const __rowNumber = (v) => {
-    if (v === null || v === undefined || v === '') return null;
-    const n = typeof v === 'number' ? v : Number(v);
-    return isFinite(n) ? n : null;
-  };
-  const __rowDate = (v) => {
-    if (typeof v === 'string') {
-      const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v.trim());
-      if (m) return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
-    }
-    return __toDate(v);
-  };
-  const __rowLabel = (raw, format, withYear, locale) => {
-    if (raw === null || raw === undefined) return '';
-    if (format === 'date') {
-      const d = __rowDate(raw);
-      if (d) {
-        try {
-          return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: withYear ? 'numeric' : undefined, timeZone: 'UTC' }).format(d);
-        } catch (_e) {
-          return d.toISOString().slice(0, 10);
-        }
-      }
-    }
-    return String(raw);
-  };
-  const __mapRows = (value, step) => {
-    if (!Array.isArray(value)) return value;
-    const numbers = value.map((row) => __rowNumber(__readRowField(row, step.valueField)));
-    let base = null;
-    if (step.valueMode === 'changeFromFirst') {
-      for (const n of numbers) { if (n !== null && n !== 0) { base = n; break; } }
-    }
-    return value.map((row, i) => {
-      let v = numbers[i];
-      if (step.valueMode === 'changeFromFirst' && v !== null) v = base === null ? 0 : (v / base - 1) * 100;
-      const raw = __readRowField(row, step.labelField);
-      const label = __rowLabel(raw, step.labelFormat, false, step.locale);
-      const tooltipLabel = __rowLabel(raw, step.labelFormat, true, step.locale);
-      return tooltipLabel !== label ? { value: v, label: label, tooltipLabel: tooltipLabel } : { value: v, label: label };
-    });
-  };
-  const __applyStep = (value, step, prev) => {
-    switch (step.type) {
-      case 'format-currency': {
-        const num = __toNumber(value);
-        if (num == null) return value == null ? '' : String(value);
-        return new Intl.NumberFormat(step.locale || 'en-US', {
-          style: 'currency',
-          currency: step.currency || 'USD',
-          signDisplay: step.signDisplay || 'auto',
-          minimumFractionDigits: step.minimumFractionDigits,
-          maximumFractionDigits: step.maximumFractionDigits,
-        }).format(num);
-      }
-      case 'format-date': {
-        const d = __toDate(value);
-        if (!d) return value == null ? '' : String(value);
-        const locale = step.locale || 'en-US';
-        if (step.format === 'relative') return __formatRelative(d, locale);
-        const opts = __dateOpts(step.format);
-        if (opts) return new Intl.DateTimeFormat(locale, opts).format(d);
-        return __formatCustomDate(d, step.format);
-      }
-      case 'to-number': {
-        // Stricter than __toNumber (which strips chars for currency): only a
-        // wholly-numeric string converts, everything else passes through.
-        if (typeof value === 'number') return value;
-        if (typeof value !== 'string') return value;
-        const t = value.trim();
-        if (t === '') return value;
-        const n = Number(t);
-        return isFinite(n) ? n : value;
-      }
-      case 'map-icon':
-      case 'map-color': {
-        const key = value == null ? '' : String(value);
-        const cmp = step.matchMode === 'ci' ? key.toLowerCase() : key;
-        for (const c of (step.cases || [])) {
-          const w = step.matchMode === 'ci' ? String(c.when).toLowerCase() : String(c.when);
-          if (w === cmp) return c.then;
-        }
-        return step.default != null ? step.default : value;
-      }
-      case 'expression': {
-        const r = __evalExpr(step.expr || '', { value: value, prev: prev });
-        return r.ok ? r.value : value;
-      }
-      case 'map-rows':
-        return __mapRows(value, step);
-      default:
-        return value;
-    }
-  };
-  // ── Safe expression evaluator (mirrors src/lib/transforms/safeExpression.ts) ──
-  // This is a line-for-line transcription of the Studio's runtime evaluator so
-  // expressions produce byte-identical output across Canvas, Sandpack Preview,
-  // and the exported Expo app. Do NOT replace with new Function — that path
-  // diverges from the AST-based parser used by canvas and would break parity.
-  const __fmt = {
-    currency: (n, code, locale) => {
-      const num = typeof n === 'number' ? n : Number(String(n == null ? '' : n).replace(/[^0-9.eE+\-]/g, ''));
-      if (!isFinite(num)) return n == null ? '' : String(n);
-      try { return new Intl.NumberFormat(locale || 'en-US', { style: 'currency', currency: code || 'USD' }).format(num); }
-      catch (_e) { return String(num); }
-    },
-    date: (v, style, locale) => {
-      const d = v instanceof Date ? v : new Date(String(v == null ? '' : v));
-      if (isNaN(d.getTime())) return v == null ? '' : String(v);
-      try { return new Intl.DateTimeFormat(locale || 'en-US', { dateStyle: style || 'short' }).format(d); }
-      catch (_e) { return d.toISOString().slice(0, 10); }
-    },
-    upper: (s) => s == null ? '' : String(s).toUpperCase(),
-    lower: (s) => s == null ? '' : String(s).toLowerCase(),
-    pad: (s, n, ch) => String(s == null ? '' : s).padStart(Math.max(0, n | 0), ch || '0'),
-    round: (n, d) => { const x = Number(n); if (!isFinite(x)) return 0; const m = Math.pow(10, (d|0)); return Math.round(x * m) / m; },
-  };
-  const __EXPR_ROOTS = { value: true, prev: true, fmt: true };
-  const __exprTokenize = (src) => {
-    const out = []; let i = 0; const n = src.length;
-    while (i < n) {
-      const ch = src[i];
-      if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') { i++; continue; }
-      if (ch === "'" || ch === '"') {
-        const q = ch; let s = ''; i++;
-        while (i < n && src[i] !== q) {
-          if (src[i] === '\\' && i + 1 < n) { const nx = src[++i]; s += nx === 'n' ? '\n' : nx === 't' ? '\t' : nx; i++; }
-          else s += src[i++];
-        }
-        if (i >= n) throw new Error('Unterminated string');
-        i++; out.push({ t: 'str', v: s }); continue;
-      }
-      if (ch === '`') {
-        const parts = []; let buf = ''; i++;
-        while (i < n && src[i] !== '`') {
-          if (src[i] === '\\' && i + 1 < n) { const nx = src[++i]; buf += nx === 'n' ? '\n' : nx === 't' ? '\t' : nx; i++; continue; }
-          if (src[i] === '$' && src[i + 1] === '{') {
-            if (buf) { parts.push({ kind: 'str', v: buf }); buf = ''; }
-            i += 2; let depth = 1; let inner = '';
-            while (i < n && depth > 0) {
-              if (src[i] === '{') depth++;
-              else if (src[i] === '}') { depth--; if (depth === 0) break; }
-              inner += src[i++];
-            }
-            if (depth !== 0) throw new Error('Unterminated template expression');
-            i++; parts.push({ kind: 'expr', v: inner }); continue;
-          }
-          buf += src[i++];
-        }
-        if (i >= n) throw new Error('Unterminated template literal');
-        i++; if (buf) parts.push({ kind: 'str', v: buf });
-        out.push({ t: 'tmpl', parts }); continue;
-      }
-      if ((ch >= '0' && ch <= '9') || (ch === '.' && src[i + 1] >= '0' && src[i + 1] <= '9')) {
-        let s = '';
-        while (i < n && /[0-9.eE+\-]/.test(src[i])) {
-          if ((src[i] === '+' || src[i] === '-') && !/[eE]/.test(src[i - 1])) break;
-          s += src[i++];
-        }
-        const v = Number(s); if (!isFinite(v)) throw new Error('Invalid number');
-        out.push({ t: 'num', v }); continue;
-      }
-      if (/[A-Za-z_$]/.test(ch)) {
-        let s = '';
-        while (i < n && /[A-Za-z0-9_$]/.test(src[i])) s += src[i++];
-        out.push({ t: 'id', v: s }); continue;
-      }
-      const three = src.slice(i, i + 3);
-      if (three === '===' || three === '!==') { out.push({ t: 'punc', v: three }); i += 3; continue; }
-      const two = src.slice(i, i + 2);
-      if (['==','!=','>=','<=','&&','||'].indexOf(two) >= 0) { out.push({ t: 'punc', v: two }); i += 2; continue; }
-      if ('+-*/%(),.[]?:!<>'.indexOf(ch) >= 0) { out.push({ t: 'punc', v: ch }); i++; continue; }
-      throw new Error('Unexpected character: ' + ch);
-    }
-    return out;
-  };
-  const __exprParse = (toks) => {
-    let i = 0;
-    const peek = (o) => toks[i + (o || 0)];
-    const eat = () => toks[i++];
-    const expect = (v) => { const t = eat(); if (!t || t.t !== 'punc' || t.v !== v) throw new Error("Expected '" + v + "'"); };
-    const parseExpr = () => parseTernary();
-    const parseTernary = () => {
-      const test = parseOr();
-      const t = peek();
-      if (t && t.t === 'punc' && t.v === '?') { eat(); const c = parseTernary(); expect(':'); const a = parseTernary(); return { k:'cond', test, cons:c, alt:a }; }
-      return test;
-    };
-    const parseOr = () => { let l = parseAnd(); while (peek() && peek().t==='punc' && peek().v==='||'){eat();l={k:'bin',op:'||',l,r:parseAnd()};} return l; };
-    const parseAnd = () => { let l = parseEq(); while (peek() && peek().t==='punc' && peek().v==='&&'){eat();l={k:'bin',op:'&&',l,r:parseEq()};} return l; };
-    const parseEq = () => { let l = parseCmp(); while (peek() && peek().t==='punc' && ['==','!=','===','!=='].indexOf(peek().v)>=0){const op=eat().v;l={k:'bin',op,l,r:parseCmp()};} return l; };
-    const parseCmp = () => { let l = parseAdd(); while (peek() && peek().t==='punc' && ['<','>','<=','>='].indexOf(peek().v)>=0){const op=eat().v;l={k:'bin',op,l,r:parseAdd()};} return l; };
-    const parseAdd = () => { let l = parseMul(); while (peek() && peek().t==='punc' && ['+','-'].indexOf(peek().v)>=0){const op=eat().v;l={k:'bin',op,l,r:parseMul()};} return l; };
-    const parseMul = () => { let l = parseUnary(); while (peek() && peek().t==='punc' && ['*','/','%'].indexOf(peek().v)>=0){const op=eat().v;l={k:'bin',op,l,r:parseUnary()};} return l; };
-    const parseUnary = () => { const t = peek(); if (t && t.t==='punc' && (t.v==='!'||t.v==='-'||t.v==='+')){eat(); return {k:'unary',op:t.v,arg:parseUnary()};} return parsePostfix(); };
-    const parsePostfix = () => {
-      let node = parsePrimary();
-      for(;;){ const t = peek(); if (!t) break;
-        if (t.t==='punc' && t.v==='.'){eat();const id=eat();if(!id||id.t!=='id')throw new Error('prop');node={k:'mem',obj:node,prop:id.v};}
-        else if (t.t==='punc' && t.v==='['){eat();const idx=parseExpr();expect(']');node={k:'idx',obj:node,idx};}
-        else if (t.t==='punc' && t.v==='('){eat();const args=[];if(!(peek()&&peek().t==='punc'&&peek().v===')')){args.push(parseExpr());while(peek()&&peek().t==='punc'&&peek().v===','){eat();args.push(parseExpr());}}expect(')');node={k:'call',callee:node,args};}
-        else break;
-      } return node;
-    };
-    const parsePrimary = () => {
-      const t = eat(); if (!t) throw new Error('EOF');
-      if (t.t==='num') return {k:'num',v:t.v};
-      if (t.t==='str') return {k:'str',v:t.v};
-      if (t.t==='tmpl') return {k:'tmpl',parts:t.parts.map((p)=>p.kind==='str'?{kind:'str',v:p.v}:{kind:'expr',v:__exprParse(__exprTokenize(p.v))})};
-      if (t.t==='id'){if(t.v==='true')return{k:'bool',v:true};if(t.v==='false')return{k:'bool',v:false};if(t.v==='null')return{k:'null'};if(t.v==='undefined')return{k:'undef'};return{k:'id',v:t.v};}
-      if (t.t==='punc' && t.v==='('){const n=parseExpr();expect(')');return n;}
-      throw new Error('Unexpected token');
-    };
-    const ast = parseExpr();
-    if (i !== toks.length) throw new Error('Trailing input');
-    return ast;
-  };
-  const __exprEval = (node, ctx) => {
-    switch (node.k) {
-      case 'num': case 'str': case 'bool': return node.v;
-      case 'null': return null;
-      case 'undef': return undefined;
-      case 'id': {
-        if (!__EXPR_ROOTS[node.v]) throw new Error("Identifier '" + node.v + "' not allowed");
-        if (node.v === 'value') return ctx.value;
-        if (node.v === 'prev') return ctx.prev;
-        if (node.v === 'fmt') return __fmt;
-        return undefined;
-      }
-      case 'tmpl': { let o=''; for(const p of node.parts){ o += p.kind==='str'?p.v:(__exprEval(p.v,ctx)==null?'':String(__exprEval(p.v,ctx))); } return o; }
-      case 'mem': { const obj=__exprEval(node.obj,ctx); return obj==null?undefined:obj[node.prop]; }
-      case 'idx': { const obj=__exprEval(node.obj,ctx); const key=__exprEval(node.idx,ctx); return obj==null?undefined:obj[key]; }
-      case 'call': {
-        const callee = __exprEval(node.callee, ctx);
-        if (typeof callee !== 'function') throw new Error('Not a function');
-        let thisArg = undefined;
-        if (node.callee.k === 'mem' || node.callee.k === 'idx') thisArg = __exprEval(node.callee.obj, ctx);
-        return callee.apply(thisArg, node.args.map((a) => __exprEval(a, ctx)));
-      }
-      case 'unary': { const v=__exprEval(node.arg,ctx); return node.op==='!'?!v:node.op==='-'?-v:+v; }
-      case 'bin': {
-        const op=node.op;
-        if (op==='&&') return __exprEval(node.l,ctx) && __exprEval(node.r,ctx);
-        if (op==='||') return __exprEval(node.l,ctx) || __exprEval(node.r,ctx);
-        const a=__exprEval(node.l,ctx), b=__exprEval(node.r,ctx);
-        switch(op){case '+':return a+b;case '-':return a-b;case '*':return a*b;case '/':return a/b;case '%':return a%b;case '==':return a==b;case '!=':return a!=b;case '===':return a===b;case '!==':return a!==b;case '<':return a<b;case '>':return a>b;case '<=':return a<=b;case '>=':return a>=b;}
-        throw new Error('op');
-      }
-      case 'cond': return __exprEval(node.test,ctx) ? __exprEval(node.cons,ctx) : __exprEval(node.alt,ctx);
-    }
-  };
-  const __evalExpr = (src, ctx) => {
-    try {
-      const s = String(src || '');
-      if (!s.trim()) return { ok: true, value: ctx.value };
-      const ast = __exprParse(__exprTokenize(s));
-      return { ok: true, value: __exprEval(ast, ctx) };
-    } catch (e) {
-      return { ok: false, error: (e && e.message) || 'Eval error' };
-    }
-  };
-  const __applyTransforms = (value, steps) => {
-    if (!steps || steps.length === 0) return value;
-    let v = value;
-    let prev = value;
-    for (const step of steps) {
-      try { v = __applyStep(v, step, prev); } catch (_e) {}
-      prev = v;
-    }
-    return v;
-  };
+  const vars = {};
 
-  const [listaccountsthedemohasonemainaccountData, setListaccountsthedemohasonemainaccountData] = useState(null);
-  const [listaccountsthedemohasonemainaccountDataLoading, setListaccountsthedemohasonemainaccountDataLoading] = useState(false);
-  const [listaccountsthedemohasonemainaccountDataError, setListaccountsthedemohasonemainaccountDataError] = useState(null);
+  const [listAccountsTheDemoData, setListAccountsTheDemoData] = useState(null);
+  const [listAccountsTheDemoDataLoading, setListAccountsTheDemoDataLoading] = useState(false);
+  const [listAccountsTheDemoDataError, setListAccountsTheDemoDataError] = useState(null);
 
-  const fetchListaccountsthedemohasonemainaccountData = () => {
-    setListaccountsthedemohasonemainaccountDataLoading(true);
-    setListaccountsthedemohasonemainaccountDataError(null);
-    fetch(interpolateVars('https://wylsvmumemzvltauwqno.supabase.co/rest/v1/accounts') + '?' + new URLSearchParams([[interpolateVars('select'), interpolateVars('*')]]).toString(), { method: 'GET', headers: { 'apikey': interpolateVars('sb_publishable_7a7JrfhaF6ofII_rSFE8mQ_dZWL0adq') } })
+  const fetchListAccountsTheDemoData = () => {
+    setListAccountsTheDemoDataLoading(true);
+    setListAccountsTheDemoDataError(null);
+    fetch(nf.interpolate('https://wylsvmumemzvltauwqno.supabase.co/rest/v1/accounts', vars) + '?' + new URLSearchParams([[nf.interpolate('select', vars), nf.interpolate('*', vars)]]).toString(), { method: 'GET', headers: { 'apikey': nf.interpolate('sb_publishable_7a7JrfhaF6ofII_rSFE8mQ_dZWL0adq', vars) } })
       .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-      .then(json => { setListaccountsthedemohasonemainaccountData(json); setListaccountsthedemohasonemainaccountDataLoading(false); })
+      .then(json => { setListAccountsTheDemoData(json); setListAccountsTheDemoDataLoading(false); })
       .catch(err => {
         console.warn('[Preview] List accounts (the demo has one main account) fetch failed:', err && err.message ? err.message : err);
-        setListaccountsthedemohasonemainaccountDataError(err && err.message ? err.message : String(err));
-        setListaccountsthedemohasonemainaccountDataLoading(false);
+        setListAccountsTheDemoDataError(err && err.message ? err.message : String(err));
+        setListAccountsTheDemoDataLoading(false);
       });
   };
 
-  useEffect(() => { fetchListaccountsthedemohasonemainaccountData(); }, []);
+  useEffect(() => { fetchListAccountsTheDemoData(); }, []);
 
   return (
     <SafeAreaView edges={["top","left","right"]} style={styles.screenRoot}>
@@ -434,128 +40,128 @@ function Home() {
         style={styles.container}
         contentContainerStyle={styles.containerContent}
       >
-      <StatusBar style="auto" />
-      <View testID="674797b6-91b2-4f93-a1ed-7f597896113a" style={styles.node_674797b6_91b2_4f93_a1ed_7f597896113a}>
-              <View testID="550c67ad-fe28-46ed-a7e8-70d3ba3d66fa" style={styles.node_550c67ad_fe28_46ed_a7e8_70d3ba3d66fa}>
-                        <View testID="8f45e273-f4f2-4cce-a77c-904a2c9f0dca" style={styles.node_8f45e273_f4f2_4cce_a77c_904a2c9f0dca}>
-                                    <View testID="6bf15950-2359-4b79-a307-de6ebe58d435" style={styles.node_6bf15950_2359_4b79_a307_de6ebe58d435}>
-                                                  <Text testID="2693e9df-5ad9-47eb-adb0-6e8de495dc3d" style={styles.node_2693e9df_5ad9_47eb_adb0_6e8de495dc3d}>Good morning,</Text>
-                                                  <Text testID="ae9e58bd-c2fc-432d-8aab-866381219168" style={styles.node_ae9e58bd_c2fc_432d_8aab_866381219168}>{(() => { const __v = (listaccountsthedemohasonemainaccountData?.[0]?.owner_name || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                    </View>
-                                    <View testID="29329194-26cb-4a00-a8e7-e23c52d380e1" style={styles.node_29329194_26cb_4a00_a8e7_e23c52d380e1}>
-                                                  <View testID="39208365-2bb7-49b7-a53f-7d6d937c2fd5" accessible={true} accessibilityRole="image" accessibilityLabel="Notifications" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#FFFFFF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M10.268 21a2 2 0 0 0 3.464 0"></Path><Path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></Path></G></Svg></View>
-                                                  <TouchableOpacity testID="f21254a5-68fa-4cc1-8922-34dd510c1fb6" accessible={true} accessibilityRole="button" style={styles.node_f21254a5_68fa_4cc1_8922_34dd510c1fb6} activeOpacity={0.7} onPress={() => { try { app.navigate("Profile"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                                                  <Text testID="cfcd6517-7523-4acd-b2d3-7093f9753f5f" accessible={true} style={styles.node_cfcd6517_7523_4acd_b2d3_7093f9753f5f} onPress={() => { try { app.navigate("Profile"); } catch(e) { console.error('[Action Error]', e); } }}>A</Text>
-                                                  </TouchableOpacity>
-                                    </View>
-                        </View>
-                        <View testID="4d925c88-9f05-4160-90ac-140b52dbd832" style={styles.node_4d925c88_9f05_4160_90ac_140b52dbd832}>
-                                    <View testID="ab2c207f-64a9-4e20-82f0-1ad07c0be52a" style={styles.node_ab2c207f_64a9_4e20_82f0_1ad07c0be52a}>
-                                                  <Text testID="b89b4fd3-c267-4c78-a81f-ba6247fed765" style={styles.node_b89b4fd3_c267_4c78_a81f_ba6247fed765}>Total Balance</Text>
-                                                  <View testID="52dddddc-75a9-4912-a154-d6e80e00c1e3" accessible={true} accessibilityRole="image" accessibilityLabel="Toggle balance visibility" style={{ width: 16, height: 16, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={16} height={16} fill="none"><G stroke="#C7D0E8" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></Path><Circle cx="12" cy="12" r="3"></Circle></G></Svg></View>
-                                    </View>
-                                    <Text testID="f5d2b28c-e515-498e-a076-21d6e9437f67" style={styles.node_f5d2b28c_e515_498e_a076_21d6e9437f67}>{(() => { const __v = ((__applyTransforms(listaccountsthedemohasonemainaccountData?.[0]?.balance, [{"type":"format-currency","locale":"en-US","currency":"INR","signDisplay":"auto"}])) || ''); return (__v == null || typeof __v === 'object') ? '' : String(__v); })()}</Text>
-                                    <View testID="93da11d8-8ed5-4db8-a30c-cf009dae29e0" style={styles.node_93da11d8_8ed5_4db8_a30c_cf009dae29e0}>
-                                                  <View testID="d7a2374c-21fc-4a8e-80ef-9ecc2ea45718" style={styles.node_d7a2374c_21fc_4a8e_80ef_9ecc2ea45718}>
-                                                                  <View testID="1603efcb-008f-495b-8bbe-f5d4d4e792c5" accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden={true} style={{ width: 14, height: 14, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={14} height={14} fill="none"><G stroke="#34D399" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="m5 12 7-7 7 7"></Path><Path d="M12 19V5"></Path></G></Svg></View>
-                                                                  <Text testID="5e1336e6-fb19-4730-9622-f304e213572a" style={styles.node_5e1336e6_fb19_4730_9622_f304e213572a}>2.4%</Text>
-                                                  </View>
-                                                  <Text testID="bf8f22b8-aa91-416a-8f91-2422f0271216" style={styles.node_bf8f22b8_aa91_416a_8f91_2422f0271216}>vs last month</Text>
-                                    </View>
-                        </View>
+        <StatusBar style="auto" />
+        <View style={styles.column}>
+          <View style={styles.column2}>
+            <View style={styles.row}>
+              <View style={styles.column3}>
+                <Text style={styles.goodMorningText}>Good morning,</Text>
+                <Text style={styles.prahaladText}>{nf.text(listAccountsTheDemoData?.[0]?.owner_name || '')}</Text>
               </View>
-              <View testID="260b42e9-49f9-46a6-a029-b685180e6101" style={styles.node_260b42e9_49f9_46a6_a029_b685180e6101}>
-                        <View testID="21d1ea39-7214-4ccc-b47a-ae8c4bb4fe65" style={styles.node_21d1ea39_7214_4ccc_b47a_ae8c4bb4fe65}>
-                                    <View testID="6ec1a7a2-65ac-4306-8e8c-c2bda7afc8e4" style={styles.node_6ec1a7a2_65ac_4306_8e8c_c2bda7afc8e4}>
-                                                  <View testID="e12c6c26-7192-4062-b3d8-a3059402510c" accessible={true} accessibilityRole="image" accessibilityLabel="Send money" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#2563EB" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></Path><Path d="m21.854 2.147-10.94 10.939"></Path></G></Svg></View>
-                                    </View>
-                                    <Text testID="ed13024f-35f4-42c3-a5cf-d7b826479a17" style={styles.node_ed13024f_35f4_42c3_a5cf_d7b826479a17}>Send</Text>
-                        </View>
-                        <View testID="47ff0519-64d6-4721-809f-0b8c7c40cc98" style={styles.node_47ff0519_64d6_4721_809f_0b8c7c40cc98}>
-                                    <View testID="a33bc9ac-e766-46b3-b3be-ecb8aa3c0bc3" style={styles.node_a33bc9ac_e766_46b3_b3be_ecb8aa3c0bc3}>
-                                                  <View testID="062a6a57-ace0-48b7-8189-276064574e99" accessible={true} accessibilityRole="image" accessibilityLabel="Request" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#7C3AED" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Polyline points="14 15 9 20 4 15"></Polyline><Path d="M20 4h-7a4 4 0 0 0-4 4v12"></Path></G></Svg></View>
-                                    </View>
-                                    <Text testID="7c3e73ec-df5a-4318-9b38-fea7300ccb33" style={styles.node_7c3e73ec_df5a_4318_9b38_fea7300ccb33}>Request</Text>
-                        </View>
-                        <View testID="62f68c21-825a-4401-9c80-6c73c0858332" style={styles.node_62f68c21_825a_4401_9c80_6c73c0858332}>
-                                    <View testID="4cc6e769-8b21-412a-931a-3879393a3ded" style={styles.node_4cc6e769_8b21_412a_931a_3879393a3ded}>
-                                                  <View testID="a4326e3d-7a7a-4729-ab24-2f450657bc5f" accessible={true} accessibilityRole="image" accessibilityLabel="Scan and pay" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#EA580C" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M3 7V5a2 2 0 0 1 2-2h2"></Path><Path d="M17 3h2a2 2 0 0 1 2 2v2"></Path><Path d="M21 17v2a2 2 0 0 1-2 2h-2"></Path><Path d="M7 21H5a2 2 0 0 1-2-2v-2"></Path><Path d="M7 12h10"></Path></G></Svg></View>
-                                    </View>
-                                    <Text testID="89320d68-9591-458f-9c5b-6a028087a7a0" style={styles.node_89320d68_9591_458f_9c5b_6a028087a7a0}>Scan & Pay</Text>
-                        </View>
-                        <View testID="41f2aac2-f907-432a-8909-cb84d9686916" style={styles.node_41f2aac2_f907_432a_8909_cb84d9686916}>
-                                    <View testID="72f8169b-001d-43ce-8733-c66e6fd3aec0" style={styles.node_72f8169b_001d_43ce_8733_c66e6fd3aec0}>
-                                                  <View testID="507dceab-dc4d-4661-9491-419de8ed266f" accessible={true} accessibilityRole="image" accessibilityLabel="More options" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={24} height={24} fill="none"><G stroke="#059669" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 3v18"></Path><Path d="M3 12h18"></Path><Rect x="3" y="3" width="18" height="18" rx="2"></Rect></G></Svg></View>
-                                    </View>
-                                    <Text testID="eebaed6d-f96d-463e-a9f1-c7c1d774c38b" style={styles.node_eebaed6d_f96d_463e_a9f1_c7c1d774c38b}>More</Text>
-                        </View>
+              <View style={styles.row2}>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="Notifications" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="bell" size={24} color="#FFFFFF" strokeWidth={2} /></View>
+                <TouchableOpacity testID="Home_Center" accessible={true} accessibilityRole="button" style={styles.center} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("Profile"); })}>
+                  <Text testID="Home_Text" accessible={true} style={styles.text} onPress={nf.safely(() => { app.navigate("Profile"); })}>A</Text>
+                </TouchableOpacity>
               </View>
-              <View testID="37b7ee4d-61ab-4d81-ad01-ec5daef46d77" style={styles.node_37b7ee4d_61ab_4d81_ad01_ec5daef46d77}>
-                        <View testID="55d48b15-bbb2-40ad-a2b5-1824abb6f634" style={styles.node_55d48b15_bbb2_40ad_a2b5_1824abb6f634}>
-                                    <View testID="ed00a153-b818-4d1a-86f5-35023e8166b4" style={styles.node_ed00a153_b818_4d1a_86f5_35023e8166b4}>
-                                                  <View testID="9ad7a278-89cd-4416-b9f1-ee0ef71f5265" style={styles.node_9ad7a278_89cd_4416_b9f1_ee0ef71f5265}>
-                                                                  <View testID="21d3b4fc-497b-40da-8bee-c5132895f3d7" style={styles.node_21d3b4fc_497b_40da_8bee_c5132895f3d7}>
-                                                                                    <View testID="80a68370-8e4b-44f3-8aba-acf14ec03bdf" style={styles.node_80a68370_8e4b_44f3_8aba_acf14ec03bdf} />
-                                                                                    <View testID="12006d2e-3c77-4252-92e2-856d83310d49" style={styles.node_12006d2e_3c77_4252_92e2_856d83310d49} />
-                                                                  </View>
-                                                  </View>
-                                    </View>
-                                    <View testID="d0e12e58-ae9e-43d1-9134-de09878d8b6c" style={styles.node_d0e12e58_ae9e_43d1_9134_de09878d8b6c}>
-                                                  <Text testID="45ce676c-f1aa-4e16-8ca0-3e913ba2453f" style={styles.node_45ce676c_f1aa_4e16_8ca0_3e913ba2453f}>Meet</Text>
-                                                  <Text testID="eee544d1-b47b-411d-90bf-449f7ec7f3b8" style={styles.node_eee544d1_b47b_411d_90bf_449f7ec7f3b8}>Mintly Ai</Text>
-                                    </View>
-                        </View>
-                        <Text testID="ca0a11e0-ad46-4bc6-94d0-ce774015d39e" style={styles.node_ca0a11e0_ad46_4bc6_94d0_ce774015d39e}>Ask anything, get instant answers, make transactions and more.</Text>
-                        <TouchableOpacity testID="aeadfb60-59bf-45ed-bd10-f889e54056a4" accessible={true} accessibilityRole="button" style={styles.node_aeadfb60_59bf_45ed_bd10_f889e54056a4} activeOpacity={0.7} onPress={() => { try { app.navigate("AI Mintly"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                    <View testID="6af9c5ee-26f4-4bbb-b238-8bc21fe2ba88" style={styles.node_6af9c5ee_26f4_4bbb_b238_8bc21fe2ba88}>
-                                                  <View testID="d242c87c-b914-4497-b825-c4693d7af066" accessible={true} accessibilityRole="image" style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={18} height={18} fill="none"><G stroke="#FFFFFF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></Path><Path d="M20 3v4"></Path><Path d="M22 5h-4"></Path><Path d="M4 17v2"></Path><Path d="M5 18H3"></Path></G></Svg></View>
-                                                  <Text testID="c1f8bf33-af24-4727-b2a6-e2b207087433" accessible={true} accessibilityLabel="Chat with Mintly" style={styles.node_c1f8bf33_af24_4727_b2a6_e2b207087433} onPress={() => { try { app.navigate("AI Mintly"); } catch(e) { console.error('[Action Error]', e); } }}>Chat with Mintly</Text>
-                                    </View>
-                        </TouchableOpacity>
+            </View>
+            <View style={styles.column4}>
+              <View style={styles.row3}>
+                <Text style={styles.totalBalanceText}>Total Balance</Text>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="Toggle balance visibility" style={{ width: 15, height: 15, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="eye" size={15} color="#C7D0E8" strokeWidth={2} /></View>
               </View>
-              <View testID="984d2606-af7c-4031-94a9-caf923465aa8" style={styles.node_984d2606_af7c_4031_94a9_caf923465aa8}>
-                        <View testID="b168b333-ffc5-43c9-a78f-3335d51b85ea" style={styles.node_b168b333_ffc5_43c9_a78f_3335d51b85ea}>
-                                    <TouchableOpacity testID="6e99c40c-e3a0-4a2e-8dd3-19fcbaf9fcc8" accessible={true} accessibilityRole="button" style={styles.node_6e99c40c_e3a0_4a2e_8dd3_19fcbaf9fcc8} activeOpacity={0.7} onPress={() => { try { app.navigate("Payments"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                                  <View testID="960148f4-9c70-4157-abce-a0b90d49b486" style={styles.node_960148f4_9c70_4157_abce_a0b90d49b486}>
-                                                                  <Text testID="b8ae2fc6-f977-4137-ac49-c50438378bd9" style={styles.node_b8ae2fc6_f977_4137_ac49_c50438378bd9}>Payments</Text>
-                                                                  <Text testID="3dbd1794-1169-4577-8474-81a126291a95" style={styles.node_3dbd1794_1169_4577_8474_81a126291a95}>Bills, UPI & more</Text>
-                                                  </View>
-                                                  <View testID="1418e75e-dabd-4718-be69-68772892c3d5" style={styles.node_1418e75e_dabd_4718_be69_68772892c3d5}>
-                                                                  <View testID="1f6fe1f4-42b9-4520-82e0-846b838857da" accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={34} height={34} fill="none"><G stroke="#2B1B00" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></Path><Path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></Path><Path d="M12 17.5v-11"></Path></G></Svg></View>
-                                                  </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity testID="abc99fc6-aca7-4d10-b4c9-5477876a1f8a" accessible={true} accessibilityRole="button" style={styles.node_abc99fc6_aca7_4d10_b4c9_5477876a1f8a} activeOpacity={0.7} onPress={() => { try { app.navigate("Loans"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                                  <View testID="92798dc9-f7ff-462c-b61e-12a7412915ea" style={styles.node_92798dc9_f7ff_462c_b61e_12a7412915ea}>
-                                                                  <Text testID="e2448ff0-164e-4604-8d3b-713a9b5e9654" style={styles.node_e2448ff0_164e_4604_8d3b_713a9b5e9654}>Loans & Credit</Text>
-                                                                  <Text testID="d9bf73f2-dcf1-4719-91ba-3ee88a7261e9" style={styles.node_d9bf73f2_dcf1_4719_91ba_3ee88a7261e9}>Pre-approved up to ₹50L</Text>
-                                                  </View>
-                                                  <View testID="c8b92f92-c2f4-4c04-a199-b14bc17ecc1d" style={styles.node_c8b92f92_c2f4_4c04_a199_b14bc17ecc1d}>
-                                                                  <View testID="7edae0c2-0573-435e-aead-7d4c054a23d6" accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={34} height={34} fill="none"><G stroke="#B9F6CA" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></Path><Path d="m9 12 2 2 4-4"></Path></G></Svg></View>
-                                                  </View>
-                                    </TouchableOpacity>
-                        </View>
-                        <View testID="2c96e34b-5153-4f54-9680-905946aa4eb5" style={styles.node_2c96e34b_5153_4f54_9680_905946aa4eb5}>
-                                    <TouchableOpacity testID="88702662-964c-4a37-95ae-1bbad37dce27" accessible={true} accessibilityRole="button" style={styles.node_88702662_964c_4a37_95ae_1bbad37dce27} activeOpacity={0.7} onPress={() => { try { app.navigate("Accounts"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                                  <View testID="ca3902f1-4cd4-4cc4-8e63-b7298731f4c0" style={styles.node_ca3902f1_4cd4_4cc4_8e63_b7298731f4c0}>
-                                                                  <Text testID="4fe1a4bd-ed0f-426f-83b1-b7e526075b70" style={styles.node_4fe1a4bd_ed0f_426f_83b1_b7e526075b70}>Accounts</Text>
-                                                                  <Text testID="4e7e9c7f-c8a9-40e7-9c3b-c5ad0a0071a7" style={styles.node_4e7e9c7f_c8a9_40e7_9c3b_c5ad0a0071a7}>Savings, Current & FD</Text>
-                                                  </View>
-                                                  <View testID="dcbd8fd9-607b-4f56-b5cb-1bfdcf142df7" style={styles.node_dcbd8fd9_607b_4f56_b5cb_1bfdcf142df7}>
-                                                                  <View testID="7fd02c94-1399-432b-938c-43e8f94bf506" accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={34} height={34} fill="none"><G stroke="#F3D4D0" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Line x1="3" x2="21" y1="22" y2="22"></Line><Line x1="6" x2="6" y1="18" y2="11"></Line><Line x1="10" x2="10" y1="18" y2="11"></Line><Line x1="14" x2="14" y1="18" y2="11"></Line><Line x1="18" x2="18" y1="18" y2="11"></Line><Polygon points="12 2 20 7 4 7"></Polygon></G></Svg></View>
-                                                  </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity testID="f5bca464-4913-4f08-ba5a-a109ad0e6999" accessible={true} accessibilityRole="button" style={styles.node_f5bca464_4913_4f08_ba5a_a109ad0e6999} activeOpacity={0.7} onPress={() => { try { app.navigate("Investments"); } catch(e) { console.error('[Action Error]', e); } }}>
-                                                  <View testID="7fdb243a-f46f-42d0-8da2-73ade02d2b05" style={styles.node_7fdb243a_f46f_42d0_8da2_73ade02d2b05}>
-                                                                  <Text testID="6bad1250-a88d-4aed-9fd2-f98b9e69d46e" style={styles.node_6bad1250_a88d_4aed_9fd2_f98b9e69d46e}>Investments</Text>
-                                                                  <Text testID="2a063c9a-8b92-4bef-9ac7-b9714f3b708c" style={styles.node_2a063c9a_8b92_4bef_9ac7_b9714f3b708c}>Funds & stocks</Text>
-                                                  </View>
-                                                  <View testID="50fa9507-1959-4f61-948e-d4617bc4df14" style={styles.node_50fa9507_1959_4f61_948e_d4617bc4df14}>
-                                                                  <View testID="f967bcb4-ea8a-4bd6-9d0f-008983d33d39" accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={34} height={34} fill="none"><G stroke="#F5C542" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M6 3h12l4 6-10 13L2 9Z"></Path><Path d="M11 3 8 9l4 13 4-13-3-6"></Path><Path d="M2 9h20"></Path></G></Svg></View>
-                                                  </View>
-                                    </TouchableOpacity>
-                        </View>
+              <Text style={styles.text124832000Text}>{nf.text((nf.applyTransforms(listAccountsTheDemoData?.[0]?.balance, [{"type":"format-currency","locale":"en-US","currency":"INR","signDisplay":"auto"}])) || '')}</Text>
+              <View style={styles.row4}>
+                <View style={styles.row5}>
+                  <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden={true} style={{ width: 14, height: 14, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="arrow-up" size={14} color="#34D399" strokeWidth={2} /></View>
+                  <Text style={styles.text24Text}>2.4%</Text>
+                </View>
+                <Text style={styles.vsLastMonthText}>vs last month</Text>
               </View>
-      </View>
+            </View>
+          </View>
+          <View style={styles.row6}>
+            <View style={styles.column5}>
+              <View style={styles.center2}>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="Send money" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="send" size={24} color="#2563EB" strokeWidth={2} /></View>
+              </View>
+              <Text style={styles.sendText}>Send</Text>
+            </View>
+            <View style={styles.column6}>
+              <View style={styles.center3}>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="Request" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="corner-left-down" size={24} color="#7C3AED" strokeWidth={2} /></View>
+              </View>
+              <Text style={styles.requestText}>Request</Text>
+            </View>
+            <View style={styles.column7}>
+              <View style={styles.center4}>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="Scan and pay" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="scan-line" size={24} color="#EA580C" strokeWidth={2} /></View>
+              </View>
+              <Text style={styles.scanPayText}>Scan & Pay</Text>
+            </View>
+            <View style={styles.column8}>
+              <View style={styles.center5}>
+                <View accessible={true} accessibilityRole="image" accessibilityLabel="More options" style={{ width: 24, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="grid-2x2" size={24} color="#059669" strokeWidth={2} /></View>
+              </View>
+              <Text style={styles.moreText}>More</Text>
+            </View>
+          </View>
+          <View style={styles.column9}>
+            <View style={styles.row7}>
+              <View style={styles.center6}>
+                <View style={styles.center7}>
+                  <View style={styles.row8}>
+                    <View style={styles.box} />
+                    <View style={styles.box2} />
+                  </View>
+                </View>
+              </View>
+              <View style={styles.column10}>
+                <Text style={styles.meetText}>Meet</Text>
+                <Text style={styles.text2}>Mintly Ai</Text>
+              </View>
+            </View>
+            <Text style={styles.askAnythingGetInstantText}>Ask anything, get instant answers, make transactions and more.</Text>
+            <TouchableOpacity testID="Home_Pressable" accessible={true} accessibilityRole="button" style={styles.pressable} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("AI Mintly"); })}>
+              <View style={styles.row9}>
+                <View accessible={true} accessibilityRole="image" style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="sparkles" size={18} color="#FFFFFF" strokeWidth={2} /></View>
+                <Text testID="Home_ChatWithMintlyText" accessible={true} accessibilityLabel="Chat with Mintly" style={styles.chatWithMintlyText} onPress={nf.safely(() => { app.navigate("AI Mintly"); })}>Chat with Mintly</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.column11}>
+            <View style={styles.row10}>
+              <TouchableOpacity testID="Home_Column" accessible={true} accessibilityRole="button" style={styles.column12} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("Payments"); })}>
+                <View style={styles.column13}>
+                  <Text style={styles.paymentsText}>Payments</Text>
+                  <Text style={styles.billsUPIMoreText}>Bills, UPI & more</Text>
+                </View>
+                <View style={styles.row11}>
+                  <View accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="receipt" size={34} color="#2B1B00" strokeWidth={2} /></View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity testID="Home_Column2" accessible={true} accessibilityRole="button" style={styles.column14} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("Loans"); })}>
+                <View style={styles.column15}>
+                  <Text style={styles.loansCreditText}>Loans & Credit</Text>
+                  <Text style={styles.preApprovedUpToText}>Pre-approved up to ₹50L</Text>
+                </View>
+                <View style={styles.row12}>
+                  <View accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="shield-check" size={34} color="#B9F6CA" strokeWidth={2} /></View>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row13}>
+              <TouchableOpacity testID="Home_Column3" accessible={true} accessibilityRole="button" style={styles.column16} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("Accounts"); })}>
+                <View style={styles.column17}>
+                  <Text style={styles.accountsText}>Accounts</Text>
+                  <Text style={styles.savingsCurrentFDText}>Savings, Current & FD</Text>
+                </View>
+                <View style={styles.row14}>
+                  <View accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="landmark" size={34} color="#F3D4D0" strokeWidth={2} /></View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity testID="Home_Column4" accessible={true} accessibilityRole="button" style={styles.column18} activeOpacity={0.7} onPress={nf.safely(() => { app.navigate("Investments"); })}>
+                <View style={styles.column19}>
+                  <Text style={styles.investmentsText}>Investments</Text>
+                  <Text style={styles.fundsStocksText}>Funds & stocks</Text>
+                </View>
+                <View style={styles.row15}>
+                  <View accessible={true} accessibilityRole="image" style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="gem" size={34} color="#F5C542" strokeWidth={2} /></View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -589,7 +195,7 @@ function createStyles() {
     width: '100%',
     alignSelf: 'stretch',
   },
-  node_674797b6_91b2_4f93_a1ed_7f597896113a: {
+  column: {
     gap: 0,
     backgroundColor: colors.background,
     justifyContent: 'flex-start',
@@ -600,7 +206,7 @@ function createStyles() {
     flexGrow: 1,
     flexShrink: 0,
   },
-  node_550c67ad_fe28_46ed_a7e8_70d3ba3d66fa: {
+  column2: {
     gap: 20,
     overflow: 'hidden',
     position: 'relative',
@@ -614,7 +220,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_8f45e273_f4f2_4cce_a77c_904a2c9f0dca: {
+  row: {
     gap: 0,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
@@ -622,7 +228,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_6bf15950_2359_4b79_a307_de6ebe58d435: {
+  column3: {
     gap: 2,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
@@ -632,16 +238,16 @@ function createStyles() {
     flexShrink: 1,
     minWidth: 0,
   },
-  node_2693e9df_5ad9_47eb_adb0_6e8de495dc3d: {
+  goodMorningText: {
     color: '#AEB8E0',
     fontSize: 15,
   },
-  node_ae9e58bd_c2fc_432d_8aab_866381219168: {
+  prahaladText: {
     color: '#FFFFFF',
     fontSize: 28,
     fontWeight: '700',
   },
-  node_29329194_26cb_4a00_a8e7_e23c52d380e1: {
+  row2: {
     gap: 16,
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -653,11 +259,11 @@ function createStyles() {
     minWidth: 0,
     overflow: 'hidden',
   },
-  node_39208365_2bb7_49b7_a53f_7d6d937c2fd5: {
+  notificationsIcon: {
     color: '#FFFFFF',
     paddingTop: 10,
   },
-  node_f21254a5_68fa_4cc1_8922_34dd510c1fb6: {
+  center: {
     width: 40,
     height: 40,
     alignItems: 'center',
@@ -665,12 +271,12 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#EDEFFA',
   },
-  node_cfcd6517_7523_4acd_b2d3_7093f9753f5f: {
+  text: {
     color: '#19255A',
     fontSize: 15,
     fontWeight: '700',
   },
-  node_4d925c88_9f05_4160_90ac_140b52dbd832: {
+  column4: {
     gap: 10,
     marginTop: 12,
     justifyContent: 'flex-start',
@@ -678,7 +284,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_ab2c207f_64a9_4e20_82f0_1ad07c0be52a: {
+  row3: {
     gap: 6,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
@@ -686,21 +292,21 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_b89b4fd3_c267_4c78_a81f_ba6247fed765: {
+  totalBalanceText: {
     color: '#AEB8E0',
     fontSize: 14,
     alignSelf: 'flex-start',
     flexShrink: 0,
   },
-  node_52dddddc_75a9_4912_a154_d6e80e00c1e3: {
+  toggleBalanceVisibilityIcon: {
     color: '#C7D0E8',
   },
-  node_f5d2b28c_e515_498e_a076_21d6e9437f67: {
+  text124832000Text: {
     color: '#FFFFFF',
     fontSize: 36,
     fontWeight: '800',
   },
-  node_93da11d8_8ed5_4db8_a30c_cf009dae29e0: {
+  row4: {
     gap: 8,
     marginTop: 4,
     alignItems: 'flex-end',
@@ -709,7 +315,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_d7a2374c_21fc_4a8e_80ef_9ecc2ea45718: {
+  row5: {
     gap: 4,
     alignItems: 'flex-end',
     paddingTop: 4,
@@ -723,23 +329,23 @@ function createStyles() {
     overflow: 'visible',
     flexDirection: 'row',
   },
-  node_1603efcb_008f_495b_8bbe_f5d4d4e792c5: {
+  icon: {
     color: '#34D399',
   },
-  node_5e1336e6_fb19_4730_9622_f304e213572a: {
+  text24Text: {
     color: '#4ADE80',
     fontSize: 13,
     fontWeight: '700',
     alignSelf: 'flex-start',
     flexShrink: 0,
   },
-  node_bf8f22b8_aa91_416a_8f91_2422f0271216: {
+  vsLastMonthText: {
     color: '#AEB8E0',
     fontSize: 13,
     alignSelf: 'flex-start',
     flexShrink: 0,
   },
-  node_260b42e9_49f9_46a6_a029_b685180e6101: {
+  row6: {
     gap: 0,
     paddingTop: 24,
     paddingLeft: 24,
@@ -751,7 +357,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_21d1ea39_7214_4ccc_b47a_ae8c4bb4fe65: {
+  column5: {
     gap: 8,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
@@ -761,7 +367,7 @@ function createStyles() {
     flexShrink: 1,
     minWidth: 0,
   },
-  node_6ec1a7a2_65ac_4306_8e8c_c2bda7afc8e4: {
+  center2: {
     width: 56,
     height: 56,
     alignItems: 'center',
@@ -769,15 +375,15 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
-  node_e12c6c26_7192_4062_b3d8_a3059402510c: {
+  sendMoneyIcon: {
     color: '#2563EB',
   },
-  node_ed13024f_35f4_42c3_a5cf_d7b826479a17: {
+  sendText: {
     color: '#374151',
     fontSize: 14,
     fontWeight: '500',
   },
-  node_47ff0519_64d6_4721_809f_0b8c7c40cc98: {
+  column6: {
     gap: 8,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
@@ -787,7 +393,7 @@ function createStyles() {
     flexShrink: 1,
     minWidth: 0,
   },
-  node_a33bc9ac_e766_46b3_b3be_ecb8aa3c0bc3: {
+  center3: {
     width: 56,
     height: 56,
     alignItems: 'center',
@@ -795,15 +401,15 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
-  node_062a6a57_ace0_48b7_8189_276064574e99: {
+  requestIcon: {
     color: '#7C3AED',
   },
-  node_7c3e73ec_df5a_4318_9b38_fea7300ccb33: {
+  requestText: {
     color: '#374151',
     fontSize: 14,
     fontWeight: '500',
   },
-  node_62f68c21_825a_4401_9c80_6c73c0858332: {
+  column7: {
     gap: 8,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
@@ -813,7 +419,7 @@ function createStyles() {
     flexShrink: 1,
     minWidth: 0,
   },
-  node_4cc6e769_8b21_412a_931a_3879393a3ded: {
+  center4: {
     width: 56,
     height: 56,
     alignItems: 'center',
@@ -821,15 +427,15 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
-  node_a4326e3d_7a7a_4729_ab24_2f450657bc5f: {
+  scanAndPayIcon: {
     color: '#EA580C',
   },
-  node_89320d68_9591_458f_9c5b_6a028087a7a0: {
+  scanPayText: {
     color: '#374151',
     fontSize: 14,
     fontWeight: '500',
   },
-  node_41f2aac2_f907_432a_8909_cb84d9686916: {
+  column8: {
     gap: 8,
     alignItems: 'stretch',
     justifyContent: 'center',
@@ -839,7 +445,7 @@ function createStyles() {
     flexShrink: 1,
     minWidth: 0,
   },
-  node_72f8169b_001d_43ce_8733_c66e6fd3aec0: {
+  center5: {
     width: 56,
     height: 56,
     alignItems: 'center',
@@ -847,16 +453,16 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
-  node_507dceab_dc4d_4661_9491_419de8ed266f: {
+  moreOptionsIcon: {
     color: '#059669',
   },
-  node_eebaed6d_f96d_463e_a9f1_c7c1d774c38b: {
+  moreText: {
     color: '#374151',
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
   },
-  node_37b7ee4d_61ab_4d81_ad01_ec5daef46d77: {
+  column9: {
     gap: 10,
     margin: 15,
     padding: 20,
@@ -867,7 +473,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_55d48b15_bbb2_40ad_a2b5_1824abb6f634: {
+  row7: {
     gap: 16,
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -875,7 +481,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_ed00a153_b818_4d1a_86f5_35023e8166b4: {
+  center6: {
     width: 56,
     height: 56,
     _rnShadow: {"shadowColor":"#000000","shadowOffset":{"width":0,"height":2},"shadowRadius":6,"shadowOpacity":0.08},
@@ -885,7 +491,7 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
-  node_9ad7a278_89cd_4416_b9f1_ee0ef71f5265: {
+  center7: {
     width: 40,
     height: 26,
     alignItems: 'center',
@@ -893,7 +499,7 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#0F1A4A',
   },
-  node_21d3b4fc_497b_40da_8bee_c5132895f3d7: {
+  row8: {
     gap: 6,
     justifyContent: 'center',
     alignItems: 'center',
@@ -901,7 +507,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_80a68370_8e4b_44f3_8aba_acf14ec03bdf: {
+  box: {
     width: 7,
     height: 7,
     padding: 0,
@@ -913,7 +519,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     overflow: 'visible',
   },
-  node_12006d2e_3c77_4252_92e2_856d83310d49: {
+  box2: {
     width: 7,
     height: 7,
     padding: 0,
@@ -925,7 +531,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     overflow: 'visible',
   },
-  node_d0e12e58_ae9e_43d1_9134_de09878d8b6c: {
+  column10: {
     gap: 2,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
@@ -938,21 +544,21 @@ function createStyles() {
     minWidth: 0,
     overflow: 'hidden',
   },
-  node_45ce676c_f1aa_4e16_8ca0_3e913ba2453f: {
+  meetText: {
     color: '#6B7280',
     fontSize: 18,
   },
-  node_eee544d1_b47b_411d_90bf_449f7ec7f3b8: {
+  text2: {
     color: '#1E2A5E',
     fontSize: 26,
     fontWeight: '800',
   },
-  node_ca0a11e0_ad46_4bc6_94d0_ce774015d39e: {
+  askAnythingGetInstantText: {
     color: '#6B7280',
     fontSize: 15,
     lineHeight: 20,
   },
-  node_aeadfb60_59bf_45ed_bd10_f889e54056a4: {
+  pressable: {
     alignItems: 'center',
     paddingTop: 14,
     borderRadius: 999,
@@ -960,7 +566,7 @@ function createStyles() {
     justifyContent: 'center',
     backgroundColor: '#3B4FE0',
   },
-  node_6af9c5ee_26f4_4bbb_b238_8bc21fe2ba88: {
+  row9: {
     gap: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -968,17 +574,17 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_d242c87c_b914_4497_b825_c4693d7af066: {
+  icon2: {
     color: '#FFFFFF',
   },
-  node_c1f8bf33_af24_4727_b2a6_e2b207087433: {
+  chatWithMintlyText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     alignSelf: 'flex-start',
     flexShrink: 0,
   },
-  node_984d2606_af7c_4031_94a9_caf923465aa8: {
+  column11: {
     gap: 16,
     paddingLeft: 20,
     paddingRight: 20,
@@ -988,7 +594,7 @@ function createStyles() {
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_b168b333_ffc5_43c9_a78f_3335d51b85ea: {
+  row10: {
     gap: 16,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
@@ -996,7 +602,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_6e99c40c_e3a0_4a2e_8dd3_19fcbaf9fcc8: {
+  column12: {
     gap: 0,
     height: 150,
     padding: 18,
@@ -1013,23 +619,23 @@ function createStyles() {
     flexBasis: 0,
     minWidth: 0,
   },
-  node_960148f4_9c70_4157_abce_a0b90d49b486: {
+  column13: {
     gap: 4,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_b8ae2fc6_f977_4137_ac49_c50438378bd9: {
+  paymentsText: {
     color: '#2B1B00',
     fontSize: 19,
     fontWeight: '800',
   },
-  node_3dbd1794_1169_4577_8474_81a126291a95: {
+  billsUPIMoreText: {
     color: '#4A3200',
     fontSize: 13,
   },
-  node_1418e75e_dabd_4718_be69_68772892c3d5: {
+  row11: {
     gap: 0,
     justifyContent: 'flex-end',
     alignItems: 'stretch',
@@ -1037,10 +643,10 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_1f6fe1f4_42b9_4520_82e0_846b838857da: {
+  icon3: {
     color: '#2B1B00',
   },
-  node_abc99fc6_aca7_4d10_b4c9_5477876a1f8a: {
+  column14: {
     gap: 0,
     height: 150,
     padding: 18,
@@ -1057,23 +663,23 @@ function createStyles() {
     flexBasis: 0,
     minWidth: 0,
   },
-  node_92798dc9_f7ff_462c_b61e_12a7412915ea: {
+  column15: {
     gap: 4,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_e2448ff0_164e_4604_8d3b_713a9b5e9654: {
+  loansCreditText: {
     color: '#FFFFFF',
     fontSize: 19,
     fontWeight: '800',
   },
-  node_d9bf73f2_dcf1_4719_91ba_3ee88a7261e9: {
+  preApprovedUpToText: {
     color: '#D7E6DA',
     fontSize: 13,
   },
-  node_c8b92f92_c2f4_4c04_a199_b14bc17ecc1d: {
+  row12: {
     gap: 0,
     justifyContent: 'flex-end',
     alignItems: 'stretch',
@@ -1081,10 +687,10 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_7edae0c2_0573_435e_aead_7d4c054a23d6: {
+  icon4: {
     color: '#B9F6CA',
   },
-  node_2c96e34b_5153_4f54_9680_905946aa4eb5: {
+  row13: {
     gap: 16,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
@@ -1092,7 +698,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_88702662_964c_4a37_95ae_1bbad37dce27: {
+  column16: {
     gap: 0,
     height: 150,
     padding: 18,
@@ -1109,23 +715,23 @@ function createStyles() {
     flexBasis: 0,
     minWidth: 0,
   },
-  node_ca3902f1_4cd4_4cc4_8e63_b7298731f4c0: {
+  column17: {
     gap: 4,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_4fe1a4bd_ed0f_426f_83b1_b7e526075b70: {
+  accountsText: {
     color: '#FFFFFF',
     fontSize: 19,
     fontWeight: '800',
   },
-  node_4e7e9c7f_c8a9_40e7_9c3b_c5ad0a0071a7: {
+  savingsCurrentFDText: {
     color: '#F3D4D0',
     fontSize: 13,
   },
-  node_dcbd8fd9_607b_4f56_b5cb_1bfdcf142df7: {
+  row14: {
     gap: 0,
     justifyContent: 'flex-end',
     alignItems: 'stretch',
@@ -1133,10 +739,10 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_7fd02c94_1399_432b_938c_43e8f94bf506: {
+  icon5: {
     color: '#F3D4D0',
   },
-  node_f5bca464_4913_4f08_ba5a_a109ad0e6999: {
+  column18: {
     gap: 0,
     height: 150,
     padding: 18,
@@ -1153,23 +759,23 @@ function createStyles() {
     flexBasis: 0,
     minWidth: 0,
   },
-  node_7fdb243a_f46f_42d0_8da2_73ade02d2b05: {
+  column19: {
     gap: 4,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_6bad1250_a88d_4aed_9fd2_f98b9e69d46e: {
+  investmentsText: {
     color: '#FFFFFF',
     fontSize: 19,
     fontWeight: '800',
   },
-  node_2a063c9a_8b92_4bef_9ac7_b9714f3b708c: {
+  fundsStocksText: {
     color: '#C9CED6',
     fontSize: 13,
   },
-  node_50fa9507_1959_4f61_948e_d4617bc4df14: {
+  row15: {
     gap: 0,
     justifyContent: 'flex-end',
     alignItems: 'stretch',
@@ -1177,7 +783,7 @@ function createStyles() {
     flexDirection: 'row',
     width: '100%',
   },
-  node_f967bcb4_ea8a_4bd6_9d0f_008983d33d39: {
+  icon6: {
     color: '#F5C542',
   },
   });

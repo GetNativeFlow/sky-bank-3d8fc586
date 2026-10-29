@@ -99,50 +99,48 @@ workflows:
           pod install
       - name: Signing setup
         script: |
-          # IOS_SIGNING is set by the orchestrator: 'signed' only when App Store
-          # Connect API credentials were supplied. Otherwise build unsigned.
-          if [ "${IOS_SIGNING:-unsigned}" = "signed" ]; then
-            keychain initialize
-            app-store-connect fetch-signing-files "$IOS_BUNDLE_ID" --type IOS_APP_STORE --create \
-              || { echo "ERROR: Apple signing failed. Check the App Store Connect API key and bundle ID."; exit 1; }
-            keychain add-certificates
-            xcode-project use-profiles
-          else
-            echo "No Apple signing configured: producing an UNSIGNED IPA (cannot be installed until signed)."
+          # Release IPAs are always signed. The orchestrator refuses to start
+          # this workflow without App Store Connect API credentials.
+          if [ -z "$APP_STORE_CONNECT_PRIVATE_KEY" ] || [ -z "$IOS_BUNDLE_ID" ]; then
+            echo "ERROR: Apple signing is not configured (App Store Connect API key / bundle ID missing)."; exit 1
           fi
+          keychain initialize
+          if [ -n "$CERTIFICATE_PRIVATE_KEY" ]; then
+            app-store-connect fetch-signing-files "$IOS_BUNDLE_ID" --type IOS_APP_STORE --create \
+              --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
+              || { echo "ERROR: Apple signing failed. Check the App Store Connect API key and that an app with bundle ID $IOS_BUNDLE_ID exists."; exit 1; }
+          else
+            app-store-connect fetch-signing-files "$IOS_BUNDLE_ID" --type IOS_APP_STORE --create \
+              || { echo "ERROR: Apple signing failed. Check the App Store Connect API key and that an app with bundle ID $IOS_BUNDLE_ID exists."; exit 1; }
+          fi
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Xcode archive
         script: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
           if [ -z "$WORKSPACE" ]; then echo "ERROR: no .xcworkspace produced by expo prebuild"; exit 1; fi
           SCHEME="${XCODE_SCHEME:-${WORKSPACE%.xcworkspace}}"
-          echo "Archiving workspace=$WORKSPACE scheme=$SCHEME signing=${IOS_SIGNING:-unsigned}"
-          if [ "${IOS_SIGNING:-unsigned}" = "signed" ]; then
-            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
-              -sdk iphoneos -configuration Release \
-              -archivePath build/App.xcarchive archive \
-              || { echo "ERROR: iOS archive failed."; exit 1; }
-          else
-            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
-              -sdk iphoneos -configuration Release \
-              -archivePath build/App.xcarchive archive \
-              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-              || { echo "ERROR: iOS archive failed."; exit 1; }
-          fi
+          echo "Archiving workspace=$WORKSPACE scheme=$SCHEME (signed)"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
+            -sdk iphoneos -configuration Release \
+            -archivePath build/App.xcarchive archive \
+            || { echo "ERROR: iOS archive failed."; exit 1; }
       - name: Export IPA
         script: |
           cd ios
           mkdir -p build/ipa
-          if [ "${IOS_SIGNING:-unsigned}" = "signed" ]; then
-            xcode-project build-ipa --archive build/App.xcarchive --ipa-directory build/ipa \
-              || { echo "ERROR: IPA export failed."; exit 1; }
-          else
-            APP=$(ls -d build/App.xcarchive/Products/Applications/*.app | head -n 1)
-            if [ -z "$APP" ]; then echo "ERROR: no .app in archive"; exit 1; fi
-            rm -rf Payload && mkdir Payload && cp -R "$APP" Payload/
-            zip -qry build/ipa/App-unsigned.ipa Payload
-          fi
+          xcode-project build-ipa --archive build/App.xcarchive --ipa-directory build/ipa \
+            || { echo "ERROR: IPA export failed."; exit 1; }
           ls build/ipa/*.ipa >/dev/null 2>&1 || { echo "ERROR: no IPA produced"; exit 1; }
+      - name: Upload to TestFlight
+        script: |
+          if [ "${SUBMIT_TESTFLIGHT:-false}" = "true" ]; then
+            app-store-connect publish --path "ios/build/ipa/*.ipa" --testflight \
+              || { echo "ERROR: TestFlight upload failed. Check that the build number is higher than the last upload."; exit 1; }
+          else
+            echo "TestFlight upload not requested."
+          fi
     artifacts:
       - ios/build/ipa/*.ipa
       - ios/build/App.xcarchive

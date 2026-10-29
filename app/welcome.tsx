@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Text, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
-import { Svg, Path, Circle, Rect, Line, G, Polyline, Polygon, Ellipse } from 'react-native-svg';
 import { default as LucideDynamic } from '../components/LucideDynamic';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,26 +13,26 @@ export default function Welcome() {
     <SafeAreaView edges={["top","bottom","left","right"]} style={styles.screenRoot}>
       <StatusBar style="auto" />
       <View style={styles.container}>
-      <View testID="484aaeb6-260c-433d-99b1-62300a1fcfd5" style={styles.node_484aaeb6_260c_433d_99b1_62300a1fcfd5}>
-              <Image testID="108509df-5f7b-409e-8c4a-2f4df69cb7a4" accessible={true} accessibilityRole="image" source={{ uri: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' fill='none'%3E%3Crect width='600' height='400' fill='%23E2E8F0' rx='4'/%3E%3Ccircle cx='220' cy='150' r='40' fill='%23CBD5E1'/%3E%3Cpath d='M100 300l120-140 100 80 80-60 120 120H100z' fill='%23CBD5E1'/%3E%3C/svg%3E" }} accessibilityLabel="Mountain sunset" resizeMode="cover" style={[styles.node_108509df_5f7b_409e_8c4a_2f4df69cb7a4, { width: '100%', height: 200, alignSelf: 'center' }]} />
-              <View testID="cd46c681-759f-43e2-94b1-7529dbc5f352" style={styles.node_cd46c681_759f_43e2_94b1_7529dbc5f352}>
-                        <View testID="ac45a41f-7298-4389-af64-2a73934e246c" style={styles.node_ac45a41f_7298_4389_af64_2a73934e246c}>
-                                    <View testID="ac7180d0-09c0-4dd6-b2e8-f6325dec24c7" accessible={true} accessibilityRole="image" style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><Svg viewBox="0 0 24 24" width={40} height={40} fill="none"><G stroke="#FFFFFF" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round"><Path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"></Path><Circle cx="12" cy="8" r="2"></Circle><Path d="M12 10v12"></Path><Path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"></Path><Path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"></Path></G></Svg></View>
-                                    <Text testID="9490fcf4-f865-4e7e-979d-46463397a8da" accessibilityRole="header" style={styles.node_9490fcf4_f865_4e7e_979d_46463397a8da}>SkyBank</Text>
-                                    <View testID="4b1a0706-090c-4228-ba63-18c1c11d748b" style={styles.node_4b1a0706_090c_4228_ba63_18c1c11d748b} />
-                                    <Text testID="21b70f07-4f95-48f4-9308-369f962e8715" accessibilityRole="header" style={styles.node_21b70f07_4f95_48f4_9308_369f962e8715}>Banking for a brighter tomorrow</Text>
-                                    <Text testID="c9eaff2d-6de8-4232-b2c6-43e5e84f1a27" style={styles.node_c9eaff2d_6de8_4232_b2c6_43e5e84f1a27}>Simple. Secure. Always with you.</Text>
-                        </View>
-                        <View testID="e13493c2-e5c4-4a7a-a05a-d87af87fb040" style={styles.node_e13493c2_e5c4_4a7a_a05a_d87af87fb040}>
-                                    <TouchableOpacity testID="8d2188dd-9cb0-4728-855b-4739ed31f3bc" accessible={true} accessibilityRole="button" accessibilityLabel="Get Started" style={[styles.node_8d2188dd_9cb0_4728_855b_4739ed31f3bc, { backgroundColor: '#FFFFFF', borderRadius: 999, paddingVertical: 16, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }]} activeOpacity={0.7}>
-                                      <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#1E3A6E', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>Get Started</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity testID="0bfdd9aa-6488-4000-ae77-95cd3e8a4c9a" accessible={true} accessibilityRole="button" accessibilityLabel="I already have an account" style={[styles.node_0bfdd9aa_6488_4000_ae77_95cd3e8a4c9a, { backgroundColor: 'transparent', borderRadius: 999, paddingVertical: 16, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.6)', alignSelf: 'stretch' }]} activeOpacity={0.7}>
-                                      <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#FFFFFF', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>I already have an account</Text>
-                                    </TouchableOpacity>
-                        </View>
-              </View>
-      </View>
+        <View style={styles.box}>
+          <Image accessible={true} accessibilityRole="image" source={{ uri: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' fill='none'%3E%3Crect width='600' height='400' fill='%23E2E8F0' rx='4'/%3E%3Ccircle cx='220' cy='150' r='40' fill='%23CBD5E1'/%3E%3Cpath d='M100 300l120-140 100 80 80-60 120 120H100z' fill='%23CBD5E1'/%3E%3C/svg%3E" }} accessibilityLabel="Mountain sunset" resizeMode="cover" style={[styles.mountainSunsetImage, { width: '100%', height: 200, alignSelf: 'center' }]} />
+          <View style={styles.box2}>
+            <View style={styles.column}>
+              <View accessible={true} accessibilityRole="image" style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}><LucideDynamic name="flower-2" size={40} color="#FFFFFF" strokeWidth={2} /></View>
+              <Text accessibilityRole="header" style={styles.skyBankHeading}>SkyBank</Text>
+              <View style={styles.box3} />
+              <Text accessibilityRole="header" style={styles.bankingForABrighterHeading}>Banking for a brighter tomorrow</Text>
+              <Text style={styles.simpleSecureAlwaysWithText}>Simple. Secure. Always with you.</Text>
+            </View>
+            <View style={styles.column2}>
+              <TouchableOpacity testID="Welcome_GetStartedButton" accessible={true} accessibilityRole="button" accessibilityLabel="Get Started" style={[styles.getStartedButton, { backgroundColor: '#FFFFFF', borderRadius: 999, paddingVertical: 16, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }]} activeOpacity={0.7}>
+                <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#1E3A6E', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>Get Started</Text>
+              </TouchableOpacity>
+              <TouchableOpacity testID="Welcome_IAlreadyHaveAnButton" accessible={true} accessibilityRole="button" accessibilityLabel="I already have an account" style={[styles.iAlreadyHaveAnButton, { backgroundColor: 'transparent', borderRadius: 999, paddingVertical: 16, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.6)', alignSelf: 'stretch' }]} activeOpacity={0.7}>
+                <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', color: '#FFFFFF', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }}>I already have an account</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minHeight: '100%',
   },
-  node_484aaeb6_260c_433d_99b1_62300a1fcfd5: {
+  box: {
     padding: 0,
     overflow: 'visible',
     position: 'relative',
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
   },
-  node_108509df_5f7b_409e_8c4a_2f4df69cb7a4: {
+  mountainSunsetImage: {
     top: 0,
     left: 0,
     right: 0,
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
   },
-  node_cd46c681_759f_43e2_94b1_7529dbc5f352: {
+  box2: {
     top: 0,
     left: 0,
     right: 0,
@@ -103,22 +102,22 @@ const styles = StyleSheet.create({
     flexWrap: 'nowrap',
     overflow: 'visible',
   },
-  node_ac45a41f_7298_4389_af64_2a73934e246c: {
+  column: {
     gap: 12,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_ac7180d0_09c0_4dd6_b2e8_f6325dec24c7: {
+  icon: {
     color: '#FFFFFF',
   },
-  node_9490fcf4_f865_4e7e_979d_46463397a8da: {
+  skyBankHeading: {
     color: '#FFFFFF',
     fontSize: 34,
     fontWeight: 'bold',
   },
-  node_4b1a0706_090c_4228_ba63_18c1c11d748b: {
+  box3: {
     height: 24,
     padding: 0,
     flexDirection: 'column',
@@ -127,31 +126,31 @@ const styles = StyleSheet.create({
     flexWrap: 'nowrap',
     overflow: 'visible',
   },
-  node_21b70f07_4f95_48f4_9308_369f962e8715: {
+  bankingForABrighterHeading: {
     color: '#FFFFFF',
     fontSize: 36,
     lineHeight: 42,
     fontWeight: 'bold',
   },
-  node_c9eaff2d_6de8_4232_b2c6_43e5e84f1a27: {
+  simpleSecureAlwaysWithText: {
     color: 'rgba(255,255,255,0.85)',
     fontSize: 17,
   },
-  node_e13493c2_e5c4_4a7a_a05a_d87af87fb040: {
+  column2: {
     gap: 12,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexWrap: 'nowrap',
     flexDirection: 'column',
   },
-  node_8d2188dd_9cb0_4728_855b_4739ed31f3bc: {
+  getStartedButton: {
     color: '#1E3A6E',
     paddingTop: 16,
     borderRadius: 999,
     paddingBottom: 16,
     backgroundColor: '#FFFFFF',
   },
-  node_0bfdd9aa_6488_4000_ae77_95cd3e8a4c9a: {
+  iAlreadyHaveAnButton: {
     color: '#FFFFFF',
     paddingTop: 16,
     borderColor: 'rgba(255,255,255,0.6)',
