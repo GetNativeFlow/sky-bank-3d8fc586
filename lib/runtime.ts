@@ -81,6 +81,26 @@ export function interpolate(s: any, vars: Record<string, any>): any {
   });
 }
 
+/**
+ * A list prop as an array: an array as is, a JSON array string parsed, a comma
+ * list split. Bound values are only known at runtime, so lists go through this.
+ */
+export function list(raw: any): any[] {
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw !== 'string') return [];
+  const t = raw.trim();
+  if (!t) return [];
+  if (t.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(t);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return t.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
 /** A value as Text content: null, undefined and objects render as ''. */
 export function text(value: any): string {
   return value == null || typeof value === 'object' ? '' : String(value);

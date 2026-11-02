@@ -535,7 +535,7 @@ export function specWithRows(spec: ChartSpec, rows: unknown): ChartSpec {
  *   - Studio canvas + static-svg renderer: imported directly.
  *   - Sandpack mobile preview: copied to `lib/chartDisplay.ts` and imported by
  *     screens as `nfChart`.
- *   - recharts (web canvas, web preview, Next export): copied next to
+ *   - recharts (web canvas, web preview, web export): copied next to
  *     `NativeFlowChart.tsx` and imported relatively.
  *   - gifted-charts (Expo Go, Expo export): concatenated into
  *     `components/chartPlanRuntime.ts`.
