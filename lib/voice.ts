@@ -10,11 +10,11 @@ const STT_URL = "https://wylsvmumemzvltauwqno.supabase.co/functions/v1/nf-dynami
 // Sarvam takes at most 30 seconds per request.
 const MAX_MS = 29_000;
 
-// Mono 16 kHz, the rate Sarvam recommends.
+// Mono 16 kHz, the rate Sarvam recommends. iOS AAC refuses 64 kbps at 16 kHz.
 const OPTIONS = {
   sampleRate: 16000,
   numberOfChannels: 1,
-  bitRate: 64000,
+  bitRate: 32000,
   isMeteringEnabled: false,
   ...Platform.select({
     ios: { extension: '.m4a', outputFormat: IOSOutputFormat.MPEG4AAC, audioQuality: AudioQuality.HIGH, linearPCMBitDepth: 16, linearPCMIsBigEndian: false, linearPCMIsFloat: false },
